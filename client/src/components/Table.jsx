@@ -3,20 +3,55 @@ import { useNavigate } from "react-router-dom";
 import GlobalContext from "../store/GlobalContext";
 
 const Table = ({ cards, isAdmin, context }) => {
-
   let newCards = cards;
   const { store } = useContext(GlobalContext);
   if (context === "patient") {
-    newCards = cards.map(patient => {
+    newCards = cards.map((patient) => {
       return {
-        "name": patient.patientName,
-        "email": patient.email,
-        "sex": patient.sex,
-        "age": patient.age,
-        "status": patient.patientStatus,
-        "room": patient.roomNo,
-        "department": store.id_to_department[patient.department],
-      }
+        name: patient.patientName,
+        email: patient.email,
+        sex: patient.sex,
+        age: patient.age,
+        status: patient.patientStatus,
+        room: patient.roomNo,
+        department: store.id_to_department[patient.department],
+      };
+    });
+  }
+
+  if (context === "user") {
+    newCards = cards.map((user) => {
+      return {
+        name: user.name,
+        email: user.email,
+        department: store.id_to_department[user.department],
+      };
+    });
+  }
+
+  if (context === "room") {
+    newCards = cards.map((room) => {
+
+      const equipmentNames = room.equipment.map(
+        (equipmentId) => store.id_to_equipment[equipmentId] || 'Unknown Equipment'
+      ).join(', ');
+      return {
+        number:`Room ${room.roomNumber}`, 
+        type: room.roomType,
+        equipments: equipmentNames,
+        'Availability Status': room.availabilityStatus,
+      };
+    });
+  }
+  if (context === "equipment") {
+    newCards = cards.map((equipment) => {
+      return {
+        name: equipment.equipmentName,
+        type: equipment.equipmentType,
+        quantity: equipment.quantity,
+        location: equipment.location,
+        'Maintenance Status': equipment.maintenanceStatus,
+      };
     });
   }
 
@@ -30,18 +65,22 @@ const Table = ({ cards, isAdmin, context }) => {
     console.log(`Deleting ${context}:`, itemToDelete);
     // Here you would typically call a function to delete the item,
     // e.g., deleteItem(itemToDelete).then(() => setShowDeleteModal(false));
+    if (context === "patient") store.deletePatient(itemToDelete._id);
+    else if (context === "user") store.deleteUser(itemToDelete._id);
+    else if (context === "equipment") store.deleteEquipment(itemToDelete._id);
+    else if (context === "room") store.deleteRoom(itemToDelete._id);
     setShowDeleteModal(false); // Close modal after deletion
   };
 
   // Function to dynamically determine the edit route based on the context
   const getEditRoute = (context) => {
     const routeMap = {
-      'patient': '/edit-patient',
-      'room': '/edit-room',
-      'equipment': '/edit-equipment',
-      'user': '/edit-user'
+      patient: "/edit-patient",
+      room: "/edit-room",
+      equipment: "/edit-equipment",
+      user: "/edit-user",
     };
-    return routeMap[context] || '/';
+    return routeMap[context] || "/";
   };
 
   const openDeleteModal = (item) => {
@@ -51,76 +90,90 @@ const Table = ({ cards, isAdmin, context }) => {
 
   // Handle the edit action
   const handleEdit = (itemId) => {
-    if (context === "patient")
-      store.getPatient(itemId); // marks this patient as the current patient to edit
+    if (context === "patient") store.getPatient(itemId); // marks this patient as the current patient to edit
     const editRoute = getEditRoute(context);
-    navigate(`${editRoute}`)
+    navigate(`${editRoute}`);
   };
-
+  const getRowDataCy = (context, card, index) => {
+    switch(context) {
+      case "room":
+        return `room-${card.roomNumber}`;  // Assuming each room has a unique roomNumber field
+      case "equipment":
+        return `equipment-${card.id}`;  // Adjust according to your equipment identifier
+      default:
+        return `item-${index}`;  // Fallback to index if no unique identifier available
+    }
+  };
   return (
     <div className="overflow-x-auto relative">
-      <table className="min-w-full">
-        <thead>
-          <tr>
-            {fields.map((field, index) => (
-              <th
-                key={index}
-                className="px-6 py-3 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider"
-              >
-                {field}
-              </th>
-            ))}
-            <th className="px-6 py-3 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
-              Actions
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {cards.map((card, index) => (
-            <tr
-              key={index}
-              style={{
-                backgroundColor: index % 2 === 0 ? "#EDF2FB" : "#ABC4FF",
-              }}
-            >
-              {fields.map((field, i) => (
-                <td
-                  key={i}
-                  className="px-6 py-4 whitespace-no-wrap text-sm leading-5 text-gray-500"
+      <div style={{ maxHeight: "500px", overflowY: "auto" }}>
+        <table className="min-w-full">
+          <thead>
+            <tr>
+              {fields.map((field, index) => (
+                <th
+                  key={index}
+                  className="px-6 py-3 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider"
                 >
-                  {newCards[index][field]}
-                </td>
+                  {field}
+                </th>
               ))}
-              <td className="px-6 py-4 whitespace-no-wrap text-sm leading-5 text-right">
-                <div className="inline-flex rounded-md shadow-sm" role="group">
-                  {/* <button
+              <th className="px-6 py-3 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+                Actions
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {cards.map((card, index) => (
+              <tr
+                key={index}
+                data-cy={getRowDataCy(context, card,index)}
+                style={{
+                  backgroundColor: index % 2 === 0 ? "#EDF2FB" : "#ABC4FF",
+                }}
+              >
+                {fields.map((field, i) => (
+                  <td
+                    key={i}
+                    className="px-6 py-4 whitespace-no-wrap text-sm leading-5 text-gray-500"
+                  >
+                    {newCards[index][field]}
+                  </td>
+                ))}
+                <td className="px-6 py-4 whitespace-no-wrap text-sm leading-5 text-right">
+                  <div
+                    className="inline-flex rounded-md shadow-sm"
+                    role="group"
+                  >
+                    {/* <button
                     className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-3 rounded-l"
                     onClick={() => console.log("Info for:", card)}
                   >
                     Info
                   </button> */}
-                  {isAdmin && (
-                    <>
-                      <button
-                        className="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-3"
-                        onClick={() => handleEdit(card._id)}
-                      >
-                        Edit
-                      </button>
-                      <button
-                        className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-3 rounded-r"
-                        onClick={() => openDeleteModal(card)}
-                      >
-                        Delete
-                      </button>
-                    </>
-                  )}
-                </div>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+                    {isAdmin && (
+                      <>
+                        <button
+                          className="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-3"
+                          onClick={() => handleEdit(card._id)}
+                        >
+                          Edit
+                        </button>
+                        <button
+                          className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-3 rounded-r"
+                          onClick={() => openDeleteModal(card)}
+                        >
+                          Delete
+                        </button>
+                      </>
+                    )}
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
 
       {/* Deletion Confirmation Modal */}
       {showDeleteModal && (

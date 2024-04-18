@@ -9,8 +9,8 @@ const ForgotPasswordPage = () => {
   
   // The fields for the ForgotPassword form
   const fields = [
-    { name: 'Email', initialValue: '', editable: true },
-    { name: 'New Password', initialValue: '', editable: true }
+    { name: 'Email', label:"Email",initialValue: '', editable: true },
+    { name: 'New Password', label:"New Password", initialValue: '', editable: true }
   ];
 
   // This function will be called when the form is submitted
@@ -28,7 +28,7 @@ const ForgotPasswordPage = () => {
         newPassword: formData['New Password'],
     };
 
-    axios.post('http://localhost:3000/auth/reset-password', dataToSend)
+    axios.post('https://medical360-d65d823d7d75.herokuapp.com/auth/reset-password', dataToSend)
         .then(response => {
             alert('If an account with that email exists, a password reset link has been sent.');
             navigate('/');
