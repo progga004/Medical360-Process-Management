@@ -10,39 +10,35 @@ const DepartmentForm = () => {
   const navigate = useNavigate();
   const { BASE_URL } = useGlobalContext();
 
-  // Define the fields for the department form
-  const fields = [
-    { name: "Name", label: "Name", initialValue: "", editable: true },
-    {
-      name: "Icon",
-      label: "Icon",
-      initialValue: "",
-      editable: true,
-      type: "file",
-    },
-  ];
+    // Define the fields for the department form
+    const fields = [
+        { name: 'Name', label:'Name', initialValue: '', editable: true },
+        { name: 'Icon', label:'Icon',initialValue: '', editable: true, type: 'file' },
+        
+    ];
 
-  const handleSubmit = (formData) => {
-    const data = new FormData();
-    Object.keys(formData).forEach((key) => {
-      data.append(key, formData[key]);
-    });
-
-    axios
-      .post(`${BASE_URL}/departments/department`, data, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      })
-      .then((response) => {
-        console.log("Department created:", response.data);
-        navigate("/departmentpage");
-      })
-      .catch((error) => {
-        console.error("There was an error creating the department:", error);
-        setFormError(true);
-      });
-  };
+    
+    const handleSubmit = (formData) => {
+        const data = new FormData();
+        Object.keys(formData).forEach(key => {
+            data.append(key, formData[key]);
+        });
+    
+        axios.post(`${BASE_URL}/departments/department`, data, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        })
+        .then(response => {
+            console.log('Department created:', response.data);
+            navigate('/departmentpage');
+        })
+        .catch(error => {
+            console.error('There was an error creating the department:', error);
+            setFormError(true); 
+        });
+    };
+    
 
   return (
     <>
