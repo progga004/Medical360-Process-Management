@@ -21,8 +21,8 @@ async function createPatient(req, res) {
         roomNo: req.body.roomNo,
     });
     try {
-      await newPatient.save()
-      res.status(201).json({newPatient});
+      const savedPatient = await newPatient.save();
+      res.status(201).json({ newPatient: savedPatient });
     } catch (error) {
       res.status(400).json({ error: 'Error saving patient: ' + error });
     }
