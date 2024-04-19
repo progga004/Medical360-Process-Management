@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useContext } from "react";
 import axios from "axios";
 import Banner from "../components/Banner";
 import { useNavigate } from "react-router-dom";
@@ -47,6 +47,7 @@ const NewEquipmentPage = () => {
       .post(`${BASE_URL}/equipments`, formData)
       .then((response) => {
         console.log("Equipment created:", response.data);
+        store.addEquipment(response.data);
         navigate("/all-equipments");
       })
       .catch((error) => {
