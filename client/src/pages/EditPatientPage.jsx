@@ -38,7 +38,7 @@ const EditPatientPage = () => {
                 <h1 className="text-3xl font-bold text-blue-500">Edit Patient</h1>
                 </div>
             </div>
-            {currentPatient && departments && <FormField
+            {currentPatient && department_to_id && <FormField
                 fields={Object.keys(currentPatient)
                     .filter(key => {
                         if (!fieldsToAvoid.includes(key))
