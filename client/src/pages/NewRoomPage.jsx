@@ -1,36 +1,35 @@
 import React, { useState, useContext,useEffect } from 'react';
 import Banner from '../components/Banner';
 import FormField from '../components/FormField';
-import GlobalContext from '../store/GlobalContext';
 import { useNavigate } from 'react-router-dom';
+import { useGlobalContext } from '../hooks/useGlobalContext';
 
 const NewRoomPage = () => {
     const [formError, setFormError] = useState(false);
     const navigate = useNavigate();
-    const { store } = useContext(GlobalContext);
+    const { getAllEquipments, createRoom,equipments } = useGlobalContext();
     const [equipmentOptions, setEquipmentOptions] = useState([]);
 
     useEffect(() => {
-        const fetchEquipment = async () => {
-            try {
-                const response = await store.getAllEquipments();
-            if (response.status === 200) {
-                const operationalEquipments = response.data
-                    .filter(equip => equip.quantity > 0 && equip.maintenanceStatus === "Operational")
-                    .map(equip => ({
-                        label:`${equip.equipmentName} (${equip.location})`,
-                        value: equip._id
-                    }));
-                    setEquipmentOptions(operationalEquipments);
-                }
-                
-            } catch (error) {
-                console.error("Error fetching equipment:", error);
-            }
+        const fetchEquipments = async () => {
+          if (!equipments)
+            await getAllEquipments();
         };
-
-        fetchEquipment();
-    }, []);
+    
+        fetchEquipments();
+      }, [equipments]);
+    
+    useEffect(() => {
+        if (equipments) {
+            const operationalEquipments = equipments
+                .filter(equip => equip.quantity > 0 && equip.maintenanceStatus === "Operational")
+                .map(equip => ({
+                    label: `${equip.equipmentName} (${equip.location})`,
+                    value: equip._id
+                }));
+            setEquipmentOptions(operationalEquipments);
+        }
+    }, [equipments]);
 
     const fields = [
         { name: 'roomNumber', label: 'Room Number', initialValue: '', editable: true },
@@ -68,7 +67,7 @@ const NewRoomPage = () => {
             return;
           }
         try {
-            const response = await store.createRoom(formData);
+            const response = await createRoom(formData);
             console.log ("the response is",response);
             if (response.status === 201) {
                 navigate('/all-rooms');
