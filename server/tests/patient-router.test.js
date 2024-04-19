@@ -1,20 +1,17 @@
 const request = require("supertest");
 const express = require("express");
 const bodyParser = require("body-parser");
-const Patient = require("../models/Patient"); // Adjust the path to your Patient model
+const Patient = require("../models/Patient"); 
 
-// Mock the Patient model
 jest.mock("../models/Patient");
 
 const app = express();
-app.use(bodyParser.json()); // support json encoded bodies
+app.use(bodyParser.json()); 
 
-const patientRouter = require("../routes/patient-router"); // Adjust the path to your patient-router
-app.use("/patients", patientRouter); // Mount the patientRouter at /patients
-
+const patientRouter = require("../routes/patient-router"); 
+app.use("/patients", patientRouter); 
 describe("POST /patients", () => {
   it("should create a new patient and return 201 status", async () => {
-    // Setup the Patient model's mock implementation
     Patient.mockImplementation(() => ({
       save: jest.fn().mockResolvedValue({
         patientName: "John Doe",
@@ -28,7 +25,6 @@ describe("POST /patients", () => {
       }),
     }));
 
-    // Define the payload to send in the POST request
     const newPatientData = {
       patientName: "John Doe",
       email: "johndoe@example.com",
@@ -40,15 +36,12 @@ describe("POST /patients", () => {
       roomNo: "101",
     };
 
-    // Make a POST request to the route and assert the response
     const response = await request(app)
-      .post("/patients") // Note the change in the URL
+      .post("/patients") 
       .send(newPatientData);
 
     expect(response.statusCode).toBe(201);
-    expect(response.body).toHaveProperty("patientName", "John Doe");
-    // Add more assertions as necessary
+    expect(response.body.newPatient).toHaveProperty("patientName", "John Doe"); 
   });
 
-  // Add more tests as needed
 });
