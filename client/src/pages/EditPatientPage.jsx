@@ -12,13 +12,10 @@ const EditPatientPage = () => {
 
     const fieldsToAvoid = ["_id", "medicalHistory", "__v"];
 
-    console.log(departments);
-    console.log(department_to_id);
-
     useEffect(() => {
         async function fetchDepartments() {
             if (!departments)
-                getAllDepartments();
+                await getAllDepartments();
         }
         fetchDepartments();
     }, [departments])
@@ -41,7 +38,7 @@ const EditPatientPage = () => {
                 <h1 className="text-3xl font-bold text-blue-500">Edit Patient</h1>
                 </div>
             </div>
-            {currentPatient && Object.keys(department_to_id).length !== 0 && <FormField
+            {currentPatient && departments && <FormField
                 fields={Object.keys(currentPatient)
                     .filter(key => {
                         if (!fieldsToAvoid.includes(key))
