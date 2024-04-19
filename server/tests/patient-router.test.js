@@ -59,6 +59,7 @@ describe("PUT /patients/:id", () => {
       phoneNumber: "9876543210"
     };
 
+
     Patient.findOneAndUpdate = jest.fn().mockResolvedValue({
       ...updatedData,
       patientName: "John Doe",
@@ -95,7 +96,9 @@ describe("DELETE /patients/:id", () => {
     expect(response.statusCode).toBe(200);
     expect(response.body).toHaveProperty("message", "Deleted patient");
   });
+
 });
+
 
 
 
