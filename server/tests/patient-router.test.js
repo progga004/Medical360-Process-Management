@@ -29,7 +29,6 @@ describe("POST /patients", () => {
       });
       return { save };
     });
-    
 
     const newPatientData = {
       patientName: "John Doe",
@@ -44,14 +43,59 @@ describe("POST /patients", () => {
     };
 
     const response = await request(app)
-  .post("/patients")
-  .send(newPatientData);
+      .post("/patients")
+      .send(newPatientData);
 
-  // console.log(response.body);  
-  expect(response.statusCode).toBe(201);
-  expect(response.body.newPatient).toHaveProperty("patientName", "John Doe");
-  expect(response.body.newPatient).toHaveProperty("department", cardiologyDepartmentId);
-
+    expect(response.statusCode).toBe(201);
+    expect(response.body.newPatient).toHaveProperty("patientName", "John Doe");
+    expect(response.body.newPatient).toHaveProperty("department", cardiologyDepartmentId);
   });
 });
+
+describe("PUT /patients/:id", () => {
+  it("should update a patient and return 200 status", async () => {
+    const patientId = "somepatientid";  // Example patient ID
+    const updatedData = {
+      phoneNumber: "9876543210"
+    };
+
+    Patient.findOneAndUpdate = jest.fn().mockResolvedValue({
+      ...updatedData,
+      patientName: "John Doe",
+      email: "johndoe@example.com",
+      healthInsurance: "HealthInsuranceProvider",
+      sex: "male",
+      age: "30",
+      patientStatus: "admitted",
+      roomNo: "101",
+      department: cardiologyDepartmentId
+    });
+
+    const response = await request(app)
+      .put(`/patients/${patientId}`)
+      .send(updatedData);
+
+    expect(response.statusCode).toBe(200);
+    expect(response.body.patient).toHaveProperty("phoneNumber", "9876543210");
+  });
+});
+
+
+
+describe("DELETE /patients/:id", () => {
+  it("should delete a patient and return 200 status", async () => {
+    const patientId = "deletethispatientid";  // Example patient ID
+    Patient.findByIdAndDelete = jest.fn().mockResolvedValue({
+      patientName: "John Doe"
+    });
+
+    const response = await request(app)
+      .delete(`/patients/${patientId}`);
+
+    expect(response.statusCode).toBe(200);
+    expect(response.body).toHaveProperty("message", "Deleted patient");
+  });
+});
+
+
 
