@@ -41,7 +41,7 @@ const EditPatientPage = () => {
                 <h1 className="text-3xl font-bold text-blue-500">Edit Patient</h1>
                 </div>
             </div>
-            {currentPatient && Object.keys(department_to_id).length === 0 && <FormField
+            {currentPatient && Object.keys(department_to_id).length !== 0 && <FormField
                 fields={Object.keys(currentPatient)
                     .filter(key => {
                         if (!fieldsToAvoid.includes(key))
