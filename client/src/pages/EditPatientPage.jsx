@@ -12,6 +12,9 @@ const EditPatientPage = () => {
 
     const fieldsToAvoid = ["_id", "medicalHistory", "__v"];
 
+    console.log(departments);
+    console.log(department_to_id);
+
     useEffect(() => {
         async function fetchDepartments() {
             if (!departments)
@@ -23,7 +26,7 @@ const EditPatientPage = () => {
     // Function to handle form submission
     const handleSubmit = async (formData) => {
         // Such as updating the patient data or sending it to a server
-        if (formData["deparment"])
+        if (formData["department"])
             formData["department"] = department_to_id[formData["department"]];
         await updatePatient(currentPatient._id, formData);
         getAllPatients();
@@ -38,7 +41,7 @@ const EditPatientPage = () => {
                 <h1 className="text-3xl font-bold text-blue-500">Edit Patient</h1>
                 </div>
             </div>
-            {currentPatient && department_to_id && <FormField
+            {currentPatient && Object.keys(department_to_id).length === 0 && <FormField
                 fields={Object.keys(currentPatient)
                     .filter(key => {
                         if (!fieldsToAvoid.includes(key))
