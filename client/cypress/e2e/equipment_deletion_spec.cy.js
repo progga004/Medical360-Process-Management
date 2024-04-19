@@ -1,6 +1,6 @@
-describe("Room Deletion Tests", () => {
+describe("Equipment Deletion Tests", () => {
   beforeEach(() => {
-    cy.visit("https://medical360-d65d823d7d75.herokuapp.com/login");
+    cy.visit("/login");
     cy.get("#Email").type("admin@example.com");
     cy.get("#Password").type("admin@123");
     cy.get("button").contains("Login").click();
@@ -13,22 +13,22 @@ describe("Room Deletion Tests", () => {
     cy.url().should("include", "/all-equipments");
   });
 
-  it('allows an admin to delete "Room 120"', () => {
+  it('allows an admin to delete the first listed room and verify it is removed', () => {
     cy.get("table").should("be.visible");
 
-    cy.contains("td", "Fetal Doppler 5")
-      .parents("tr")
-      .within(() => {
-        cy.get("td")
-          .last()
-          .find("div")
-          .within(() => {
-            cy.get("button").contains("Delete").click();
-          });
+    
+    cy.get("td").first().invoke('text').then((equipmentName) => {
+      
+      cy.get("td").first().parents("tr").within(() => {
+        cy.get("button").contains("Delete").click();
       });
+      cy.get("button.bg-red-600").should("be.visible").click();
 
-    cy.get("button.bg-red-600").should("be.visible").click();
+     
+      cy.contains("Deleting...").should("not.exist");
 
-    cy.contains("td", "Fetal Doppler 5").should("not.exist");
+     
+      cy.contains("td", equipmentName.trim()).should("not.exist");
+    });
   });
 });
