@@ -14,21 +14,21 @@ const Sidebar = () => {
             Home
           </Link>
         </li>
-        {user.isAdmin && (
+        {user && (
           <li>
             <Link to="/departmentpage" className="hover:underline">
               Departments
             </Link>
           </li>
         )}
-        {user.isAdmin && (
+        {user && (
           <li>
             <Link to="/departmentratio" className="hover:underline">
               Department Ratio
             </Link>
           </li>
         )}
-        {user.isAdmin && (
+        {user && (
           <li>
             <Link to="/resource-management" className="hover:underline">
               Resource and User Management
