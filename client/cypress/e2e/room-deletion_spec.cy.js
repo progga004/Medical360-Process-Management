@@ -13,22 +13,22 @@ describe("Room Deletion Tests", () => {
     cy.url().should("include", "/all-rooms");
   });
 
-  it('allows an admin to delete "Room 227"', () => {
+  it('allows an admin to delete the first listed room and verify it is removed', () => {
     cy.get("table").should("be.visible");
 
-    cy.contains("td", "Room 227")
-      .parents("tr")
-      .within(() => {
-        cy.get("td")
-          .last()
-          .find("div")
-          .within(() => {
-            cy.get("button").contains("Delete").click();
-          });
+    
+    cy.get("td").first().invoke('text').then((roomName) => {
+      
+      cy.get("td").first().parents("tr").within(() => {
+        cy.get("button").contains("Delete").click();
       });
+      cy.get("button.bg-red-600").should("be.visible").click();
 
-    cy.get("button.bg-red-600").should("be.visible").click();
+     
+      cy.contains("Deleting...").should("not.exist");
 
-    cy.contains("td", "Room 120").should("not.exist");
+     
+      cy.contains("td", roomName.trim()).should("not.exist");
+    });
   });
 });
