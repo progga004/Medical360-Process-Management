@@ -15,21 +15,21 @@ const cardiologyDepartmentId = "507f1f77bcf86cd799439011";  // Example ObjectId 
 
 describe("POST /patients", () => {
   it("should create a new patient and return 201 status", async () => {
-    Patient.mockImplementation(() => ({
-      save: jest.fn().mockResolvedValue({
-        newPatient: {
-          patientName: "John Doe",
-          email: "johndoe@example.com",
-          phoneNumber: "1234567890",
-          healthInsurance: "HealthInsuranceProvider",
-          sex: "male",
-          age: "30",
-          patientStatus: "admitted",
-          roomNo: "101",
-          department: cardiologyDepartmentId
-        }
-      }),
-    }));
+    Patient.mockImplementation(() => {
+      const save = jest.fn().mockResolvedValue({
+        patientName: "John Doe",
+        email: "johndoe@example.com",
+        phoneNumber: "1234567890",
+        healthInsurance: "HealthInsuranceProvider",
+        sex: "male",
+        age: "30",
+        patientStatus: "admitted",
+        roomNo: "101",
+        department: cardiologyDepartmentId
+      });
+      return { save };
+    });
+    
 
     const newPatientData = {
       patientName: "John Doe",
@@ -44,11 +44,14 @@ describe("POST /patients", () => {
     };
 
     const response = await request(app)
-      .post("/patients")
-      .send(newPatientData);
+  .post("/patients")
+  .send(newPatientData);
 
-    expect(response.statusCode).toBe(201);
-    expect(response.body.newPatient).toHaveProperty("patientName", "John Doe");
-    expect(response.body.newPatient).toHaveProperty("department", cardiologyDepartmentId);
+  // console.log(response.body);  
+  expect(response.statusCode).toBe(201);
+  expect(response.body.newPatient).toHaveProperty("patientName", "John Doe");
+  expect(response.body.newPatient).toHaveProperty("department", cardiologyDepartmentId);
+
   });
 });
+

@@ -9,20 +9,32 @@ import { useGlobalContext } from "../hooks/useGlobalContext";
 const AllEquipmentPage = () => {
   const { user } = useAuthContext();
   const { equipments, getAllEquipments } = useGlobalContext();
-
+  const [filteredEquipments, setFilteredEquipments] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     const fetchEquipments = async () => {
-      if (!equipments)
-        await getAllEquipments();
+      if (!equipments) await getAllEquipments();
     };
-
     fetchEquipments();
   }, [equipments]);
 
+  useEffect(() => {
+    if (searchTerm) {
+      const lowercasedTerm = searchTerm.toLowerCase();
+      const filtered = equipments.filter((equipment) =>
+        equipment.equipmentName.toLowerCase().includes(lowercasedTerm) ||
+        equipment.equipmentType.toLowerCase().includes(lowercasedTerm) ||
+        equipment.location.toLowerCase().includes(lowercasedTerm)
+      );
+      setFilteredEquipments(filtered);
+    } else {
+      setFilteredEquipments(equipments);
+    }
+  }, [searchTerm, equipments]);
+
   const handleSearch = (term) => {
-    setSearchTerm(term.toLowerCase());
+    setSearchTerm(term);
   };
 
   return (
@@ -45,13 +57,11 @@ const AllEquipmentPage = () => {
         )}
       </div>
       <div className="p-8">
-        {equipments && <Table
-          cards={equipments.filter((equipment) =>
-            equipment.equipmentName.toLowerCase().includes(searchTerm)
-          )}
+        <Table
+          cards={filteredEquipments}
           isAdmin={user && user.isAdmin}
           context={"equipment"}
-        />}
+        />
       </div>
     </>
   );
