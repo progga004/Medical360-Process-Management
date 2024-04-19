@@ -3,7 +3,7 @@ describe('Department Creation', () => {
   beforeEach(() => {
     cy.visit('https://medical360-d65d823d7d75.herokuapp.com/login');
     cy.get('#Email').type('admin@example.com');
-    cy.get('#Password').type('admin123');
+    cy.get('#Password').type('admin@123');
     cy.get('button').contains('Login').click();
     
     // After successful login, navigate to the department creation form

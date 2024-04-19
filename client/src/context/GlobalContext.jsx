@@ -11,7 +11,7 @@ export const storeReducer = (state, action) => {
       switch (action.context) {
         case "patient":
           return { ...state, currentPatient: action.payload };
-        case "deparment":
+        case "department":
           return { ...state, currentDepartment: action.payload };
         case "equipment":
           return { ...state, currentEquipment: action.payload};
