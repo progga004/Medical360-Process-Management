@@ -15,6 +15,7 @@ function AddProcedurePage() {
     if (currentPatient) {
       if (!notes) {
         console.log("No");
+        alert("You must provide notes for the process");
         return 
       }
 

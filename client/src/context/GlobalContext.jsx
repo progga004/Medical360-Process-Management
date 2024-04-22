@@ -439,8 +439,10 @@ function GlobalContextProvider({ children }) {
 
   const deletePatient = async function (id) {
     try {
-      const response = await storeApi.deletePatient(id);
-      if (response.status === 200) {
+      const response = await fetch(`${store.BASE_URL}/patients/${id}`, {
+        method: "DELETE"
+      });
+      if (response.ok) {
         console.log("deleted Patient");
         setStore({ type: "DELETE", context: "patient", payload: id})
       }

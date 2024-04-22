@@ -168,13 +168,19 @@ const Table = ({ cards, isAdmin, context }) => {
                       <>
                         <button
                           className="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-3"
-                          onClick={() => handleEdit(card._id)}
+                          onClick={(event) => {
+                            event.stopPropagation();
+                            handleEdit(card._id);
+                          }}
                         >
                           Edit
                         </button>
                         <button
                           className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-3 rounded-r"
-                          onClick={() => openDeleteModal(card)}
+                          onClick={(event) => {
+                            event.stopPropagation();
+                            openDeleteModal(card);
+                          }}
                         >
                           Delete
                         </button>

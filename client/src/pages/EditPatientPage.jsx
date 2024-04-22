@@ -10,7 +10,7 @@ const EditPatientPage = () => {
     const navigate = useNavigate();
 
 
-    const fieldsToAvoid = ["_id", "medicalHistory", "__v"];
+    const fieldsToAvoid = ["_id", "medicalHistory", "__v", "procedures"];
 
     useEffect(() => {
         async function fetchDepartments() {
@@ -47,6 +47,7 @@ const EditPatientPage = () => {
                     .map(key => {
                         let obj = {
                             name: key,
+                            label: key,
                             initialValue: currentPatient[key],
                             editable: true,
                             showEditIcon: true
