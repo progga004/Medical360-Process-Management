@@ -15,7 +15,7 @@ const Table = ({ cards, isAdmin, context }) => {
           age: patient.age,
           status: patient.patientStatus,
           room: patient.roomNo,
-          department: id_to_department[patient.department],
+          department: patient.department? id_to_department[patient.department]: "N/A",
         };
       });
     }
@@ -107,6 +107,14 @@ const Table = ({ cards, isAdmin, context }) => {
         return `item-${index}`;  // Fallback to index if no unique identifier available
     }
   };
+
+  const handleClick = (itemId) => {
+    switch (context) {
+      case "patient":
+        getPatient(itemId);
+        navigate("/patient-info");
+    }
+  }
   return (
     <div className="overflow-x-auto relative">
       <div style={{ maxHeight: "500px", overflowY: "auto" }}>
@@ -131,9 +139,11 @@ const Table = ({ cards, isAdmin, context }) => {
               <tr
                 key={index}
                 data-cy={getRowDataCy(context, card,index)}
-                style={{
-                  backgroundColor: index % 2 === 0 ? "#EDF2FB" : "#ABC4FF",
-                }}
+                // style={{
+                //   backgroundColor: index % 2 === 0 ? "#EDF2FB" : "#ABC4FF",
+                // }}
+                className={`${index % 2 === 0 ? 'bg-gray-100' : 'bg-blue-300'}`}
+                onClick={() => handleClick(card._id)}
               >
                 {fields.map((field, i) => (
                   <td

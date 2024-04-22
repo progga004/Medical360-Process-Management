@@ -103,8 +103,8 @@ function GlobalContextProvider({ children }) {
     currentDepartment: null,
     currentEquipment: null,
     currentRoom: null,
-    BASE_URL: "https://medical360-d65d823d7d75.herokuapp.com"
-    // BASE_URL: "http://localhost:3000"
+    // BASE_URL: "https://medical360-d65d823d7d75.herokuapp.com"
+    BASE_URL: "http://localhost:3000"
   });
   const [lastUpdated, setLastUpdated] = useState(Date.now());
   // get all users to the application
@@ -159,11 +159,15 @@ function GlobalContextProvider({ children }) {
 
   // update patient by id with data
   const updatePatient = async function (id, data) {
+    console.log(data);
     try {
-      const response = await storeApi.updatePatient(id, data);
-      if (response.status === 200) {
-        console.log(response.data.patient);
-      }
+      await fetch(`${store.BASE_URL}/patients/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data)
+      });
     } catch (err) {
       console.log(err.message);
     }
