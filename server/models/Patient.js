@@ -10,17 +10,16 @@ const patientSchema = new Schema({
     visitNo: { type: Number },
     sex: { type: String, required: true, enum: ['male', 'female', 'other'] },
     age: { type: String, required: true },
-    medicalHistory: [{
+    procedures: [{
                 date: Date,
-                reasonForVisit: String,
-                doctorId: { type: Schema.Types.ObjectId, ref: 'Doctor' },
-                carePlan: String,
-                testsOrdered: [String],
+                "Reason For Visit": String,
+                "Notes": String,
+                "Operation": String
         }],
     department: {
                 type: Schema.Types.ObjectId,
                 ref: 'Department',
-                
+                default: null   
         },
     patientStatus: { type: String, required: true, enum: ['admitted', 'discharged', 'under observation'] },
     roomNo: {type: String}

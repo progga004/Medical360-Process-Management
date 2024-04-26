@@ -1,7 +1,8 @@
 import axios from "axios";
 
-// const BASE_URL = "https://medical360-d65d823d7d75.herokuapp.com/auth";
+// const BASE_URL = "http://localhost:3000";
 const BASE_URL = "https://medical360-d65d823d7d75.herokuapp.com";
+//const BASE_URL = "http://localhost:3000";
 
 const api = axios.create({
   baseURL: BASE_URL,
@@ -21,6 +22,13 @@ export const createPatient = (patientData) =>
   api.post("/patients/", patientData);
 
 export const deletePatient = (id) => api.delete(`/patients/${id}`);
+
+export const getAllDoctors = () => api.get("/doctors/");
+
+export const getDoctor = (id) => {
+  return api.get(`/doctors/${id}`);
+};
+
 
 export const getAllDepartments = () => api.get("/departments/");
 
@@ -45,6 +53,7 @@ export const deleteRoom = (id) => api.delete(`/rooms/${id}`);
 
 export const getDepartment = (id) => api.get(`/departments/${id}`);
 
+export const getUser = (id) =>api.get(`/users/${id}`);
 export const updateDepartment = (id, newData) =>
   api.put(`/departments/${id}`, newData);
 
@@ -53,6 +62,8 @@ export default {
   getAllPatients,
   updatePatient,
   createPatient,
+  getAllDoctors,
+  getDoctor,
   getAllDepartments,
   getDepartment,
   updateDepartment,

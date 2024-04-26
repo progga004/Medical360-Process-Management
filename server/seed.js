@@ -24,6 +24,26 @@ db.once("open", async () => {
 
   try {
     const departments = ["Cardiology", "Spinal", "Plastic", "Oncology"];
+    const focusAreas = [
+      "Cardiovascular Health",
+      "Pediatric Care",
+      "Neurology",
+      "Orthopedics",
+      "Dermatology",
+      "Emergency Medicine",
+      "Oncology",
+      "Geriatric Care"
+  ];
+  const specializations = [
+    "Heart Surgery",
+    "Childhood Vaccination",
+    "Brain Surgery",
+    "Joint Replacement",
+    "Skin Care",
+    "Trauma Handling",
+    "Cancer Treatment",
+    "Elderly Health Management"
+];
     // Create admin user
     const adminUser = new User({
       name: "Admin",
@@ -39,12 +59,16 @@ db.once("open", async () => {
     for (let i = 0; i < departments.length; i++) {
       // create user that is head doctor
       const doctor = new Doctor({
-        surgeryCount: chance.integer(),
-        appointmentNo: chance.integer(),
-        hours: chance.integer(),
+        surgeryCount: chance.integer({min: 0, max: 1000}),
+        appointmentNo: chance.integer({min: 1000, max: 9999}),
+        hours: chance.integer({min: 20, max: 60}),
+        experience: `${chance.integer({min: 1, max: 40})} years`,
         profileDetails: {
-          focusAreas: [chance.word(), chance.word()],
-          specialization: [chance.word(), chance.word()],
+          focusAreas: [chance.pickone(focusAreas), 
+            chance.pickone(focusAreas)],
+          specialization: [chance.pickone(specializations), 
+            chance.pickone(specializations)],
+            biography: "Completed medical degree at a renowned university, further specialized during residency with emphasis on patient-centered care.",
         },
         schedule: [
           { day: "Monday", start: chance.date(), end: chance.date() },
@@ -95,12 +119,16 @@ db.once("open", async () => {
     for (let i = 0; i < 5; i++) {
       const doctor = new Doctor({
         departmentName: chance.pickone(department_ids),
-        surgeryCount: chance.integer(),
-        appointmentNo: chance.integer(),
-        hours: chance.integer(),
+        surgeryCount: chance.integer({min: 0, max: 1000}),
+        appointmentNo: chance.integer({min: 1000, max: 9999}),
+        hours: chance.integer({min: 20, max: 60}),
+        experience: `${chance.integer({min: 1, max: 40})} years`,
         profileDetails: {
-          focusAreas: [chance.word(), chance.word()],
-          specialization: [chance.word(), chance.word()],
+          focusAreas: [chance.pickone(focusAreas), 
+            chance.pickone(focusAreas)],
+          specialization: [chance.pickone(specializations), 
+            chance.pickone(specializations)],
+            biography: "Completed medical degree at a renowned university, further specialized during residency with emphasis on patient-centered care.",
         },
         schedule: [
           { day: "Monday", start: chance.date(), end: chance.date() },
@@ -173,7 +201,58 @@ db.once("open", async () => {
           "under observation",
         ]),
         roomNo: chance.integer({ min: 100, max: 200 }),
+        procedures: chance.pickone([
+          [{
+            date: new Date("2022-03-10"),
+            Notes: "Admitted for scheduled Appendectomy"
+          }, {
+            date: new Date("2022-03-15"),
+            Operation: "Appendectomy",
+            Notes: "Appendix removed due to acute appendicitis."
+          }],
+          [{
+            date: new Date("2022-05-10"),
+            Notes: "Admitted for scheduled Colonoscopy"
+          }, {
+            date: new Date("2022-05-10"),
+            Operation: "Colonoscopy",
+            Notes: "Routine screening for colorectal cancer."
+          }],
+          [{
+            date: new Date("2022-08-23"),
+            Notes: "Admitted for scheduled Knee Replacement"
+          }, {
+            date: new Date("2022-08-25"),
+            Operation: "Knee Replacement",
+            Notes: "Total knee replacement surgery due to severe osteoarthritis."
+          }],
+          [{
+            date: new Date("2023-02-02"),
+            Notes: "Admitted for scheduled cataract removal"
+          }, {
+            date: new Date("2023-02-02"),
+            Operation: "Cataract Surgery",
+            Notes: "Removal of cataracts from both eyes to improve vision."
+          }],
+          [{
+            date: new Date("2022-03-10"),
+            Notes: "Admitted for scheduled Appendectomy"
+          }, {
+            date: new Date("2022-03-18"),
+            Operation: "Gallbladder Removal",
+            Notes: "Surgical removal of the gallbladder due to gallstones."
+          }],  
+        ])
       });
+      if (patient.patientStatus === "discharged") {
+        lastDate = patient.procedures[patient.procedures.length - 1].date.getDate();
+        patient.procedures.push({
+          date: lastDate + 1,
+          Notes: "Discharged"
+        });
+        patient.department = null;
+        patient.roomNo = "N/A";
+      }
       patients.push(patient);
 
       // add patient to doctors patients

@@ -21,10 +21,6 @@ const AllPatientPage = () => {
             }
         }
         getPatients();
-
-        return () => {
-            localStorage.removeItem("lastRoute");
-        }
     }, [patients]);
 
     useEffect(() => {
@@ -65,4 +61,5 @@ const AllPatientPage = () => {
 };
 
 export default AllPatientPage;
+
 

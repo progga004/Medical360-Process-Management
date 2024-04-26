@@ -2,10 +2,11 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useGlobalContext } from "../hooks/useGlobalContext";
 
+
 const Table = ({ cards, isAdmin, context }) => {
   let newCards = cards
 
-  const { id_to_department, id_to_equipment, deleteEquipment, deletePatient, deleteRoom, deleteUser, getPatient, getEquipment, getRoom } = useGlobalContext();
+  const { id_to_department, id_to_equipment, deleteEquipment, deletePatient, deleteRoom, deleteUser, getPatient, getEquipment, getRoom, getDoctor} = useGlobalContext();
     if (context === "patient") {
       newCards = cards.map((patient) => {
         return {
@@ -15,7 +16,7 @@ const Table = ({ cards, isAdmin, context }) => {
           age: patient.age,
           status: patient.patientStatus,
           room: patient.roomNo,
-          department: id_to_department[patient.department],
+          department: patient.department? id_to_department[patient.department]: "N/A",
         };
       });
     }
@@ -107,6 +108,22 @@ const Table = ({ cards, isAdmin, context }) => {
         return `item-${index}`;  // Fallback to index if no unique identifier available
     }
   };
+
+  const handleClick = (itemId) => {
+    switch (context) {
+      case "patient":
+        getPatient(itemId);
+        navigate("/patient-info");
+        break;
+      case "doctor":
+        getDoctor(itemId);
+        navigate(`/doctor-info/${itemId}`);
+        break;
+      case "user":
+        console.log("tried");
+        navigate(`/user-info/${itemId}`);
+    }
+  }
   return (
     <div className="overflow-x-auto relative">
       <div style={{ maxHeight: "500px", overflowY: "auto" }}>
@@ -131,9 +148,11 @@ const Table = ({ cards, isAdmin, context }) => {
               <tr
                 key={index}
                 data-cy={getRowDataCy(context, card,index)}
-                style={{
-                  backgroundColor: index % 2 === 0 ? "#EDF2FB" : "#ABC4FF",
-                }}
+                // style={{
+                //   backgroundColor: index % 2 === 0 ? "#EDF2FB" : "#ABC4FF",
+                // }}
+                className={`${index % 2 === 0 ? 'bg-gray-100' : 'bg-blue-300'}`}
+                onClick={() => handleClick(card._id)}
               >
                 {fields.map((field, i) => (
                   <td
@@ -158,13 +177,19 @@ const Table = ({ cards, isAdmin, context }) => {
                       <>
                         <button
                           className="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-3"
-                          onClick={() => handleEdit(card._id)}
+                          onClick={(event) => {
+                            event.stopPropagation();
+                            handleEdit(card._id);
+                          }}
                         >
                           Edit
                         </button>
                         <button
                           className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-3 rounded-r"
-                          onClick={() => openDeleteModal(card)}
+                          onClick={(event) => {
+                            event.stopPropagation();
+                            openDeleteModal(card);
+                          }}
                         >
                           Delete
                         </button>
