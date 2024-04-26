@@ -231,39 +231,6 @@ function GlobalContextProvider({ children }) {
     }
   };
 
-  //get all the doctors
-  const getAllDoctors = async function () {
-    const response = await fetch(`${store.BASE_URL}/doctors/all`, {
-      method: "POST",
-      headers: {"Content-Type": "application/json"},
-      body: JSON.stringify({"Why": "god"})
-    });
-    if (response.status === 200) {
-      const doctors = (await response.json()).doctors;
-      setStore({ type: "GET_ALL_DOCTORS", payload: doctors});
-
-    }
-  };
-  //get doctors by id
-  const getDoctor = async function (id) {
-    try {
-      const response = await fetch(`${store.BASE_URL}/doctors/${id}`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({id})
-      });
-      if (response.ok) {
-        const doctor = (await response.json()).doctor;
-        setStore({ type: "GET_RESOURCE", context: "doctor", payload: doctor});
-        return doctor;
-      }
-    } catch (err) {
-      console.log(err.message);
-    }
-  };
-
   // get room by id
   const getRoom = async function (id) {
     try {
