@@ -11,10 +11,10 @@ const DepartmentController = require("../controllers/department-controller")
 // Configure storage for multer
 const storage = multer.diskStorage({
     destination: function(req, file, cb) {
-        cb(null, 'uploads/')  // Make sure the 'uploads' directory exists
+        cb(null, 'uploads/')  
     },
     filename: function(req, file, cb) {
-        cb(null, Date.now() + path.extname(file.originalname))  // Append the date to the original filename
+        cb(null, Date.now() + path.extname(file.originalname))  
     }
 });
 
