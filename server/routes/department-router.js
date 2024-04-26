@@ -16,6 +16,8 @@ cloudinary.config({
   });
   
 
+
+
 // Configure storage using Multer and Cloudinary
 const storage = new CloudinaryStorage({
     cloudinary: cloudinary,
@@ -26,7 +28,8 @@ const storage = new CloudinaryStorage({
     },
   });
 
-const upload = multer({ storage: storage });
+
+
 // POST route to create a new department with image upload
 router.post('/department', upload.single('Icon'), (req, res) => {
     console.log("here I am");

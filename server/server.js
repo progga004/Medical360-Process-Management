@@ -3,6 +3,7 @@ const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const mongoose = require("mongoose");
 const path = require("path");
+const fs=require('fs');
 
 // config .env files
 require("dotenv").config();
@@ -13,8 +14,8 @@ const app = express();
 app.use(express.urlencoded({ extended: true }));
 app.use(
   cors({
-    //= origin: "http://localhost:5173", // Ensure the client's address is correctly listed
-    origin: "https://medical360-d65d823d7d75.herokuapp.com",
+    // origin: "http://localhost:5173", // Ensure the client's address is correctly listed
+    origin: "https://medical360-d65d823d7d75.herokuapp.com" ,
     credentials: true, // For sending cookies over CORS
   })
 );
@@ -22,10 +23,22 @@ app.use(express.json());
 app.use(cookieParser());
 
 
+//app.use("/uploads", express.static("uploads"));
+
+
+
+// app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
+// const uploadsDir = path.join(__dirname, '../uploads');
+// try {
+//   fs.mkdirSync(uploadsDir);
+// } catch (err) {
+//   if (err.code !== 'EEXIST') throw err; 
+//   console.log('Uploads directory already exists.');
+// }
 // Serve static files (Make sure this is before your catch-all route if you are using React Router)
 app.use(express.static(path.join(__dirname, "../client/dist")));
 
-// // // Catch-all handler for SPA (Make sure the path is correctly formatted)
+// // // // Catch-all handler for SPA (Make sure the path is correctly formatted)
 app.get("*", (req, res) => {
   res.sendFile(path.resolve(__dirname, "../client/dist/index.html"));
 });
@@ -37,9 +50,11 @@ const patientRouter = require("./routes/patient-router");
 const departmentRouter = require("./routes/department-router");
 const roomRouter = require("./routes/room-router");
 const equipmentRouter = require("./routes/equipment-router");
+const doctorRouter = require("./routes/doctor-router");
 
 
 app.use("/patients", patientRouter);
+app.use("/doctors", doctorRouter);
 app.use("/auth", authRouter);
 app.use("/users", userRouter);
 app.use("/departments", departmentRouter);

@@ -31,14 +31,15 @@ async function updateDepartment(req, res) {
 // Function to get a department by their ID
 async function getDepartment(req, res) {
     try {
-      const departmment = await Department.findById(req.params.id);
-      if (!departmment) {
+      const department = await Department.findById(req.params.id);
+      console.log("Department in department controller",department);
+      if (!department) {
           return res.status(404).json({
               message: "departmment not found"
           });
       }
       res.status(200).json({
-          departmment
+          department
       });
     } catch (error) {
       res.status(500).json({
