@@ -557,6 +557,7 @@ function GlobalContextProvider({ children }) {
       if (response.ok) {
         const doctor = (await response.json()).doctor;
         setStore({ type: "GET_RESOURCE", context: "doctor", payload: doctor});
+        return doctor;
       }
     } catch (err) {
       console.log(err.message);
@@ -596,7 +597,8 @@ function GlobalContextProvider({ children }) {
         updateRoom,
         getAllDoctors,
         updateDoctor,
-        getDoctor
+        getDoctor,
+        getUser
       }}
     >
       {children}
