@@ -1,4 +1,4 @@
-describe('Edit Patient Page', () => {
+describe('view Patient Profile', () => {
     beforeEach(() => {
       cy.visit("/login");
       cy.get("#Email").type("admin@example.com");
