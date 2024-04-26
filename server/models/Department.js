@@ -9,7 +9,8 @@ const departmentSchema = new Schema({
      },
      head: {
         type: mongoose.Schema.Types.ObjectId,
-        refPath: 'headModel',
+        // refPath: 'headModel',
+        ref:'Doctor',
         required: false,
     },
     headModel: {

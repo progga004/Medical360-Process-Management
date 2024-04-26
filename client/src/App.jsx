@@ -61,7 +61,7 @@ function App() {
         <Route path="/all-patients" element={user ? <AllPatientPage /> : <Navigate to="/" />} />
         <Route path="/all-users" element={user ? <AllUsersPage /> : <Navigate to="/" />} />
         <Route path="/book-appointment" element={<AppointmentPage />} />
-        <Route path="/all-doctors" element={<AllDoctorsPage />} />
+        <Route path="/all-doctors" element={user ? <AllDoctorsPage /> : <Navigate to="/" />} />
         <Route path="/edit-equipment/" element={<EditEquipmentPage />} />
         <Route path="/edit-room/" element={<EditRoomPage />} />
         <Route path="/edit-patient" element={<EditPatientPage />} />
@@ -94,7 +94,7 @@ function App() {
         />
         <Route path="/add-procedure" element={user ? <AddProcedurePage /> : <Navigate to="/" />} />
         <Route path="/patient-info" element={user ? <PatientInfo /> : <Navigate to="/" />} />
-        <Route path="/doctorinfo" element={<DoctorInfo />} />
+        <Route path="/doctorinfo/:doctorId" element={<DoctorInfo />} />
         <Route path="/emergency" element={<EmergencyReassignment />} />
         <Route path="/departmentratio" element={<DepartmentRatioPage />} />
         <Route path="/admin-notification" element={<PatientNotification />} />
