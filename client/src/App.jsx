@@ -38,7 +38,7 @@ import DepartmentForm from "./pages/DepartmentForm";
 import { useAuthContext } from "./hooks/useAuthContext";
 import { useGlobalContext } from "./hooks/useGlobalContext";
 import AddProcedurePage from "./pages/AddProcedurePage";
-
+import UserInfoPage from "./pages/UserInfo";
 
 function App() {
 
@@ -96,6 +96,7 @@ function App() {
         <Route path="/patient-info" element={user ? <PatientInfo /> : <Navigate to="/" />} />
         <Route path="/doctorinfo/:doctorId" element={<DoctorInfo />} />
         <Route path="/patient-info/:id" element={<PatientInfo />} />
+        <Route path="/user-info/:id" element={<UserInfoPage />} />
         <Route path="/emergency" element={<EmergencyReassignment />} />
         <Route path="/departmentratio" element={<DepartmentRatioPage />} />
         <Route path="/admin-notification" element={<PatientNotification />} />

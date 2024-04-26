@@ -66,7 +66,7 @@ app.use("/equipments", equipmentRouter);
 // Connect to the database
 mongoose
   .connect(
-    "mongodb://localhost/medical360",
+    "mongodb+srv://medical360:admin123@medical360.wh0h2hw.mongodb.net/medical360",
     {
       useNewUrlParser: true,
       useUnifiedTopology: true,

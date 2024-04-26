@@ -265,6 +265,24 @@ function GlobalContextProvider({ children }) {
       console.log(err.message);
     }
   };
+  const getUser = async function (id) {
+    try {
+      const response = await fetch(`${store.BASE_URL}/users/${id}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({id})
+      });
+      if (response.ok) {
+        const user = (await response.json()).user;
+        setStore({ type: "GET_RESOURCE", context: "user", payload: user});
+        return user;
+      }
+    } catch (err) {
+      console.log(err.message);
+    }
+  };
 
   // get all the rooms
   const getAllRooms = async function () {
@@ -531,7 +549,8 @@ function GlobalContextProvider({ children }) {
         getEquipment,
         updateEquipment,
         getRoom,
-        updateRoom
+        updateRoom,
+        getUser
       }}
     >
       {children}
