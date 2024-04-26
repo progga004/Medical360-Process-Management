@@ -21,7 +21,6 @@ app.use(
 app.use(express.json());
 app.use(cookieParser());
 
-app.use("/uploads", express.static("uploads"));
 
 // Serve static files (Make sure this is before your catch-all route if you are using React Router)
 app.use(express.static(path.join(__dirname, "../client/dist")));

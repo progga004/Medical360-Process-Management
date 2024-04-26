@@ -23,7 +23,7 @@ describe("New Room Page Tests", () => {
     cy.get("#roomNumber").type("227");
     cy.get("#roomType").type("VIP");
     cy.get(".select__input").click();
-    cy.contains(".select__option", "Blood Pressure Monitor 2").click();
+    cy.contains(".select__option", "ECG Machine 4").click();
     cy.get("body").click(0, 0);
     cy.get("#availabilityStatus").should("be.visible").select("Available");
 
