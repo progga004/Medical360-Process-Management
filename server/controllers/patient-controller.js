@@ -46,7 +46,6 @@ async function updatePatient(req, res) {
                 message: "Patient not found"
             });
         }
-        
         res.status(200).json({
             patient: updatedPatient,
             message: "Updated patient"

@@ -13,8 +13,8 @@ const patientSchema = new Schema({
     procedures: [{
                 date: Date,
                 "Reason For Visit": String,
+                "Operation": String,
                 "Notes": String,
-                "Operation": String
         }],
     department: {
                 type: Schema.Types.ObjectId,
@@ -22,7 +22,12 @@ const patientSchema = new Schema({
                 default: null   
         },
     patientStatus: { type: String, required: true, enum: ['admitted', 'discharged', 'under observation'] },
-    roomNo: {type: String}
+    roomNo: {type: String},
+    doctorAssigned: {
+        type: Schema.Types.ObjectId,
+        ref: "Doctor",
+        default: null
+    }
 })
 
 const Patient = mongoose.model('Patient', patientSchema);

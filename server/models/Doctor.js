@@ -3,6 +3,10 @@ const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
 const doctorSchema = new Schema({
+  name: {
+    type: String,
+    required: true,
+  },
   departmentName: {
     type: Schema.Types.ObjectId,
     ref: 'Department',
@@ -31,7 +35,7 @@ const doctorSchema = new Schema({
   }],
   patientList: [{
     type: Schema.Types.ObjectId,
-    ref: 'Patient'
+    ref: 'Patient',
   }]
 });
 
