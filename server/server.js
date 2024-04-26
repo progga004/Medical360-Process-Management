@@ -22,16 +22,19 @@ app.use(
 app.use(express.json());
 app.use(cookieParser());
 
+
 //app.use("/uploads", express.static("uploads"));
 
+
+
 // app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
-const uploadsDir = path.join(__dirname, '../uploads');
-try {
-  fs.mkdirSync(uploadsDir);
-} catch (err) {
-  if (err.code !== 'EEXIST') throw err; 
-  console.log('Uploads directory already exists.');
-}
+// const uploadsDir = path.join(__dirname, '../uploads');
+// try {
+//   fs.mkdirSync(uploadsDir);
+// } catch (err) {
+//   if (err.code !== 'EEXIST') throw err; 
+//   console.log('Uploads directory already exists.');
+// }
 // Serve static files (Make sure this is before your catch-all route if you are using React Router)
 app.use(express.static(path.join(__dirname, "../client/dist")));
 
