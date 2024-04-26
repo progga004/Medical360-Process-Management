@@ -201,7 +201,58 @@ db.once("open", async () => {
           "under observation",
         ]),
         roomNo: chance.integer({ min: 100, max: 200 }),
+        procedures: chance.pickone([
+          [{
+            date: new Date("2022-03-10"),
+            Notes: "Admitted for scheduled Appendectomy"
+          }, {
+            date: new Date("2022-03-15"),
+            Operation: "Appendectomy",
+            Notes: "Appendix removed due to acute appendicitis."
+          }],
+          [{
+            date: new Date("2022-05-10"),
+            Notes: "Admitted for scheduled Colonoscopy"
+          }, {
+            date: new Date("2022-05-10"),
+            Operation: "Colonoscopy",
+            Notes: "Routine screening for colorectal cancer."
+          }],
+          [{
+            date: new Date("2022-08-23"),
+            Notes: "Admitted for scheduled Knee Replacement"
+          }, {
+            date: new Date("2022-08-25"),
+            Operation: "Knee Replacement",
+            Notes: "Total knee replacement surgery due to severe osteoarthritis."
+          }],
+          [{
+            date: new Date("2023-02-02"),
+            Notes: "Admitted for scheduled cataract removal"
+          }, {
+            date: new Date("2023-02-02"),
+            Operation: "Cataract Surgery",
+            Notes: "Removal of cataracts from both eyes to improve vision."
+          }],
+          [{
+            date: new Date("2022-03-10"),
+            Notes: "Admitted for scheduled Appendectomy"
+          }, {
+            date: new Date("2022-03-18"),
+            Operation: "Gallbladder Removal",
+            Notes: "Surgical removal of the gallbladder due to gallstones."
+          }],  
+        ])
       });
+      if (patient.patientStatus === "discharged") {
+        lastDate = patient.procedures[patient.procedures.length - 1].date.getDate();
+        patient.procedures.push({
+          date: lastDate + 1,
+          Notes: "Discharged"
+        });
+        patient.department = null;
+        patient.roomNo = "N/A";
+      }
       patients.push(patient);
 
       // add patient to doctors patients

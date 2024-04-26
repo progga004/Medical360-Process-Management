@@ -167,11 +167,15 @@ function GlobalContextProvider({ children }) {
 
   // update patient by id with data
   const updatePatient = async function (id, data) {
+    console.log(data);
     try {
-      const response = await storeApi.updatePatient(id, data);
-      if (response.status === 200) {
-        console.log(response.data.patient);
-      }
+      await fetch(`${store.BASE_URL}/patients/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data)
+      });
     } catch (err) {
       console.log(err.message);
     }
@@ -478,8 +482,10 @@ function GlobalContextProvider({ children }) {
 
   const deletePatient = async function (id) {
     try {
-      const response = await storeApi.deletePatient(id);
-      if (response.status === 200) {
+      const response = await fetch(`${store.BASE_URL}/patients/${id}`, {
+        method: "DELETE"
+      });
+      if (response.ok) {
         console.log("deleted Patient");
         setStore({ type: "DELETE", context: "patient", payload: id})
       }
