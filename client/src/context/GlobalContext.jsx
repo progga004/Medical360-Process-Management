@@ -115,7 +115,7 @@ function GlobalContextProvider({ children }) {
     currentRoom: null,
     currentDoctor: null,
     BASE_URL: "https://medical360-d65d823d7d75.herokuapp.com"
-    // BASE_URL: "http://localhost:3000"
+     //BASE_URL: "http://localhost:3000"
   });
   const [lastUpdated, setLastUpdated] = useState(Date.now());
   // get all users to the application
