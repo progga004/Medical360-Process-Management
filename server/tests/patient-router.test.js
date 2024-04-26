@@ -81,7 +81,26 @@ describe("PUT /patients/:id", () => {
   });
 });
 
-
+describe("POST /patients/:id", () => {
+    it("should retrieve a specific patient and return 200 status", async () => {
+      const patientId = "specificpatientid";  // Example department ID
+      Patient.findById = jest.fn().mockResolvedValue({
+        patientName: "John Doe",
+      email: "johndoe@example.com",
+      healthInsurance: "HealthInsuranceProvider",
+      sex: "male",
+      age: "30",
+      patientStatus: "admitted",
+      roomNo: "101",
+      });
+  
+      const response = await request(app)
+        .post(`/patients/${patientId}`);
+  
+      expect(response.statusCode).toBe(200);
+      expect(response.body.patient).toHaveProperty("age", "30");
+    });
+  });
 
 describe("DELETE /patients/:id", () => {
   it("should delete a patient and return 200 status", async () => {

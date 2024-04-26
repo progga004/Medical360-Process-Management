@@ -2,10 +2,11 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useGlobalContext } from "../hooks/useGlobalContext";
 
+
 const Table = ({ cards, isAdmin, context }) => {
   let newCards = cards
 
-  const { id_to_department, id_to_equipment, deleteEquipment, deletePatient, deleteRoom, deleteUser, getPatient, getEquipment, getRoom } = useGlobalContext();
+  const { id_to_department, id_to_equipment, deleteEquipment, deletePatient, deleteRoom, deleteUser, getPatient, getEquipment, getRoom, getDoctor} = useGlobalContext();
     if (context === "patient") {
       newCards = cards.map((patient) => {
         return {
@@ -113,6 +114,14 @@ const Table = ({ cards, isAdmin, context }) => {
       case "patient":
         getPatient(itemId);
         navigate("/patient-info");
+        break;
+      case "doctor":
+        getDoctor(itemId);
+        navigate(`/doctor-info/${itemId}`);
+        break;
+      case "user":
+        console.log("tried");
+        navigate(`/user-info/${itemId}`);
     }
   }
   return (

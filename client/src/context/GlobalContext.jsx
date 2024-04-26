@@ -11,6 +11,8 @@ export const storeReducer = (state, action) => {
       switch (action.context) {
         case "patient":
           return { ...state, currentPatient: action.payload };
+        case "doctor":
+          return { ...state, currentDoctor: action.payload };
         case "department":
           return { ...state, currentDepartment: action.payload };
         case "equipment":
@@ -35,6 +37,12 @@ export const storeReducer = (state, action) => {
         currentPatient: null,
         patients: action.payload
       };
+    case "GET_ALL_DOCTORS":
+        return {
+          ...state,
+          currentDoctor: null,
+          doctors: action.payload
+        };
     case "GET_ALL_EQUIPMENT":
       return {
         ...state,
@@ -99,6 +107,7 @@ export const storeReducer = (state, action) => {
 
 function GlobalContextProvider({ children }) {
   const [store, setStore] = useReducer(storeReducer, {
+    doctors: null,
     doctors: null,
     users: null,
     patients: null,
@@ -202,6 +211,7 @@ function GlobalContextProvider({ children }) {
       if (response.ok) {
         const patient = (await response.json()).patient;
         setStore({ type: "GET_RESOURCE", context: "patient", payload: patient});
+        return patient
       }
     } catch (err) {
       console.log(err.message);
@@ -221,6 +231,39 @@ function GlobalContextProvider({ children }) {
     }
   };
 
+  //get all the doctors
+  const getAllDoctors = async function () {
+    const response = await fetch(`${store.BASE_URL}/doctors/all`, {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({"Why": "god"})
+    });
+    if (response.status === 200) {
+      const doctors = (await response.json()).doctors;
+      setStore({ type: "GET_ALL_DOCTORS", payload: doctors});
+
+    }
+  };
+  //get doctors by id
+  const getDoctor = async function (id) {
+    try {
+      const response = await fetch(`${store.BASE_URL}/doctors/${id}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({id})
+      });
+      if (response.ok) {
+        const doctor = (await response.json()).doctor;
+        setStore({ type: "GET_RESOURCE", context: "doctor", payload: doctor});
+        return doctor;
+      }
+    } catch (err) {
+      console.log(err.message);
+    }
+  };
+
   // get room by id
   const getRoom = async function (id) {
     try {
@@ -234,6 +277,24 @@ function GlobalContextProvider({ children }) {
       if (response.ok) {
         const room = (await response.json()).room;
         setStore({ type: "GET_RESOURCE", context: "room", payload: room});
+      }
+    } catch (err) {
+      console.log(err.message);
+    }
+  };
+  const getUser = async function (id) {
+    try {
+      const response = await fetch(`${store.BASE_URL}/users/${id}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({id})
+      });
+      if (response.ok) {
+        const user = (await response.json()).user;
+        setStore({ type: "GET_RESOURCE", context: "user", payload: user});
+        return user;
       }
     } catch (err) {
       console.log(err.message);
@@ -419,6 +480,7 @@ function GlobalContextProvider({ children }) {
       const response = await storeApi.getDepartment(id);
       if (response.status === 200) {
         setStore({ type: "GET_RESOURCE", context: "department", payload: response.data.department });
+         return response.data.department;
       }
     } catch (err) {
       console.log(err.message);
@@ -548,6 +610,8 @@ function GlobalContextProvider({ children }) {
         updatePatient,
         getPatient,
         getAllPatients,
+        getAllDoctors,
+        getDoctor,
         getAllRooms,
         createRoom,
         getAllEquipments,

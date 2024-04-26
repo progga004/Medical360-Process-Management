@@ -60,3 +60,4 @@ const AllPatientPage = () => {
 
 export default AllPatientPage;
 
+

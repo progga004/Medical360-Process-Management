@@ -55,7 +55,7 @@ const DepartmentPage = () => {
         </div>
         <DepartmentList departments={departments} onDelete={deleteDepartment} isAdmin={user.isAdmin} />
       </div>
-      <DepartmentHead />
+      {/* <DepartmentHead /> */}
     </>
   );
 };
