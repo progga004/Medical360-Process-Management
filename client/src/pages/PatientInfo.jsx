@@ -1,17 +1,37 @@
 import Banner from "../components/Banner";
-
-
+import React, { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
+import { useGlobalContext } from "../hooks/useGlobalContext";
 const PatientInfo = ({}) => {
-  const patient = {
-    name: "Patient One",
-    age: "30",
-    sex: "Male",
-    files: "3 files",
-    email: "patient.one@hospital.com",
-    schedule: "Next appointment: 10th Oct, 10:00 AM",
-    carenotes: ["Note 1", "Note 2", "Note 3"],
-    image: patientImage,
-  };
+  const { id } = useParams(); 
+    const { getPatient } = useGlobalContext(); 
+    const [patient, setPatient] = useState(null); 
+    const [isLoading, setIsLoading] = useState(true); 
+    const [error, setError] = useState(null); 
+    console.log(id)
+    
+    useEffect(() => {
+        const fetchPatientData = async () => {
+            try {
+                const fetchedPatient = await getPatient(id); 
+                
+                  console.log(fetchedPatient)
+                  setPatient(fetchedPatient); 
+                  setIsLoading(false);
+                
+            } catch (error) {
+              console.log(error)
+                setError(error.message); 
+                setIsLoading(false);
+            }
+        };
+
+        fetchPatientData();
+    }, [id, getPatient]); 
+
+    if (isLoading) return <div>Loading...</div>; 
+    if (error) return <div>Error fetching patient: {error}</div>; 
+
   return (
     <>
     <Banner goBackPath={"/"}/>
@@ -23,11 +43,11 @@ const PatientInfo = ({}) => {
             className="flex-none rounded-full overflow-hidden border-4 border-white shadow-lg"
             style={{ width: "200px", height: "200px" }}
           >
-            <img
+            {/* <img
               src={patient.image}
               alt={patient.name}
               className="w-full h-full object-cover"
-            />
+            /> */}
           </div>
           <div className="flex-1 px-4 space-y-4">
             <div className="bg-[#2260FF] text-white p-4 rounded-lg">

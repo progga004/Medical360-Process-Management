@@ -93,6 +93,7 @@ function App() {
         />
         <Route path="/patient-info" element={<PatientInfo />} />
         <Route path="/doctorinfo/:doctorId" element={<DoctorInfo />} />
+        <Route path="/patient-info/:id" element={<PatientInfo />} />
         <Route path="/emergency" element={<EmergencyReassignment />} />
         <Route path="/departmentratio" element={<DepartmentRatioPage />} />
         <Route path="/admin-notification" element={<PatientNotification />} />

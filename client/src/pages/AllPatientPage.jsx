@@ -6,7 +6,9 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuthContext } from '../hooks/useAuthContext';
 import { useGlobalContext } from '../hooks/useGlobalContext';
 
+
 const AllPatientPage = () => {
+    const navigate = useNavigate();
     const { user } = useAuthContext();
     const { patients, getAllDepartments, getAllPatients } = useGlobalContext();
     const [filteredPatients, setFilteredPatients] = useState([]);
@@ -40,6 +42,10 @@ const AllPatientPage = () => {
             setFilteredPatients(patients);
         }
     }, [searchTerm, patients]);
+
+    // const handleRowClick = (patientId) => {
+    //     navigate(`/patient-info/${patientId}`);
+    // };
 
     return (
         <>
