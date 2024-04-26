@@ -74,7 +74,7 @@ const PatientInfo = ({}) => {
         </div>
 
         {/* Row 3: Schedule */}
-        <div className="flex flex-col justify-center items-center bg-white p-4 rounded-lg mt-4">
+        {/* <div className="flex flex-col justify-center items-center bg-white p-4 rounded-lg mt-4">
           <div className="flex items-center space-x-5">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -88,16 +88,17 @@ const PatientInfo = ({}) => {
             <h3 className="text-lg text-[#2260FF]">Schedule</h3>
           </div>
           <p className="text-center w-full">{patient.schedule}</p>
-        </div>
+        </div> */}
 
         {/* Row 4: Profile */}
         <div className="bg-white p-4 rounded-lg mt-4">
           <h3 className="text-[#2260FF] font-semibold text-lg">Care Notes</h3>
           <ul className="list-disc pl-5 text-gray-600">
-            {patient.carenotes.map((note, index) => (
+            {patient?.carenotes?.map((note, index) => (
               <li key={index}>{note}</li>
-            ))}
+            )) || <li>No care notes available.</li>}
           </ul>
+
         </div>
 
         {/* Row 5: Schedule Button */}

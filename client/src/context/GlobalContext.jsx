@@ -190,6 +190,7 @@ function GlobalContextProvider({ children }) {
       if (response.ok) {
         const patient = (await response.json()).patient;
         setStore({ type: "GET_RESOURCE", context: "patient", payload: patient});
+        return patient
       }
     } catch (err) {
       console.log(err.message);
