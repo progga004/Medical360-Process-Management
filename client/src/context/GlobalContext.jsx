@@ -435,10 +435,17 @@ function GlobalContextProvider({ children }) {
   // get department by id
   const getDepartment = async function (id) {
     try {
-      const response = await storeApi.getDepartment(id);
-      if (response.status === 200) {
-        setStore({ type: "GET_RESOURCE", context: "department", payload: response.data.department });
-         return response.data.department;
+      const response = await fetch(`${store.BASE_URL}/departments/${id}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({id})
+      });
+      if (response.ok) {
+        const department = (await response.json()).department;
+        setStore({ type: "GET_RESOURCE", context: "department", payload: department });
+         return department;
       }
     } catch (err) {
       console.log(err.message);

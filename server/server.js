@@ -68,6 +68,7 @@ app.use("/doctors", doctorRouter);
 mongoose
   .connect(
     "mongodb+srv://medical360:admin123@medical360.wh0h2hw.mongodb.net/medical360",
+    // "mongodb://localhost/medical360",
     {
       useNewUrlParser: true,
       useUnifiedTopology: true,
