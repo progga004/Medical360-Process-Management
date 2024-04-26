@@ -15,7 +15,7 @@ const EditPatientPage = () => {
     useEffect(() => {
         async function fetchDepartments() {
             if (!departments)
-                getAllDepartments();
+                await getAllDepartments();
         }
         fetchDepartments();
     }, [departments])
@@ -23,7 +23,7 @@ const EditPatientPage = () => {
     // Function to handle form submission
     const handleSubmit = async (formData) => {
         // Such as updating the patient data or sending it to a server
-        if (formData["deparment"])
+        if (formData["department"])
             formData["department"] = department_to_id[formData["department"]];
         await updatePatient(currentPatient._id, formData);
         getAllPatients();

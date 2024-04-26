@@ -1,14 +1,14 @@
-import React, { useState } from 'react';
-import Banner from '../components/Banner';
-import FormField from '../components/FormField';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
-import { useGlobalContext } from '../hooks/useGlobalContext';
+import React, { useState } from "react";
+import Banner from "../components/Banner";
+import FormField from "../components/FormField";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { useGlobalContext } from "../hooks/useGlobalContext";
 
 const DepartmentForm = () => {
-    const [formError, setFormError] = useState(false);
-    const navigate = useNavigate();
-    const { BASE_URL } = useGlobalContext();
+  const [formError, setFormError] = useState(false);
+  const navigate = useNavigate();
+  const { BASE_URL } = useGlobalContext();
 
     // Define the fields for the department form
     const fields = [
@@ -40,24 +40,33 @@ const DepartmentForm = () => {
     };
     
 
-    return (
-        <>
-            <Banner goBackPath={"/departmentpage"} />
-            <div className="flex justify-center">
-                <div className="text-blue-500 p-4 m-4 rounded-lg text-3xl">
-                    New Department Form
-                </div>
-            </div>
-            <FormField fields={fields} submit={handleSubmit} buttonName={"Create New Department"} />
-            {formError && (
-                <div className="flex justify-center items-center">
-                    <div className="m-2 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
-                        <strong className="font-bold">Error submitting form. Please try again.</strong>
-                    </div>
-                </div>
-            )}
-        </>
-    );
+  return (
+    <>
+      <Banner goBackPath={"/departmentpage"} />
+      <div className="flex justify-center">
+        <div className="text-blue-500 p-4 m-4 rounded-lg text-3xl">
+          New Department Form
+        </div>
+      </div>
+      <FormField
+        fields={fields}
+        submit={handleSubmit}
+        buttonName={"Create New Department"}
+      />
+      {formError && (
+        <div className="flex justify-center items-center">
+          <div
+            className="m-2 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"
+            role="alert"
+          >
+            <strong className="font-bold">
+              Error submitting form. Please try again.
+            </strong>
+          </div>
+        </div>
+      )}
+    </>
+  );
 };
 
 export default DepartmentForm;

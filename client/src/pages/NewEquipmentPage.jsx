@@ -47,7 +47,6 @@ const NewEquipmentPage = () => {
       .post(`${BASE_URL}/equipments`, formData)
       .then((response) => {
         console.log("Equipment created:", response.data);
-        store.addEquipment(response.data);
         navigate("/all-equipments");
       })
       .catch((error) => {
