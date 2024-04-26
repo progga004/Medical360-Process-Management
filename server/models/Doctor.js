@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
 const doctorSchema = new Schema({
+  
   departmentName: {
     type: Schema.Types.ObjectId,
     ref: 'Department',
@@ -20,9 +21,14 @@ const doctorSchema = new Schema({
     type: Number,
     default: 0
   },
+  experience: {
+    type: String,
+    required: [true, 'Experience is required'],  
+  },
   profileDetails: {
     focusAreas: [String],
-    specialization: [String]
+    specialization: [String],
+    biography:String,
   },
   schedule: [{
     day: String,
