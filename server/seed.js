@@ -12,6 +12,7 @@ require("dotenv").config();
 
 mongoose.connect(
   "mongodb+srv://medical360:admin123@medical360.wh0h2hw.mongodb.net/medical360",
+  "mongodb+srv://medical360:admin123@medical360.wh0h2hw.mongodb.net/medical360",
   {
     useUnifiedTopology: true,
   }
@@ -58,11 +59,16 @@ db.once("open", async () => {
     let department_ids = [];
     for (let i = 0; i < departments.length; i++) {
       // create user that is head doctor
+      const name = chance.name();
       const doctor = new Doctor({
         surgeryCount: chance.integer({min: 0, max: 1000}),
         appointmentNo: chance.integer({min: 1000, max: 9999}),
         hours: chance.integer({min: 20, max: 60}),
         experience: `${chance.integer({min: 1, max: 40})} years`,
+        name: name,
+        surgeryCount: chance.integer(),
+        appointmentNo: chance.integer(),
+        hours: chance.integer(),
         profileDetails: {
           focusAreas: [chance.pickone(focusAreas), 
             chance.pickone(focusAreas)],
@@ -79,7 +85,6 @@ db.once("open", async () => {
 
       await doctor.save();
 
-      const name = chance.name();
       const email = chance.email();
       const passwordHash = await bcrypt.hash("password@123", 10);
       const isAdmin = true;
@@ -117,7 +122,9 @@ db.once("open", async () => {
     const users = [];
     const doctors = [];
     for (let i = 0; i < 5; i++) {
+      const name = chance.name();
       const doctor = new Doctor({
+        name: name,
         departmentName: chance.pickone(department_ids),
         surgeryCount: chance.integer({min: 0, max: 1000}),
         appointmentNo: chance.integer({min: 1000, max: 9999}),
@@ -137,7 +144,6 @@ db.once("open", async () => {
         patientList: [],
       });
 
-      const name = chance.name();
       const email = chance.email();
       const passwordHash = await bcrypt.hash("password@123", 10);
       const isAdmin = false;
@@ -248,7 +254,7 @@ db.once("open", async () => {
         lastDate = patient.procedures[patient.procedures.length - 1].date.getDate();
         patient.procedures.push({
           date: lastDate + 1,
-          Notes: "Discharged"
+          Notes: "Patient Discharged"
         });
         patient.department = null;
         patient.roomNo = "N/A";

@@ -60,6 +60,7 @@ app.use("/users", userRouter);
 app.use("/departments", departmentRouter);
 app.use("/rooms", roomRouter);
 app.use("/equipments", equipmentRouter);
+app.use("/doctors", doctorRouter);
 
 
 

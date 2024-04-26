@@ -1,16 +1,35 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Banner from "../components/Banner";
 import { useGlobalContext } from "../hooks/useGlobalContext";
+import { useAuthContext } from "../hooks/useAuthContext";
 
 
 const PatientInfo = ({}) => {
-  const { currentPatient, id_to_department, updatePatient, getAllPatients } = useGlobalContext();
+  const { currentPatient, id_to_department, updatePatient, removeCurrentDoctor,
+    doctors, getAllDoctors, updateDoctor, currentDoctor, getDoctor, BASE_URL } = useGlobalContext();
+  const { user } = useAuthContext();
   const [modal, setModal] = useState(false);
-  const navigate = useNavigate()
+  const [isOpen, setIsOpen] = useState(false);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    async function fetchDoctor(doctorId) {
+      await getDoctor(doctorId);
+    }
+    async function fetchDoctors() {
+      await getAllDoctors();
+    }
+    if (!doctors)
+      fetchDoctors();
+    if (currentPatient && currentPatient.doctorAssigned)
+      fetchDoctor(currentPatient.doctorAssigned);
+    else
+      removeCurrentDoctor();
+  }, [doctors, currentPatient])
+  
 
   const discharge = async () => {
-    console.log("here")
     let newProcedure = {
       date: Date.now(),
       Notes: "Patient Discharged"
@@ -21,10 +40,84 @@ const PatientInfo = ({}) => {
         procedures: [...currentPatient.procedures, newProcedure],
         patientStatus: "discharged",
         roomNo: "N/A",
-        department: null
+        department: null,
       });
-      await getAllPatients();
-      navigate("/all-patients")
+      setModal(false);
+      setIsOpen(false);
+
+      // update doctor by deleting patient to list
+    if (currentDoctor) {
+      let id = currentDoctor._id
+      try {
+        const response = await fetch(`${BASE_URL}/doctors/${id}`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({id})
+        });
+        if (response.ok) {
+          const doctor = (await response.json()).doctor;
+          await updateDoctor(doctor._id, {
+            patientList: [...doctor.patientList, currentPatient._id],
+          });
+        }
+      } catch (err) {
+        console.log(err.message);
+      }
+    }
+  }
+
+  const assignDoctor = async (doctorId) => {
+    // update patient with doctorId
+    await updatePatient(currentPatient._id, {
+      doctorAssigned: doctorId
+    })
+
+    // update doctor by adding patient to list
+    try {
+      const response = await fetch(`${BASE_URL}/doctors/${doctorId}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({doctorId})
+      });
+      if (response.ok) {
+        const doctor = (await response.json()).doctor;
+        await updateDoctor(doctor._id, {
+          patientList: [...doctor.patientList, currentPatient._id],
+        });
+      }
+    } catch (err) {
+      console.log(err.message);
+    }
+  }
+
+  const removeDoctor = async (doctorId) => {
+    // update patient with doctorId
+    await updatePatient(currentPatient._id, {
+      doctorAssigned: null,
+    })
+
+    // update doctor by removing patient from list
+    try {
+      const response = await fetch(`${BASE_URL}/doctors/${doctorId}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({doctorId})
+      });
+      if (response.ok) {
+        const doctor = (await response.json()).doctor;
+        await updateDoctor(doctor._id, {
+          patientList: doctor.patientList.filter(patient => patient !== currentPatient._id),
+        });
+      }
+    } catch (err) {
+      console.log(err.message);
+    }
   }
 
   return (
@@ -70,7 +163,7 @@ const PatientInfo = ({}) => {
               </div>
               <div className="flex-grow bg-blue-600 text-white p-4 rounded-lg">
                 <h3 className="font-semibold text-md">Department</h3>
-                <p>{id_to_department[currentPatient.department]}</p>
+                <p>{currentPatient.department ? id_to_department[currentPatient.department] : "N/A"}</p>
               </div>
             </div>
           </div>
@@ -79,36 +172,67 @@ const PatientInfo = ({}) => {
         {/* Row 3: Schedule */}
         <div className="flex flex-col justify-center items-center bg-white p-4 rounded-lg mt-4">
           <div className="flex items-center space-x-5">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 512 512"
-              className="w-6 h-6"
-              stroke="#2260FF"
-              strokeWidth="2"
+            {currentDoctor ? <div className="flex items-center">
+              <h3 className="text-xl font-bold text-blue-600 mr-4">
+                <span className="text-gray-700">Doctor(s) Assigned:</span> {currentDoctor.name}
+              </h3>
+              {user.isAdmin && <button className="bg-red-600 text-white px-3 py-1 rounded-md font-semibold hover:bg-red-700"
+              onClick={() => removeDoctor(currentDoctor._id)}>
+                Remove
+              </button>}
+            </div> : 
+            <div className="relative">
+            <button
+              onClick={() => setIsOpen(!isOpen)}
+              className="bg-violet-800 text-white px-8 py-3 rounded-lg font-semibold hover:bg-violet-900"
+              disabled={currentPatient.patientStatus === "discharged"}
             >
-              <path d="M464 256A208 208 0 1 1 48 256a208 208 0 1 1 416 0zM0 256a256 256 0 1 0 512 0A256 256 0 1 0 0 256zM232 120V256c0 8 4 15.5 10.7 20l96 64c11 7.4 25.9 4.4 33.3-6.7s4.4-25.9-6.7-33.3L280 243.2V120c0-13.3-10.7-24-24-24s-24 10.7-24 24z" />
-            </svg>
-            <h3 className="text-lg text-[#2260FF]">Schedule</h3>
+              Assign Doctor
+            </button>
+            {isOpen && doctors && (
+              <div className="absolute z-10 mt-2 w-48 rounded-md bg-white shadow-lg">
+                <div className="py-1">
+                  <ul className="overflow-auto max-h-48">
+                    {doctors.map(doctor => (
+                      <li 
+                        key={doctor._id} className="px-4 py-2 text-gray-800 hover:bg-gray-200 cursor-pointer"
+                        onClick={() => assignDoctor(doctor._id)}
+                      >
+                        {doctor.name} - {id_to_department[doctor.departmentName]}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            )}
+          </div>}
           </div>
-          <p className="text-center w-full">{currentPatient.schedule}</p>
         </div>
 
         {/* Row 4: Profile */}
-        <div className="bg-white p-4 rounded-lg mt-4">
-          <h3 className="text-[#2260FF] font-semibold text-lg">Process</h3>
-          <ol className="list-disc pl-5 text-gray-600">
-            {currentPatient.procedures.map((process, index) => (
-              <>
-                <li key={process._id}>Date: {(new Date(process.date).toDateString())}</li>
-                <ul>
+        <div className="bg-blue-100 rounded-lg p-6 shadow-lg">
+          <h3 className="text-blue-600 font-semibold text-xl mb-4">Process</h3>
+          <div className="space-y-4">
+            {currentPatient.procedures.map((process) => (
+              <div key={process._id} className="border-b border-gray-200 pb-4">
+                <p className="text-gray-600 font-medium mb-2">
+                  Date: {new Date(process.date).toDateString()}
+                </p>
+                <ul className="list-disc pl-5">
                   {Object.keys(process).map((field, index) => {
-                    if (field !== "_id" && field !== "date")
-                      return <li key={process._id + index}>{field}: {process[field]}</li>
+                    if (field !== "_id" && field !== "date") {
+                      return (
+                        <li key={index} className={process[field] === "Patient Discharged" ? "text-red-500": "text-gray-600"}>
+                          <span className="font-medium">{field}:</span> {process[field]}
+                        </li>
+                      );
+                    }
+                    return null;
                   })}
                 </ul>
-              </>
+              </div>
             ))}
-          </ol>
+          </div>
         </div>
 
         {/* Row 5: Schedule Button */}
