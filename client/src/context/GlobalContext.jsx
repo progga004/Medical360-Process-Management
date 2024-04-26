@@ -11,8 +11,6 @@ export const storeReducer = (state, action) => {
       switch (action.context) {
         case "patient":
           return { ...state, currentPatient: action.payload };
-        case "doctor":
-          return { ...state, currentDoctor: action.payload };
         case "department":
           return { ...state, currentDepartment: action.payload };
         case "equipment":
@@ -63,12 +61,6 @@ export const storeReducer = (state, action) => {
         rooms: action.payload,
         currentRoom: null,
       };
-    case "GET_ALL_DOCTORS":
-      return {
-        ...state,
-        doctors: action.payload,
-        currentDoctor: null
-      }
     case "DELETE":
       // delete based on value passes as context
       switch (action.context) {
@@ -107,7 +99,6 @@ export const storeReducer = (state, action) => {
 
 function GlobalContextProvider({ children }) {
   const [store, setStore] = useReducer(storeReducer, {
-    doctors: null,
     doctors: null,
     users: null,
     patients: null,
@@ -557,6 +548,7 @@ function GlobalContextProvider({ children }) {
       if (response.ok) {
         const doctor = (await response.json()).doctor;
         setStore({ type: "GET_RESOURCE", context: "doctor", payload: doctor});
+        return doctor;
       }
     } catch (err) {
       console.log(err.message);
@@ -577,8 +569,6 @@ function GlobalContextProvider({ children }) {
         updatePatient,
         getPatient,
         getAllPatients,
-        getAllDoctors,
-        getDoctor,
         getAllRooms,
         createRoom,
         getAllEquipments,
@@ -596,7 +586,8 @@ function GlobalContextProvider({ children }) {
         updateRoom,
         getAllDoctors,
         updateDoctor,
-        getDoctor
+        getDoctor,
+        getUser
       }}
     >
       {children}
