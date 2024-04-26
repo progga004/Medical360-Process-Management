@@ -111,8 +111,8 @@ function GlobalContextProvider({ children }) {
     currentDepartment: null,
     currentEquipment: null,
     currentRoom: null,
-    BASE_URL: "https://medical360-d65d823d7d75.herokuapp.com" 
-    //BASE_URL: "http://localhost:3000"
+    //BASE_URL: "https://medical360-d65d823d7d75.herokuapp.com" 
+    BASE_URL: "http://localhost:3000"
   });
   const [lastUpdated, setLastUpdated] = useState(Date.now());
   // get all users to the application
@@ -194,6 +194,7 @@ function GlobalContextProvider({ children }) {
       if (response.ok) {
         const patient = (await response.json()).patient;
         setStore({ type: "GET_RESOURCE", context: "patient", payload: patient});
+        return patient
       }
     } catch (err) {
       console.log(err.message);
@@ -259,6 +260,24 @@ function GlobalContextProvider({ children }) {
       if (response.ok) {
         const room = (await response.json()).room;
         setStore({ type: "GET_RESOURCE", context: "room", payload: room});
+      }
+    } catch (err) {
+      console.log(err.message);
+    }
+  };
+  const getUser = async function (id) {
+    try {
+      const response = await fetch(`${store.BASE_URL}/users/${id}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({id})
+      });
+      if (response.ok) {
+        const user = (await response.json()).user;
+        setStore({ type: "GET_RESOURCE", context: "user", payload: user});
+        return user;
       }
     } catch (err) {
       console.log(err.message);
@@ -530,7 +549,8 @@ function GlobalContextProvider({ children }) {
         getEquipment,
         updateEquipment,
         getRoom,
-        updateRoom
+        updateRoom,
+        getUser
       }}
     >
       {children}

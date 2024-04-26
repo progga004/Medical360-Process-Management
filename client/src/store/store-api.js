@@ -53,6 +53,7 @@ export const deleteRoom = (id) => api.delete(`/rooms/${id}`);
 
 export const getDepartment = (id) => api.get(`/departments/${id}`);
 
+export const getUser = (id) =>api.get(`/users/${id}`);
 export const updateDepartment = (id, newData) =>
   api.put(`/departments/${id}`, newData);
 

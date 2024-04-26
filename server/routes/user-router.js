@@ -10,7 +10,7 @@ const router = express.Router()
 router.put('/:id', UserController.updateUser)
 
 // get user route
-router.get('/:id', UserController.getUser)
+router.post('/:id', UserController.getUser)
 
 // get all users route
 router.post('/', UserController.getAllUsers)
