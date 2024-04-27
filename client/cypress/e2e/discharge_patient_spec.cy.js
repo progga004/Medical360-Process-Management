@@ -22,13 +22,12 @@ describe("discharge a patient", () => {
       .should("be.gt", 1);
 
     // Find the row with a patient whose status is 'Admitted' and click on it
-    cy.get("table tbody tr td").contains("admitted").parents("tr").within(() => {
-      cy.get("td").eq(1).click(); // Adjusted to click on the specific column if needed
-    });
+    cy.get("table tbody tr").contains("td", "admitted").scrollIntoView().click();
 
-    // Assume the button to discharge the patient is in a visible state and can be clicked
+    // Click on the "Discharge Patient" button
     cy.get("button").contains("Discharge Patient").click();
 
-    cy.get("button.bg-red-600").should("be.visible").click();
+    // Wait for the modal to appear and then click the 'Discharge' button using both the text and class for specificity
+    cy.get("button.bg-red-600").contains("Discharge").should("be.visible").click();
   });
 });
