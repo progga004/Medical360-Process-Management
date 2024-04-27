@@ -21,15 +21,14 @@ describe("discharge a patient", () => {
       .its("length")
       .should("be.gt", 1);
 
-    // Click the row to view patient info
-    cy.get("table tbody tr")
-      .eq(1)
-      .within(() => {
-        cy.get("td").eq(1).click();
-      });
+    // Find the row with a patient whose status is 'Admitted' and click on it
+    cy.get("table tbody tr td").contains("admitted").parents("tr").within(() => {
+      cy.get("td").eq(1).click(); // Adjusted to click on the specific column if needed
+    });
 
+    // Assume the button to discharge the patient is in a visible state and can be clicked
     cy.get("button").contains("Discharge Patient").click();
 
-     cy.get("button.bg-red-600").should("be.visible").click();
+    cy.get("button.bg-red-600").should("be.visible").click();
   });
 });

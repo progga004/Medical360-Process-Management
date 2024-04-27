@@ -13,7 +13,7 @@ describe("view Patient Profile", () => {
     cy.url().should("include", "/all-patients");
   });
 
-  it("allows an admin to view the first patient", () => {
+  it("allows an admin to view a patient with 'Admitted' status", () => {
     // Ensure the table is visible and has at least one entry
     cy.get("table")
       .should("be.visible")
@@ -21,17 +21,19 @@ describe("view Patient Profile", () => {
       .its("length")
       .should("be.gt", 1);
 
-    // Click the row to view user info
-    cy.get("table tbody tr")
-      .eq(1)
-      .within(() => {
-        cy.get("td").eq(1).click();
-      });
-    cy.get("button").contains("Add Procedure").click();
-    cy.get('input[type="text"]').first().type("Knee Surgery");
+    // Find the row with a patient whose status is 'Admitted' and click on it
+    cy.get("table tbody tr td").contains("admitted").parents("tr").within(() => {
+      cy.get("td").eq(1).click(); // Adjust the index if the clickable cell is not the second one
+    });
 
+    // Assuming 'Add Procedure' button appears after the patient details are loaded
+    cy.get("button").contains("Add Procedure").click();
+
+    // Interacting with input fields for adding a procedure
+    cy.get('input[type="text"]').first().type("Knee Surgery");
     cy.get("textarea").type("Perform knee surgery");
 
+    // Submit the procedure addition
     cy.get("button").contains("Add Process").click();
   });
 });
