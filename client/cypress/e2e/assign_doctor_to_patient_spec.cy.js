@@ -1,4 +1,4 @@
-describe("Assign patient to doctor", () => {
+describe("Assign a doctor to patient", () => {
     beforeEach(() => {
       cy.visit("/login");
       cy.get("#Email").type("admin@example.com");
