@@ -13,11 +13,9 @@ describe('View User Info ', () => {
       cy.url().should("include", "/all-users");
     });
   
-    it('allows an admin to view the first user', () => {
-      // Ensure the table is visible and has at least one entry
+    it('allows an admin to view a users profile', () => {
       cy.get("table").should("be.visible").find("tr").its('length').should('be.gt', 1);
   
-      // Click the row to view user info
       cy.get("table tbody tr").first().within(() => {
         cy.get("td").first().click();
       });
