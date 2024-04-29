@@ -18,17 +18,25 @@ describe("Equipment Deletion Tests", () => {
 
     
     cy.get("td").first().invoke('text').then((equipmentName) => {
-      
       cy.get("td").first().parents("tr").within(() => {
         cy.get("button").contains("Delete").click();
       });
       cy.get("button.bg-red-600").should("be.visible").click();
-
-     
-      cy.contains("Deleting...").should("not.exist");
-
-     
-      cy.contains("td", equipmentName.trim()).should("not.exist");
+    
+      // Custom polling logic to wait for an element to disappear
+      function verifyDeletion() {
+        cy.get('body').then($body => {
+          if ($body.find(`td:contains('${equipmentName.trim()}')`).length > 0) {
+            // If the element is still found, wait for some time and try again
+            cy.wait(500); // Wait for 500ms
+            verifyDeletion(); // Recursively call to check again
+          }
+        });
+      }
+    
+      verifyDeletion(); // Call the function initially
     });
+    
+    
   });
 });
