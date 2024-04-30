@@ -19,6 +19,8 @@ export const storeReducer = (state, action) => {
           return { ...state, currentRoom: action.payload};
         case "doctor":
           return { ...state, currentDoctor: action.payload };
+        case "patients":
+          return { ... state, currentPatient: null, patients: action.payload}
         default:
           return state;
       }
@@ -92,7 +94,25 @@ export const storeReducer = (state, action) => {
       }
 
     default:
-      return state
+      return {
+        doctors: null,
+        users: null,
+        patients: null,
+        departments: null,
+        rooms: null,
+        equipments:null,
+        id_to_department: {},
+        department_to_id: {},
+        id_to_equipment: {},
+        equipment_to_id: {},
+        currentPatient: null,
+        currentDepartment: null,
+        currentEquipment: null,
+        currentRoom: null,
+        currentDoctor: null,
+        // BASE_URL: "https://medical360-d65d823d7d75.herokuapp.com"
+        BASE_URL: "http://localhost:3000"
+      }
   }
 } 
 
@@ -114,8 +134,8 @@ function GlobalContextProvider({ children }) {
     currentEquipment: null,
     currentRoom: null,
     currentDoctor: null,
-    BASE_URL: "https://medical360-d65d823d7d75.herokuapp.com"
-    // BASE_URL: "http://localhost:3000"
+    // BASE_URL: "https://medical360-d65d823d7d75.herokuapp.com"
+    BASE_URL: "http://localhost:3000"
   });
   const [lastUpdated, setLastUpdated] = useState(Date.now());
   // get all users to the application
@@ -146,6 +166,11 @@ function GlobalContextProvider({ children }) {
     } catch (error) {
       console.error("Error fetching users:", error);
     }
+  }
+
+
+  const reset = () => {
+    setStore({ type: "RESET" })
   }
 
   // create patient with given data
@@ -221,6 +246,20 @@ function GlobalContextProvider({ children }) {
       setStore({ type: "GET_ALL_PATIENTS", payload: patients});
     }
   };
+
+  const setPatients = async function (listOfPatientIds) {
+    const response = await fetch(`${store.BASE_URL}/patients/all`, {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({"Why": "god"})
+    });
+    if (response.ok) {
+      let patients = (await response.json()).patients;
+      console.log(patients);
+      patients = patients.filter(patient => listOfPatientIds.includes(patient._id));
+      setStore({ type: "GET_RESOURCE", context: "patients", payload: patients});
+    }
+  }
 
   // get room by id
   const getRoom = async function (id) {
@@ -594,7 +633,9 @@ function GlobalContextProvider({ children }) {
         getAllDoctors,
         updateDoctor,
         getDoctor,
-        getUser
+        getUser,
+        setPatients,
+        reset
       }}
     >
       {children}

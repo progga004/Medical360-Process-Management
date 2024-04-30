@@ -1,8 +1,9 @@
 import React, { createContext, useEffect, useReducer } from "react";
+import { useGlobalContext } from "../hooks/useGlobalContext";
 
 const AuthContext = createContext();
-const BASE_URL = "https://medical360-d65d823d7d75.herokuapp.com" ;
-// const BASE_URL = "http://localhost:3000";
+// const BASE_URL = "https://medical360-d65d823d7d75.herokuapp.com" ;
+const BASE_URL = "http://localhost:3000";
 
 export const authReducer = (state, action) => {
   switch (action.type) {
@@ -19,6 +20,7 @@ function AuthContextProvider({ children }) {
   const [auth, setAuth] = useReducer(authReducer, {
     user: null
   });
+  const { reset } = useGlobalContext();
 
   useEffect(() => {
     // get whether use is logged in or not

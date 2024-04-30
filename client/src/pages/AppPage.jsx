@@ -1,11 +1,17 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Sidebar from "../components/Sidebar";
 import Banner from "../components/Banner";
 import { Link } from "react-router-dom";
 import { useAuthContext } from "../hooks/useAuthContext";
+import { useGlobalContext } from "../hooks/useGlobalContext";
 
 const AppPage = () => {
   const { user } = useAuthContext();
+  const { reset } = useGlobalContext();
+
+  useEffect(() => {
+    reset();
+  }, [])
 
   return (
     <div className="flex flex-col h-screen">
