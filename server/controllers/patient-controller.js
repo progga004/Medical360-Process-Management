@@ -97,6 +97,14 @@ async function deletePatient(req, res) {
           message: "patient not found",
         });
       }
+      // now check if patient has doctor, get that doctor, and then delete reference
+      // to patient inside the doctors patient list
+      if (patient.doctorAssigned) {
+        await Doctor.findByIdAndUpdate(patient.doctorAssigned, 
+        {
+          $pull: { patientList: patient._id }
+        });
+      }
       res.status(200).json({
         message: "Deleted patient",
       });
