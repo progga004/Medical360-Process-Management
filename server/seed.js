@@ -12,7 +12,7 @@ require("dotenv").config();
 
 mongoose.connect(
   "mongodb+srv://medical360:admin123@medical360.wh0h2hw.mongodb.net/medical360",
-  // "mongodb://localhost/360",
+  // "mongodb://localhost/medical360",
   {
     useUnifiedTopology: true,
   }
@@ -189,7 +189,7 @@ db.once("open", async () => {
     // Populate patients
     const patients = [];
     let allDoctors = await Doctor.find();
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < 300; i++) {
       let doctor = chance.pickone(allDoctors);
 
       const patient = new Patient({
@@ -259,6 +259,9 @@ db.once("open", async () => {
         patient.department = null;
         patient.roomNo = "N/A";
       }
+      // add doctor to patients assigned doctor
+      patient.doctorAssigned = doctor._id;
+
       patients.push(patient);
 
       // add patient to doctors patients

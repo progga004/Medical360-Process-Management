@@ -110,8 +110,8 @@ export const storeReducer = (state, action) => {
         currentEquipment: null,
         currentRoom: null,
         currentDoctor: null,
-        // BASE_URL: "https://medical360-d65d823d7d75.herokuapp.com"
-        BASE_URL: "http://localhost:3000"
+        BASE_URL: "https://medical360-d65d823d7d75.herokuapp.com"
+        // BASE_URL: "http://localhost:3000"
       }
   }
 } 
@@ -255,7 +255,6 @@ function GlobalContextProvider({ children }) {
     });
     if (response.ok) {
       let patients = (await response.json()).patients;
-      console.log(patients);
       patients = patients.filter(patient => listOfPatientIds.includes(patient._id));
       setStore({ type: "GET_RESOURCE", context: "patients", payload: patients});
     }
@@ -567,7 +566,6 @@ function GlobalContextProvider({ children }) {
   }
 
   const updateDoctor = async function (id, data) {
-    console.log(data);
     try {
       await fetch(`${store.BASE_URL}/doctors/${id}`, {
         method: "PUT",

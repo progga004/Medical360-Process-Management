@@ -1,20 +1,21 @@
-// MyPatientsPage.js
 import React, { useEffect, useState } from "react";
 import { useAuthContext } from "../hooks/useAuthContext";
 import Banner from "../components/Banner";
 import { useGlobalContext } from "../hooks/useGlobalContext";
+import { useNavigate } from "react-router-dom";
 
 const MyPatientsPage = () => {
     const { user } = useAuthContext();
-    const { getDoctor, currentDoctor, setPatients, patients, removeCurrentDoctor } = useGlobalContext();
-    const [currentPage, setCurrentPage] = useState(1);
+    const { getDoctor, currentDoctor, setPatients, patients, getPatient, departments, getAllDepartments } = useGlobalContext();
+    const [currentPageAdmitted, setCurrentPageAdmitted] = useState(1);
+    const [currentPageDischarged, setCurrentPageDischarged] = useState(1);
     const patientsPerPage = 6;
-
-    if (currentDoctor)
-        console.log(currentDoctor.patientList)
+    const navigate = useNavigate();
 
     useEffect(() => {
         async function fetchDoctor() {
+            if (!departments)
+                await getAllDepartments();
             if (!currentDoctor && user.doctor) {
                 let doctor = await getDoctor(user.doctor);
                 await setPatients(doctor.patientList);
@@ -25,31 +26,44 @@ const MyPatientsPage = () => {
         } catch (error) {
             console.log("User is not a doctor");
         }
-    }, [currentDoctor])
+    }, [currentDoctor, departments])
   
     // Logic for displaying patients
-    const indexOfLastPatient = currentPage * patientsPerPage;
-    const indexOfFirstPatient = indexOfLastPatient - patientsPerPage;
-    let pagePatients;
-    if (patients)
-        pagePatients = patients.slice(indexOfFirstPatient, indexOfLastPatient);
-  
-    // Change page
-    const nextPage = () => setCurrentPage(currentPage + 1);
-    const prevPage = () => setCurrentPage(currentPage - 1);
+    let patientsAdmitted, pagePatientsAdmitted, indexOfLastPatientAdmitted, indexOfFirstPatientAdmitted;
+    if (patients) {
+        patientsAdmitted = patients.filter(patient => patient.patientStatus !== "discharged");
+        indexOfLastPatientAdmitted = currentPageAdmitted * patientsPerPage;
+        indexOfFirstPatientAdmitted = indexOfLastPatientAdmitted - patientsPerPage;
+        pagePatientsAdmitted = patientsAdmitted.slice(indexOfFirstPatientAdmitted, indexOfLastPatientAdmitted);
+    }
 
-  
+    let patientsDischarged, pagePatientsDischarged, indexOfLastPatientDischarged, indexOfFirstPatientDischarged
+    if (patients) {
+        patientsDischarged = patients.filter(patient => patient.patientStatus === "discharged");
+        indexOfLastPatientDischarged = currentPageDischarged * patientsPerPage;
+        indexOfFirstPatientDischarged = indexOfLastPatientDischarged - patientsPerPage;
+        pagePatientsDischarged = patientsDischarged.slice(indexOfFirstPatientDischarged, indexOfLastPatientDischarged);
+    }
+
+    const handleClick = async patientId => {
+        await getPatient(patientId);
+        navigate("/patient-info");
+    }
+
     return (
         <>
             <Banner goBackPath={"/"} />
             <div className="min-h-screen bg-blue-100 py-12 px-4 sm:px-6 lg:px-8">
                 <div className="max-w-7xl mx-auto">
                 <h1 className="text-3xl font-bold text-blue-900 mb-8">My Patients</h1>
+
+                <h2 className="text-xl font-bold text-blue-900 mb-4">Admitted</h2>
                 <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-                    {pagePatients && pagePatients.map((patient) => (
+                    {pagePatientsAdmitted && pagePatientsAdmitted.map((patient) => (
                     <div
                         key={patient._id}
-                        className="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6"
+                        className="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 hover:bg-blue-200"
+                        onClick={() => handleClick(patient._id)}
                     >
                         <h2 className="text-lg font-semibold text-blue-900">{patient.patientName}</h2>
                         <p className="text-sm text-gray-600 mt-1">Age: {patient.age}</p>
@@ -58,18 +72,55 @@ const MyPatientsPage = () => {
                     </div>
                     ))}
                 </div>
-               {pagePatients && <div className="mt-8 flex justify-center">
+                {pagePatientsAdmitted && <div className="mt-8 flex justify-center">
                     <button
-                    onClick={prevPage}
-                    disabled={currentPage === 1}
-                    className="bg-white text-blue-500 hover:bg-blue-200 border border-blue-500 px-4 py-2 mx-1 rounded-full"
+                    onClick={() => setCurrentPageAdmitted(currentPageAdmitted - 1)}
+                    disabled={currentPageAdmitted === 1}
+                    className={currentPageAdmitted === 1 ? "bg-gray text-blue-500 border border-blue-500 px-4 py-2 mx-1 rounded-full" : 
+                    "bg-white text-blue-500 hover:bg-blue-200 border border-blue-500 px-4 py-2 mx-1 rounded-full"}
                     >
                     {"<"}
                     </button>
                     <button
-                    onClick={nextPage}
-                    disabled={indexOfLastPatient >= patients.length}
-                    className="bg-white text-blue-500 hover:bg-blue-200 border border-blue-500 px-4 py-2 mx-1 rounded-full"
+                    onClick={() => setCurrentPageAdmitted(currentPageAdmitted + 1)}
+                    disabled={currentPageAdmitted >= (patientsAdmitted.length / patientsPerPage)}
+                    className={currentPageAdmitted >= patientsAdmitted.length / patientsPerPage ? 
+                        "bg-gray text-blue-500 border border-blue-500 px-4 py-2 mx-1 rounded-full" : 
+                        "bg-white text-blue-500 hover:bg-blue-200 border border-blue-500 px-4 py-2 mx-1 rounded-full"}
+                    >
+                    {">"}
+                    </button>
+                </div>}
+                
+                <h2 className="text-xl font-bold text-red-500 mb-4 mt-8">Discharged</h2>
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+                    {pagePatientsDischarged && pagePatientsDischarged.map((patient) => (
+                    <div
+                        key={patient._id}
+                        className="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 hover:bg-red-200"
+                    >
+                        <h2 className="text-lg font-semibold text-blue-900">{patient.patientName}</h2>
+                        <p className="text-sm text-gray-600 mt-1">Age: {patient.age}</p>
+                        <p className="text-sm text-gray-600">Sex: {patient.sex}</p>
+                        <p className="text-sm text-gray-600">Room: {patient.roomNo}</p>
+                    </div>
+                    ))}
+                </div>
+                {pagePatientsDischarged && <div className="mt-8 flex justify-center">
+                    <button
+                    onClick={() => setCurrentPageDischarged(currentPageDischarged - 1)}
+                    disabled={currentPageDischarged === 1}
+                    className={currentPageDischarged === 1 ? "bg-gray text-blue-500 border border-blue-500 px-4 py-2 mx-1 rounded-full" : 
+                    "bg-white text-blue-500 hover:bg-blue-200 border border-blue-500 px-4 py-2 mx-1 rounded-full"}
+                    >
+                    {"<"}
+                    </button>
+                    <button
+                    onClick={() => setCurrentPageDischarged(currentPageDischarged + 1)}
+                    disabled={currentPageDischarged >= patientsDischarged.length / patientsPerPage}
+                    className={currentPageDischarged >= patientsDischarged.length / patientsPerPage ? 
+                        "bg-gray text-blue-500 border border-blue-500 px-4 py-2 mx-1 rounded-full" : 
+                        "bg-white text-blue-500 hover:bg-blue-200 border border-blue-500 px-4 py-2 mx-1 rounded-full"}
                     >
                     {">"}
                     </button>
