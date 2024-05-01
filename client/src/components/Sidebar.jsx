@@ -10,8 +10,8 @@ const Sidebar = () => {
     <div className="flex-shrink-0 w-64 bg-[#409BEF]  p-5 text-white block text-center text-xl font-bold md:text-2xl lg:text-3xl mt-20">
       <ul className="space-y-5 md:space-y-12 lg:space-y-23">
         <li>
-          <Link to="/apppage" className="hover:underline">
-            Home
+          <Link to="/my-patients" className="hover:underline">
+            My Patients
           </Link>
         </li>
         {user && (

@@ -4,7 +4,7 @@ import { useAuthContext } from '../hooks/useAuthContext';
 
 const AccountCircle = () => {
 
-  const { logout } = useAuthContext();
+  const { logout, user } = useAuthContext();
   const navigate = useNavigate()
   const [isOpen, setOpen] = useState(false)
 
@@ -18,6 +18,8 @@ const AccountCircle = () => {
   const handleAccountInfo = () => {
     // Handle account info logic here
     console.log('Viewing account info...');
+    if (user) 
+      navigate(`/user-info/${user.id}`)
   };
 
   return (
