@@ -2,10 +2,10 @@ const Bug = require("../models/Bug");
 
 function createBug(req, res) {
     const newBug = new Bug({
-        contactName: req.body.contactName,
+        name: req.body.name,
         phone: req.body.phone,
         email: req.body.email,
-        bugEncountered: req.body.bugEncountered,
+        bug: req.body.bug,
     });
 
     newBug
@@ -22,6 +22,7 @@ async function getAllBugs(req, res) {
         res.status(500).json({ message: error.message });
     }
 }
+
 
 async function getBug(req, res) {
     try {

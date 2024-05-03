@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 const bugSchema = new mongoose.Schema({
-  contactName: {
+  name: {
     type: String,
     required: true,
     trim: true,
@@ -17,7 +17,7 @@ const bugSchema = new mongoose.Schema({
     trim: true,
     lowercase: true,
   },
-  bugEncountered: {
+  bug: {
     type: String,
     required: true,
     trim: true,

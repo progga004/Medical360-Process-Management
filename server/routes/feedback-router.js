@@ -5,10 +5,10 @@ const FeedbackController = require('../controllers/feedback-controller');
 // POST route to create new feedback
 router.post('/', FeedbackController.createFeedback);
 
-// GET route to get all feedback entries
-router.get('/all', FeedbackController.getAllFeedback);
+// POST route to get all feedback entries
+router.post('/all', FeedbackController.getAllFeedback);
 
-// GET route to get single feedback by id
-router.get('/:id', FeedbackController.getFeedback);
+// POST route to get single feedback by id
+router.post('/:id', FeedbackController.getFeedback);
 
 module.exports = router;

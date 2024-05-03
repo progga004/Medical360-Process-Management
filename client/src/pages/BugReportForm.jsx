@@ -7,10 +7,10 @@ import { useGlobalContext } from "../hooks/useGlobalContext";
 
 const BugReport = () => {
   const [bug, setBug] = useState({
-    contactName: "",
+    name: "",
     phone: "",
     email: "",
-    bugEncountered: "",
+    bug: "",
   });
   const { createBug } = useGlobalContext();
   const navigate = useNavigate();
@@ -50,9 +50,9 @@ const BugReport = () => {
               <label className="block text-gray-700">Contact Name</label>
               <input
                 type="text"
-                name="contactName"
+                name="name"
                 onChange={handleChange}
-                value={bug.contactName}
+                value={bug.name}
                 className="mt-1 block w-full border border-gray-300 shadow-sm rounded p-2"
               />
             </div>
@@ -82,9 +82,9 @@ const BugReport = () => {
             <div className="mb-4">
               <label className="block text-gray-700">Bug Encountered</label>
               <textarea
-                name="bugEncountered"
+                name="bug"
                 onChange={handleChange}
-                value={bug.bugEncountered}
+                value={bug.bug}
                 className="mt-1 block w-full border border-gray-300 shadow-sm rounded p-2 h-28"
                 placeholder="Describe the bug..."
               ></textarea>

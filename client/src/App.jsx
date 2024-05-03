@@ -32,7 +32,6 @@ import EditPatientPage from "./pages/EditPatientPage";
 import PatientNotification from "./pages/PatientNotification";
 import AllUsersPage from "./pages/AllUsersPage";
 import EditUserPage from "./pages/EditUserPage";
-import UserApprovalPage from "./pages/UserApprovalsPage";
 
 import DepartmentForm from "./pages/DepartmentForm";
 import { useAuthContext } from "./hooks/useAuthContext";
@@ -41,6 +40,8 @@ import AddProcedurePage from "./pages/AddProcedurePage";
 import UserInfoPage from "./pages/UserInfo";
 import MyPatientsPage from "./pages/MyPatientsPage";
 import ChangePasswordPage from "./pages/ChangePasswordPage";
+import AllFeedbacksPage from "./pages/AllFeedbacksPage";
+import AllBugsPage from "./pages/AllBugsPage";
 
 function App() {
 
@@ -58,8 +59,8 @@ function App() {
         <Route path="/login" element={!user ? <LoginForm /> : <Navigate to={lastRoute}/>} />
         <Route path="/chat" element={<ChatPage />} />
         <Route path="/all-staff" element={<AllStaffPage />} />
-        <Route path="/all-equipments" element={<AllEquipmentPage />} />
-        <Route path="/all-rooms" element={<AllRoomsPage />} />
+        <Route path="/all-equipments" element={user ? <AllEquipmentPage  /> : <Navigate to="/" />} />
+        <Route path="/all-rooms" element={user ? <AllRoomsPage /> : <Navigate to="/" />} />
         <Route path="/all-patients" element={user ? <AllPatientPage /> : <Navigate to="/" />} />
         <Route path="/all-users" element={user ? <AllUsersPage /> : <Navigate to="/" />} />
         <Route path="/book-appointment" element={<AppointmentPage />} />
@@ -88,7 +89,6 @@ function App() {
           path="/resource-management"
           element={<ResourceManagementPage />}
         />
-        <Route path="/user-approvals" element={<UserApprovalPage />} />
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route
           path="/edit-patient-user-info"
@@ -103,8 +103,12 @@ function App() {
         <Route path="/departmentratio" element={<DepartmentRatioPage />} />
         <Route path="/admin-notification" element={<PatientNotification />} />
             <Route path="/department-form" element={< DepartmentForm/>} />
-        <Route path="/my-patients" element={user ? <MyPatientsPage /> : <Navigate to="/" />} />
         <Route path="/change-password/:id" element={<ChangePasswordPage />} />
+        <Route path="my-patients" element={user ? <MyPatientsPage /> : <Navigate to="/" />} />
+        <Route path="/all-feedbacks" element={user ? <AllFeedbacksPage /> : <Navigate to="/" />} />
+        <Route path="/all-bugs" element={user ? <AllBugsPage /> : <Navigate to="/" />} />
+
+
       </Routes>
     </BrowserRouter>
   );
