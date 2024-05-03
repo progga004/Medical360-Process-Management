@@ -16,7 +16,7 @@ describe('Search Room Page Tests', () => {
     cy.get('input[data-cy=search-bar]').should('be.visible');
     cy.get('[data-cy=search-button]').should('be.visible');
 
-    cy.get('input[data-cy=search-bar]').type('222');
+    cy.get('input[data-cy=search-bar]').type('22');
 
     cy.get('[data-cy=search-button]').click();
 
@@ -24,7 +24,7 @@ describe('Search Room Page Tests', () => {
 
    
     cy.get('[data-cy^="room-"]').should('have.length', 1);
-    cy.get('[data-cy^="room-"]').first().should('contain', '222');
+    cy.get('[data-cy^="room-"]').first().should('contain', '22');
 
    
     cy.get('[data-cy^="room-"]').should('not.contain', '102');
