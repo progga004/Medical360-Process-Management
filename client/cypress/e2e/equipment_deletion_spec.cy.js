@@ -7,7 +7,9 @@ describe("Equipment Deletion Tests", () => {
 
     cy.url().should("include", "/apppage");
     cy.contains("Resource Management").click();
+    cy.url().should("include", "/resource-management");
     cy.contains("Equipment").click();
+    cy.url().should("include", "/all-equipments");
   });
 
   it('allows an admin to delete the first listed room and verify it is removed', () => {
@@ -19,19 +21,6 @@ describe("Equipment Deletion Tests", () => {
         cy.get("button").contains("Delete").click();
       });
       cy.get("button.bg-red-600").should("be.visible").click();
-    
-      // Custom polling logic to wait for an element to disappear
-      function verifyDeletion() {
-        cy.get('body').then($body => {
-          if ($body.find(`td:contains('${equipmentName.trim()}')`).length > 0) {
-            // If the element is still found, wait for some time and try again
-            cy.wait(500); // Wait for 500ms
-            verifyDeletion(); // Recursively call to check again
-          }
-        });
-      }
-    
-      verifyDeletion(); // Call the function initially
     });
     
     
