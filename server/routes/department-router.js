@@ -5,44 +5,67 @@ const multer = require('multer');
 const Department = require('../models/Department');
 const path = require('path');
 const DepartmentController = require("../controllers/department-controller")
-const { CloudinaryStorage } = require('multer-storage-cloudinary');
-const cloudinary = require('cloudinary').v2;
+// const { CloudinaryStorage } = require('multer-storage-cloudinary');
+// const cloudinary = require('cloudinary').v2;
 
-// Cloudinary configuration
-cloudinary.config({ 
-    cloud_name: process.env.CLOUDINARY_CLOUD_NAME, 
-    api_key: process.env.CLOUDINARY_API_KEY, 
-    api_secret: process.env.CLOUDINARY_API_SECRET 
-  });
+// // Cloudinary configuration
+// cloudinary.config({ 
+//     cloud_name: process.env.CLOUDINARY_CLOUD_NAME, 
+//     api_key: process.env.CLOUDINARY_API_KEY, 
+//     api_secret: process.env.CLOUDINARY_API_SECRET 
+//   });
   
 
 
 
-// Configure storage using Multer and Cloudinary
-const storage = new CloudinaryStorage({
-    cloudinary: cloudinary,
-    params: {
-      folder: 'departments',
-      format: async (req, file) => 'png', 
-      public_id: (req, file) => new Date().toISOString() + '-' + file.originalname
+// // Configure storage using Multer and Cloudinary
+// const storage = new CloudinaryStorage({
+//     cloudinary: cloudinary,
+//     params: {
+//       folder: 'departments',
+//       format: async (req, file) => 'png', 
+//       public_id: (req, file) => new Date().toISOString() + '-' + file.originalname
+//     },
+//   });
+const fs = require('fs');
+const crypto = require('crypto');
+
+
+// Ensure the uploads directory exists
+const uploadsDir = path.join(__dirname, '../uploads');
+fs.mkdirSync(uploadsDir, { recursive: true });
+
+var storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, uploadsDir)
     },
-  });
+    filename: function (req, file, cb) {
+        crypto.pseudoRandomBytes(16, function (err, raw) {
+            if (err) return cb(err);
+            const fileExt = path.extname(file.originalname);
+            cb(null, raw.toString('hex') + Date.now() + fileExt); 
+        });
+    }
+});
 
 const upload = multer({ storage: storage });
 
-// POST route to create a new department with image upload
-router.post('/department', upload.single('Icon'), (req, res) => {
-    console.log("here I am");
-    const newDepartment = new Department({
+// // POST route to create a new department with image upload
+// router.post('/department', upload.single('Icon'), (req, res) => {
+//     console.log("here I am");
+//     const newDepartment = new Department({
        
-        departmentName: req.body.Name,
-        iconPath: req.file ? req.file.path : null  
-    });
+//         departmentName: req.body.Name,
+//         // Assuming `file` is the file object provided by multer in the request after upload
 
-    newDepartment.save()
-        .then(department => res.status(201).json(department))
-        .catch(error => res.status(400).json({ error: 'Error saving department: ' + error }));
-});
+//         // iconPath: req.file ? req.file.path : null  
+//         iconPath: req.file ? `uploads/${req.file.filename}` : null
+//     });
+
+//     newDepartment.save()
+//         .then(department => res.status(201).json(department))
+//         .catch(error => res.status(400).json({ error: 'Error saving department: ' + error }));
+// });
 
 
 
@@ -68,7 +91,11 @@ router.delete('/:id', (req, res) => {
 });
 
 // get all departments
-router.post('/', DepartmentController.getAllDepartments);
+router.post('/all', DepartmentController.getAllDepartments);
+
+// POST route to create a new department
+router.post('/', upload.single('Icon'), DepartmentController.createDepartment);
+
 
 // update department by id
 router.put('/:id', DepartmentController.updateDepartment)

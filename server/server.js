@@ -3,7 +3,7 @@ const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const mongoose = require("mongoose");
 const path = require("path");
-const fs=require('fs');
+
 
 // config .env files
 require("dotenv").config();
@@ -27,7 +27,7 @@ app.use(cookieParser());
 
 
 
-//app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 // const uploadsDir = path.join(__dirname, '../uploads');
 // try {
 //   fs.mkdirSync(uploadsDir);

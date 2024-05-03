@@ -8,7 +8,7 @@ import { useGlobalContext } from "../hooks/useGlobalContext";
 const DepartmentForm = () => {
   const [formError, setFormError] = useState(false);
   const navigate = useNavigate();
-  const { BASE_URL } = useGlobalContext();
+  const { BASE_URL, getAllDepartments,createDepartment } = useGlobalContext();
 
     // Define the fields for the department form
     const fields = [
@@ -19,26 +19,34 @@ const DepartmentForm = () => {
 
     
     const handleSubmit = (formData) => {
-        const data = new FormData();
-        Object.keys(formData).forEach(key => {
-            data.append(key, formData[key]);
-        });
+      console.log("Form data",formData);
+      const data = new FormData();
+      // Object.keys(formData).forEach(key => {
+      //   data.append(key, formData[key]);
+      // });
+      Object.keys(formData).forEach(key => {
+        if (key !== 'icon') {
+          data.append(key, formData[key]);
+        }
+      });
     
-        axios.post(`${BASE_URL}/departments/department`, data, {
-            headers: {
-                'Content-Type': 'multipart/form-data',
-            },
-        })
-        .then(response => {
-            console.log('Department created:', response.data);
-            navigate('/departmentpage');
-        })
-        .catch(error => {
-            console.error('There was an error creating the department:', error);
-            setFormError(true); 
-        });
+      // Append file field (icon)
+      if (formData.icon) {
+        data.append('icon', formData.icon);
+      }
+    
+      // Check the FormData entries
+      for (let [key, value] of data.entries()) {
+        console.log(`${key}:`, value);
+      }
+    
+      createDepartment(data).then(() => {
+        navigate('/departmentpage');
+      }).catch(error => {
+        console.error('There was an error creating the department:', error);
+        setFormError(true);
+      });
     };
-    
 
   return (
     <>
