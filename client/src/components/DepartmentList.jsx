@@ -40,11 +40,17 @@ const DepartmentList = ({ departments, onDelete, isAdmin }) => {
            <img src={`${BASE_URL}/${department.iconPath}`} alt={department.departmentName} className="rounded-full w-25 h-21" />
             <p className="mt-2 text-center">{department.departmentName}</p>
             {(user.name == "Admin") && (
+              <div>
               <button onClick={() => openDeleteModal(department._id)} className="mt-2 bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded">
                 Delete
               </button>
-
-
+              <Link
+  to={`/department-staff/${department._id}`}
+  className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded text-center"
+>
+  Info
+</Link>
+             </div>
               
               
             )}

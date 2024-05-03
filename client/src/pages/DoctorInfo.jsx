@@ -1,6 +1,6 @@
 import React, { useContext,useState,useEffect } from "react";
 import Banner from "../components/Banner";
-import { useParams,useLocation } from 'react-router-dom';
+import { useParams,useLocation,useNavigate } from 'react-router-dom';
 import { Link } from "react-router-dom";
 import { useGlobalContext } from "../hooks/useGlobalContext";
 
@@ -8,10 +8,10 @@ const DoctorInfo = () => {
  
   const { doctorId } = useParams();
   const location = useLocation();
+  const navigate = useNavigate();
   const [doctor, setDoctor] = useState(null);
   const[department,setDepartment]=useState(null);
   const { getDoctor,getDepartment } = useGlobalContext(); 
-
 
 
   useEffect(() => {
@@ -37,10 +37,10 @@ const DoctorInfo = () => {
     return <p>Loading...</p>;
   }
   const doctorName = location.state?.doctorName;
-
+  const previousPage = location.state?.origin || '/apppage';
   return (
     <>
-      <Banner goBackPath={"/all-doctors"} />
+      <Banner goBackPath={previousPage} showGoBackButton={true} />
       <div className="flex items-center justify-center min-h-screen bg-white">
         <div className="bg-[#CAD6FF] p-8 rounded-lg shadow-lg max-w-5xl w-full min-h-[600px]">
           {/* Row 1: Image and Details */}
