@@ -1,11 +1,17 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Sidebar from "../components/Sidebar";
 import Banner from "../components/Banner";
 import { Link } from "react-router-dom";
 import { useAuthContext } from "../hooks/useAuthContext";
+import { useGlobalContext } from "../hooks/useGlobalContext";
 
 const AppPage = () => {
   const { user } = useAuthContext();
+  const { reset } = useGlobalContext();
+
+  useEffect(() => {
+    reset();
+  }, [])
 
   return (
     <div className="flex flex-col h-screen">
@@ -45,17 +51,7 @@ const AppPage = () => {
             >
               View Available Doctors
             </Link>
-            {user && (
-              <Link
-                to="/feedback"
-                className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded mr-4"
-              >
-                Give Feedback
-              </Link>
-            )}
           </div>
-
-          {/* Your content goes here */}
         </div>
       </div>
     </div>

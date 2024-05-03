@@ -12,6 +12,7 @@ require("dotenv").config();
 
 mongoose.connect(
   "mongodb+srv://medical360:admin123@medical360.wh0h2hw.mongodb.net/medical360",
+  // "mongodb://localhost/medical360",
   {
     useUnifiedTopology: true,
   }
@@ -58,11 +59,16 @@ db.once("open", async () => {
     let department_ids = [];
     for (let i = 0; i < departments.length; i++) {
       // create user that is head doctor
+      const name = chance.name();
       const doctor = new Doctor({
         surgeryCount: chance.integer({min: 0, max: 1000}),
         appointmentNo: chance.integer({min: 1000, max: 9999}),
         hours: chance.integer({min: 20, max: 60}),
         experience: `${chance.integer({min: 1, max: 40})} years`,
+        name: name,
+        surgeryCount: chance.integer(),
+        appointmentNo: chance.integer(),
+        hours: chance.integer(),
         profileDetails: {
           focusAreas: [chance.pickone(focusAreas), 
             chance.pickone(focusAreas)],
@@ -79,7 +85,6 @@ db.once("open", async () => {
 
       await doctor.save();
 
-      const name = chance.name();
       const email = chance.email();
       const passwordHash = await bcrypt.hash("password@123", 10);
       const isAdmin = true;
@@ -116,8 +121,10 @@ db.once("open", async () => {
     // Populate users that are doctors and not heads
     const users = [];
     const doctors = [];
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < 30; i++) {
+      const name = chance.name();
       const doctor = new Doctor({
+        name: name,
         departmentName: chance.pickone(department_ids),
         surgeryCount: chance.integer({min: 0, max: 1000}),
         appointmentNo: chance.integer({min: 1000, max: 9999}),
@@ -137,7 +144,6 @@ db.once("open", async () => {
         patientList: [],
       });
 
-      const name = chance.name();
       const email = chance.email();
       const passwordHash = await bcrypt.hash("password@123", 10);
       const isAdmin = false;
@@ -183,9 +189,8 @@ db.once("open", async () => {
     // Populate patients
     const patients = [];
     let allDoctors = await Doctor.find();
-    for (let i = 0; i < 10; i++) {
-      let doctor = chance.pickone(allDoctors);
-
+    console.log(department_ids)
+    for (let i = 0; i < 300; i++) {
       const patient = new Patient({
         patientName: chance.name(),
         email: chance.email(),
@@ -248,16 +253,27 @@ db.once("open", async () => {
         lastDate = patient.procedures[patient.procedures.length - 1].date.getDate();
         patient.procedures.push({
           date: lastDate + 1,
-          Notes: "Discharged"
+          Notes: "Patient Discharged"
         });
         patient.department = null;
         patient.roomNo = "N/A";
       }
+  
+      // add doctor to patients assigned doctor
+      let departmentDoctors = allDoctors.filter(doc => {
+        return doc.departmentName.equals(patient.department);
+
+      });
+      if (departmentDoctors.length !== 0) {
+        let doctor = chance.pickone(departmentDoctors);
+        patient.doctorAssigned = doctor._id;
+        doctor.patientList.push(patient._id);
+        await doctor.save();
+      }
+
       patients.push(patient);
 
       // add patient to doctors patients
-      doctor.patientList.push(patient._id);
-      await doctor.save();
     }
     await Patient.insertMany(patients);
 

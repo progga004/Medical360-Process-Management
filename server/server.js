@@ -3,7 +3,7 @@ const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const mongoose = require("mongoose");
 const path = require("path");
-const fs=require('fs');
+
 
 // config .env files
 require("dotenv").config();
@@ -14,8 +14,8 @@ const app = express();
 app.use(express.urlencoded({ extended: true }));
 app.use(
   cors({
-    origin: "http://localhost:5173", // Ensure the client's address is correctly listed
-    //origin: "https://medical360-d65d823d7d75.herokuapp.com" ,
+    // origin: "http://localhost:5173", // Ensure the client's address is correctly listed
+    origin: "https://medical360-d65d823d7d75.herokuapp.com" ,
     credentials: true, // For sending cookies over CORS
   })
 );
@@ -27,15 +27,8 @@ app.use(cookieParser());
 
 
 
-// app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
-// const uploadsDir = path.join(__dirname, '../uploads');
-// try {
-//   fs.mkdirSync(uploadsDir);
-// } catch (err) {
-//   if (err.code !== 'EEXIST') throw err; 
-//   console.log('Uploads directory already exists.');
-// }
-// Serve static files (Make sure this is before your catch-all route if you are using React Router)
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+
 app.use(express.static(path.join(__dirname, "../client/dist")));
 
 // // // // Catch-all handler for SPA (Make sure the path is correctly formatted)
@@ -51,6 +44,9 @@ const departmentRouter = require("./routes/department-router");
 const roomRouter = require("./routes/room-router");
 const equipmentRouter = require("./routes/equipment-router");
 const doctorRouter = require("./routes/doctor-router");
+const feedbackRouter = require("./routes/feedback-router");
+const bugRouter = require("./routes/bug-router");
+
 
 
 app.use("/patients", patientRouter);
@@ -60,6 +56,9 @@ app.use("/users", userRouter);
 app.use("/departments", departmentRouter);
 app.use("/rooms", roomRouter);
 app.use("/equipments", equipmentRouter);
+app.use("/doctors", doctorRouter);
+app.use("/feedbacks", feedbackRouter);
+app.use("/bugs", bugRouter);
 
 
 
@@ -67,6 +66,7 @@ app.use("/equipments", equipmentRouter);
 mongoose
   .connect(
     "mongodb+srv://medical360:admin123@medical360.wh0h2hw.mongodb.net/medical360",
+    // "mongodb://localhost/medical360",
     {
       useNewUrlParser: true,
       useUnifiedTopology: true,

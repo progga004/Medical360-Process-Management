@@ -6,11 +6,11 @@ import { useEffect, useState } from 'react';
 
 const EditPatientPage = () => {
 
-    const { department_to_id, currentPatient, updatePatient, id_to_department, getAllDepartments, departments, getAllPatients } = useGlobalContext();
+    const { department_to_id, currentPatient, updatePatient, id_to_department, getAllDepartments, departments, currentDoctor, getDoctor } = useGlobalContext();
     const navigate = useNavigate();
 
 
-    const fieldsToAvoid = ["_id", "medicalHistory", "__v", "procedures"];
+    const fieldsToAvoid = ["_id", "medicalHistory", "__v", "procedures", "doctorAssigned"];
 
     useEffect(() => {
         async function fetchDepartments() {
@@ -26,7 +26,6 @@ const EditPatientPage = () => {
         if (formData["department"])
             formData["department"] = department_to_id[formData["department"]];
         await updatePatient(currentPatient._id, formData);
-        getAllPatients();
         navigate("/all-patients");
     };
 

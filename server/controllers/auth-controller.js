@@ -39,6 +39,7 @@ async function login(req, res) {
     let token = auth.tokenSign(id);
       res.status(200).json({
         email: user.email,
+        name: user.name,
         isAdmin: user.isAdmin,
         doctor: user.doctor,
         department: user.department,
@@ -53,14 +54,13 @@ async function login(req, res) {
 }
 
 async function register(req, res) {
-  const { name, email, password, departmentName, phone_number } = req.body;
+  const { name, email, password, departmentName, phone_number, doctor } = req.body;
 
   try {
     // Check if the email already exists
-    const emailExists = await User.findOne({ email }).exec();
+    const emailExists = await User.findOne({ email: email.toLowerCase() });
     if (emailExists) {
-      res.status(409).send("An account with that email already exists.");
-      return;
+      return res.status(409).send("An account with that email already exists.");
     }
 
     // Hash password
@@ -68,7 +68,6 @@ async function register(req, res) {
 
     // Initialize default values for isAdmin and doctor
     const isAdmin = false; // Always false unless specified otherwise
-    const doctor = null; // Always null unless a specific doctor ObjectId is provided
 
     // Find the department's ObjectId using the departmentName
     let departmentId = null;
@@ -90,7 +89,6 @@ async function register(req, res) {
       phone_number,
       isAdmin, // Set to false by default
       doctor, // Set to null by default
-      approvalStatus: 'pending'
     });
 
     // Save the user

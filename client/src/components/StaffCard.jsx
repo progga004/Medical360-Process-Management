@@ -3,6 +3,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 const StaffCard = ({ staff }) => {
+  console.log(staff);
   return (
     <div className="bg-[#CAD6FF] p-4 rounded-lg shadow-lg max-w-xs mx-auto">
       {/* Image and Name */}
@@ -18,19 +19,19 @@ const StaffCard = ({ staff }) => {
         <h2 className="text-xl font-semibold text-center text-[#2260FF]">
           {staff.name || 'Unknown Name'}
         </h2>
-        <p className="text-center">{staff.doctor.profileDetails?.focusAreas?.join(', ')}</p>
+        <p className="text-center">{staff.profileDetails?.focusAreas?.join(', ')}</p>
       </div>
 
       {/* Bio */}
       <div className="bg-white p-2 rounded-lg mt-4 text-center">
-        <p className="text-gray-600 text-sm">{staff.doctor.profileDetails?.specialization?.join(', ')}</p>
+        <p className="text-gray-600 text-sm">{staff.profileDetails?.specialization?.join(', ')}</p>
       </div>
 
       
       {/* Info Button */}
       <div className="flex justify-center mt-4">
       <Link
-    to={`/doctorinfo/${staff.doctor._id}`}
+    to={`/doctorinfo/${staff._id}`}
     state={{ doctorName: staff.name }} className="bg-[#2260FF] text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-800 text-sm">
           Info
         </Link>

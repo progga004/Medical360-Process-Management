@@ -46,7 +46,6 @@ async function updatePatient(req, res) {
                 message: "Patient not found"
             });
         }
-        
         res.status(200).json({
             patient: updatedPatient,
             message: "Updated patient"
@@ -96,6 +95,14 @@ async function deletePatient(req, res) {
       if (!patient) {
         return res.status(404).json({
           message: "patient not found",
+        });
+      }
+      // now check if patient has doctor, get that doctor, and then delete reference
+      // to patient inside the doctors patient list
+      if (patient.doctorAssigned) {
+        await Doctor.findByIdAndUpdate(patient.doctorAssigned, 
+        {
+          $pull: { patientList: patient._id }
         });
       }
       res.status(200).json({

@@ -1,8 +1,7 @@
 import axios from "axios";
 
-// const BASE_URL = "http://localhost:3000";
 const BASE_URL = "https://medical360-d65d823d7d75.herokuapp.com";
-//const BASE_URL = "http://localhost:3000";
+// const BASE_URL = "http://localhost:3000";
 
 const api = axios.create({
   baseURL: BASE_URL,
@@ -29,7 +28,10 @@ export const getDoctor = (id) => {
   return api.get(`/doctors/${id}`);
 };
 
-
+export const createDepartment = (departmentData) => {
+  console.log("Wait here I am in store.api", departmentData);
+  api.post("/departments/", departmentData);
+};
 export const getAllDepartments = () => api.get("/departments/");
 
 export const getAllEquipments = () => api.get("/equipments/");
@@ -43,6 +45,15 @@ export const deleteEquipment = (id) => api.delete(`/equipments/${id}`);
 
 export const getAllRooms = () => api.get("/rooms/");
 
+export const getAllFeedbacks = () => api.get("/feedbacks/");
+export const createFeedback = (feedbackData) =>
+  api.post("/feedbacks/", feedbackData);
+export const getFeedback = (id) => api.get(`/feedbacks/${id}`);
+
+export const getAllBugs = () => api.get("/bugs/");
+export const createBug = (bugData) => api.post("/bugs/", bugData);
+export const getBug = (id) => api.get(`/bugs/${id}`);
+
 export const createRoom = (roomData) => api.post("/rooms/", roomData);
 
 export const updateRoom = (id, newData) => api.put(`/rooms/${id}`, newData);
@@ -53,7 +64,7 @@ export const deleteRoom = (id) => api.delete(`/rooms/${id}`);
 
 export const getDepartment = (id) => api.get(`/departments/${id}`);
 
-export const getUser = (id) =>api.get(`/users/${id}`);
+export const getUser = (id) => api.get(`/users/${id}`);
 export const updateDepartment = (id, newData) =>
   api.put(`/departments/${id}`, newData);
 
@@ -66,6 +77,7 @@ export default {
   getDoctor,
   getAllDepartments,
   getDepartment,
+  createDepartment,
   updateDepartment,
   deletePatient,
   getAllEquipments,
@@ -77,4 +89,10 @@ export default {
   deleteRoom,
   updateRoom,
   getRoom,
+  getAllBugs,
+  createBug,
+  getBug,
+  createFeedback,
+  getFeedback,
+  getAllFeedbacks,
 };
