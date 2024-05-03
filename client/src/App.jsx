@@ -40,6 +40,8 @@ import { useGlobalContext } from "./hooks/useGlobalContext";
 import AddProcedurePage from "./pages/AddProcedurePage";
 import UserInfoPage from "./pages/UserInfo";
 import MyPatientsPage from "./pages/MyPatientsPage";
+import AllFeedbacksPage from "./pages/AllFeedbacksPage";
+import AllBugsPage from "./pages/AllBugsPage";
 
 function App() {
 
@@ -57,8 +59,8 @@ function App() {
         <Route path="/login" element={!user ? <LoginForm /> : <Navigate to={lastRoute}/>} />
         <Route path="/chat" element={<ChatPage />} />
         <Route path="/all-staff" element={<AllStaffPage />} />
-        <Route path="/all-equipments" element={<AllEquipmentPage />} />
-        <Route path="/all-rooms" element={<AllRoomsPage />} />
+        <Route path="/all-equipments" element={user ? <AllEquipmentPage  /> : <Navigate to="/" />} />
+        <Route path="/all-rooms" element={user ? <AllRoomsPage /> : <Navigate to="/" />} />
         <Route path="/all-patients" element={user ? <AllPatientPage /> : <Navigate to="/" />} />
         <Route path="/all-users" element={user ? <AllUsersPage /> : <Navigate to="/" />} />
         <Route path="/book-appointment" element={<AppointmentPage />} />
@@ -103,6 +105,10 @@ function App() {
         <Route path="/admin-notification" element={<PatientNotification />} />
             <Route path="/department-form" element={< DepartmentForm/>} />
         <Route path="my-patients" element={user ? <MyPatientsPage /> : <Navigate to="/" />} />
+        <Route path="/all-feedbacks" element={user ? <AllFeedbacksPage /> : <Navigate to="/" />} />
+        <Route path="/all-bugs" element={user ? <AllBugsPage /> : <Navigate to="/" />} />
+
+
       </Routes>
     </BrowserRouter>
   );

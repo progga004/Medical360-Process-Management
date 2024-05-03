@@ -19,7 +19,10 @@ export const storeReducer = (state, action) => {
         case "bug":
           return { ...state, currentBug: action.payload };
         case "feedback":
-          return { ...state, currentFeedback: action.payload };
+          return {
+            ...state,
+            currentFeedback: action.payload,
+          };
         case "doctor":
           return { ...state, currentDoctor: action.payload };
         case "patients":
@@ -72,13 +75,13 @@ export const storeReducer = (state, action) => {
         rooms: action.payload,
         currentRoom: null,
       };
-    case "GET_ALL_BUGS":
+    case "GET_ALL_BUG":
       return {
         ...state,
         currentBug: null,
         bugs: action.payload,
       };
-    case "GET_ALL_FEEDBACKS":
+    case "GET_ALL_FEEDBACK":
       return {
         ...state,
         currentFeedback: null,
@@ -167,9 +170,97 @@ function GlobalContextProvider({ children }) {
     currentBug: null,
     currentFeedback: null,
     BASE_URL: "https://medical360-d65d823d7d75.herokuapp.com",
-    // BASE_URL: "http://localhost:3000"
+    // BASE_URL: "http://localhost:3000",
   });
   const [lastUpdated, setLastUpdated] = useState(Date.now());
+
+  // Create a new bug report
+  const createBug = async function (bugData) {
+    try {
+      const response = await fetch(`${store.BASE_URL}/bugs/`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(bugData),
+      });
+      if (response.ok) {
+        console.log("Bug report created successfully");
+        getAllBugs();
+      } else {
+        const errorData = await response.json();
+        console.error("Failed to create bug report:", errorData.message);
+      }
+    } catch (err) {
+      console.error("Error creating bug report:", err.message);
+    }
+  };
+
+  // Get all the bugs
+  const getAllBugs = async function () {
+    try {
+        const response = await fetch(`${store.BASE_URL}/bugs/all`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ Why: "god" }), 
+        });
+        if (response.status === 200) {
+            const data = await response.json(); 
+            const bugs = data.bugList; 
+
+            setStore({ type: "GET_ALL_BUG", payload: bugs });
+        } else {
+            console.error("Failed to fetch bugs:", response.status);
+        }
+    } catch (error) {
+        console.error("Error fetching bugs:", error);
+    }
+};
+
+
+  // Create a new bug report
+  const createFeedback = async function (bugData) {
+    try {
+      const response = await fetch(`${store.BASE_URL}/feedbacks`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(bugData),
+      });
+      if (response.ok) {
+        console.log("feedback created successfully");
+      } else {
+        const errorData = await response.json();
+        console.error("Failed to create feedback:", errorData.message);
+        getAllFeedback();
+      }
+    } catch (err) {
+      console.error("Error creating feedback:", err.message);
+    }
+  };
+
+  const getAllFeedback = async function () {
+    try {
+      const response = await fetch(`${store.BASE_URL}/feedbacks/all`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ Why: "god" }), 
+      });
+      if (response.status === 200) {
+        const data = await response.json(); 
+        const feedbacks = data.feedbackList; 
+
+        // Update your state or context with the fetched feedbacks
+        setStore({ type: "GET_ALL_FEEDBACK", payload: feedbacks });
+      } else {
+        console.error("Failed to fetch feedbacks:", response.status);
+      }
+    } catch (error) {
+      console.error("Error fetching feedbacks:", error);
+    }
+  };
+
   // get all users to the application
   const getAllUsers = async function () {
     console.log(`Pinging ${store.BASE_URL}/users`);
@@ -194,7 +285,7 @@ function GlobalContextProvider({ children }) {
         throw new Error("Data format error: Expected an array of users");
       }
       console.log("setting store");
-      setStore({ type: "GET_ALL_USERS", payload: users }); // Set fetched user data to state, ensuring you're setting the array
+      setStore({ type: "GET_ALL_USERS", payload: users });
     } catch (error) {
       console.error("Error fetching users:", error);
     }
@@ -679,89 +770,6 @@ function GlobalContextProvider({ children }) {
     }
   };
 
-  // Create a new bug report
-  const createBug = async function (bugData) {
-    try {
-      const response = await fetch(`${store.BASE_URL}/bugs`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(bugData),
-      });
-      if (response.ok) {
-        console.log("Bug report created successfully");
-        getAllBugs();
-      } else {
-        const errorData = await response.json();
-        console.error("Failed to create bug report:", errorData.message);
-      }
-    } catch (err) {
-      console.error("Error creating bug report:", err.message);
-    }
-  };
-
-  // Get all the bugs
-  const getAllBugs = async function () {
-    try {
-      const response = await fetch(`${store.BASE_URL}/bugs/all`, {
-        method: "POST", 
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ Why: "god" }), 
-      });
-      if (response.status === 200) {
-        let bugs = (await response.json()).bugs;
-
-        setStore({ type: "GET_ALL_BUGS", payload: bugs });
-      } else {
-        console.error("Failed to fetch bugs:", response.status);
-      }
-    } catch (error) {
-      console.error("Error fetching bugs:", error);
-    }
-  };
-
-  // Create a new bug report
-  const createFeedback = async function (bugData) {
-    try {
-      const response = await fetch(`${store.BASE_URL}/feedbacks`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(bugData),
-      });
-      if (response.ok) {
-        console.log("feedback created successfully");
-      } else {
-        const errorData = await response.json();
-        console.error("Failed to create feedback:", errorData.message);
-      }
-    } catch (err) {
-      console.error("Error creating feedback:", err.message);
-    }
-  };
-
-  // Get all the bugs
-  const getAllFeedbacks = async function () {
-    try {
-      const response = await fetch(`${store.BASE_URL}/bugs/all`, {
-        method: "POST", 
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ Why: "god" }), 
-      });
-      if (response.status === 200) {
-        let bugs = (await response.json()).feedbacks;
-
-        setStore({ type: "GET_ALL_FEEDBACKS", payload: feedbacks });
-      } else {
-        console.error("Failed to fetch feedbacks:", response.status);
-      }
-    } catch (error) {
-      console.error("Error fetching feedbacks:", error);
-    }
-  };
-
   const removeCurrentDoctor = () => {
     setStore({ type: "REMOVE_DOCTOR" });
   };
@@ -800,7 +808,7 @@ function GlobalContextProvider({ children }) {
         reset,
         getAllBugs,
         createBug,
-        getAllFeedbacks,
+        getAllFeedback,
         createFeedback,
       }}
     >

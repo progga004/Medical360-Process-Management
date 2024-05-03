@@ -25,6 +25,20 @@ const Sidebar = () => {
         )}
         {(user.name == "Admin") && (
           <li>
+            <Link to="/all-feedbacks" className="hover:underline">
+              Feedbacks
+            </Link>
+          </li>
+        )}
+        {(user.name == "Admin") && (
+          <li>
+            <Link to="/all-bugs" className="hover:underline">
+              Bugs
+            </Link>
+          </li>
+        )}
+        {(user.name == "Admin") && (
+          <li>
             <Link to="/departmentratio" className="hover:underline">
               Department Ratio
             </Link>
@@ -33,7 +47,7 @@ const Sidebar = () => {
         {(user.name == "Admin" ) && (
           <li>
             <Link to="/resource-management" className="hover:underline">
-              Resource and User Management
+              Resource Management
             </Link>
           </li>
         )}
