@@ -174,28 +174,6 @@ function GlobalContextProvider({ children }) {
   });
   const [lastUpdated, setLastUpdated] = useState(Date.now());
 
-  // Create a new bug report
-  const createBug = async function (bugData) {
-    try {
-      const response = await fetch(`${store.BASE_URL}/bugs/`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(bugData),
-      });
-      if (response.ok) {
-        console.log("Bug report created successfully");
-        getAllBugs();
-      } else {
-        const errorData = await response.json();
-        console.error("Failed to create bug report:", errorData.message);
-      }
-    } catch (err) {
-      console.error("Error creating bug report:", err.message);
-    }
-  };
-
   // Get all the bugs
   const getAllBugs = async function () {
     try {
@@ -217,28 +195,6 @@ function GlobalContextProvider({ children }) {
     }
 };
 
-
-  // Create a new bug report
-  const createFeedback = async function (bugData) {
-    try {
-      const response = await fetch(`${store.BASE_URL}/feedbacks`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(bugData),
-      });
-      if (response.ok) {
-        console.log("feedback created successfully");
-      } else {
-        const errorData = await response.json();
-        console.error("Failed to create feedback:", errorData.message);
-        getAllFeedback();
-      }
-    } catch (err) {
-      console.error("Error creating feedback:", err.message);
-    }
-  };
 
   const getAllFeedback = async function () {
     try {
@@ -788,26 +744,6 @@ function GlobalContextProvider({ children }) {
       }
     } catch (err) {
       console.error("Error creating bug report:", err.message);
-    }
-  };
-
-  // Get all the bugs
-  const getAllBugs = async function () {
-    try {
-      const response = await fetch(`${store.BASE_URL}/bugs/all`, {
-        method: "POST", 
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ Why: "god" }), 
-      });
-      if (response.status === 200) {
-        let bugs = (await response.json()).bugs;
-
-        setStore({ type: "GET_ALL_BUGS", payload: bugs });
-      } else {
-        console.error("Failed to fetch bugs:", response.status);
-      }
-    } catch (error) {
-      console.error("Error fetching bugs:", error);
     }
   };
 
