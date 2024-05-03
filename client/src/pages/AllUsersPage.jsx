@@ -4,6 +4,7 @@ import Table from "../components/Table";
 import SearchBar from "../components/SearchBar";
 import { useAuthContext } from "../hooks/useAuthContext";
 import { useGlobalContext } from "../hooks/useGlobalContext";
+import { Link } from "react-router-dom";
 
 const AllUsersPage = () => {
   const { user } = useAuthContext();
@@ -33,6 +34,11 @@ const AllUsersPage = () => {
       </div>
       <div className="flex justify-between items-center mx-8 mb-4">
         <SearchBar />
+        {user && user.isAdmin && (
+            <Link to={"/register"} className="bg-[#2260FF] text-white px-2 py-1 rounded-md font-medium text-xl">
+                New User
+            </Link>
+        )}
       </div>
       <div className="p-8">
         {users && (

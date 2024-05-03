@@ -26,7 +26,6 @@ const doctorSchema = new Schema({
   },
   experience: {
     type: String,
-    required: [true, 'Experience is required'],  
   },
   profileDetails: {
     focusAreas: [String],

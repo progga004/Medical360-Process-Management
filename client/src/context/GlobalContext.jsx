@@ -139,8 +139,8 @@ export const storeReducer = (state, action) => {
         currentDoctor: null,
         currentBug: null,
         currentFeedback: null,
-        // BASE_URL: "https://medical360-d65d823d7d75.herokuapp.com",
-        BASE_URL: "http://localhost:3000",
+        BASE_URL: "https://medical360-d65d823d7d75.herokuapp.com",
+        // BASE_URL: "http://localhost:3000",
       };
   }
 };
@@ -742,6 +742,48 @@ function GlobalContextProvider({ children }) {
     }
   };
 
+  const createDoctor = async function (doctorData) {
+    try {
+      console.log(doctorData);
+      const response = await fetch(`${store.BASE_URL}/doctors/create`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(doctorData),
+      });
+      if (response.ok) {
+        console.log("doctor created successfully");
+        return await response.json();
+      } else {
+        const errorData = await response.json();
+        console.error("Failed to create doctor:", errorData.message);
+      }
+    } catch (err) {
+      console.error("Error creating doctor:", err.message);
+    }
+  }
+
+  const createUser = async function (userData) {
+    try {
+      const response = await fetch(`${store.BASE_URL}/auth/register`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(userData),
+      });
+      if (response.ok) {
+        console.log("user created successfully");
+      } else {
+        const errorData = await response.json();
+        console.error("Failed to create user:", errorData.message);
+      }
+    } catch (err) {
+      console.error("Error creating user:", err.message);
+    }
+  }
+
   // Get all the bugs
   const getAllFeedbacks = async function () {
     try {
@@ -802,6 +844,8 @@ function GlobalContextProvider({ children }) {
         createBug,
         getAllFeedbacks,
         createFeedback,
+        createDoctor,
+        createUser,
       }}
     >
       {children}
