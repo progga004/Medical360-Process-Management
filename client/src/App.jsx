@@ -32,7 +32,6 @@ import EditPatientPage from "./pages/EditPatientPage";
 import PatientNotification from "./pages/PatientNotification";
 import AllUsersPage from "./pages/AllUsersPage";
 import EditUserPage from "./pages/EditUserPage";
-import UserApprovalPage from "./pages/UserApprovalsPage";
 
 import DepartmentForm from "./pages/DepartmentForm";
 import { useAuthContext } from "./hooks/useAuthContext";
@@ -89,7 +88,6 @@ function App() {
           path="/resource-management"
           element={<ResourceManagementPage />}
         />
-        <Route path="/user-approvals" element={<UserApprovalPage />} />
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route
           path="/edit-patient-user-info"
