@@ -44,6 +44,9 @@ const departmentRouter = require("./routes/department-router");
 const roomRouter = require("./routes/room-router");
 const equipmentRouter = require("./routes/equipment-router");
 const doctorRouter = require("./routes/doctor-router");
+const feedbackRouter = require("./routes/feedback-router");
+const bugRouter = require("./routes/bug-router");
+
 
 
 app.use("/patients", patientRouter);
@@ -54,6 +57,8 @@ app.use("/departments", departmentRouter);
 app.use("/rooms", roomRouter);
 app.use("/equipments", equipmentRouter);
 app.use("/doctors", doctorRouter);
+app.use("/feedbacks", feedbackRouter);
+app.use("/bugs", bugRouter);
 
 
 

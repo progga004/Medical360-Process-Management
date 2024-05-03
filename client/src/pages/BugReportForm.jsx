@@ -8,9 +8,6 @@ const BugReport = () => {
 
     const fields = [
         { name: 'Contact Name', initialValue: '', editable: true },
-        { name: 'Street', initialValue: '', editable: true },
-        { name: 'City', initialValue: '', editable: true },
-        { name: 'Zipcode', initialValue: '', editable: true },
         { name: 'Phone', initialValue: '', editable: true },
         { name: 'Email', initialValue: '', editable: true },
         { name: 'Bug encountered', initialValue: '', editable: true }
