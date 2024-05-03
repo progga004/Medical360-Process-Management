@@ -7,67 +7,82 @@ const GlobalContext = createContext();
 export const storeReducer = (state, action) => {
   switch (action.type) {
     case "GET_RESOURCE":
-
       switch (action.context) {
         case "patient":
           return { ...state, currentPatient: action.payload };
         case "department":
           return { ...state, currentDepartment: action.payload };
         case "equipment":
-          return { ...state, currentEquipment: action.payload};
+          return { ...state, currentEquipment: action.payload };
         case "room":
-          return { ...state, currentRoom: action.payload};
+          return { ...state, currentRoom: action.payload };
+        case "bug":
+          return { ...state, currentBug: action.payload };
+        case "feedback":
+          return { ...state, currentFeedback: action.payload };
         case "doctor":
           return { ...state, currentDoctor: action.payload };
         case "patients":
-          return { ... state, currentPatient: null, patients: action.payload}
+          return { ...state, currentPatient: null, patients: action.payload };
         default:
           return state;
       }
     case "REMOVE_DOCTOR":
-      return { ...state, currentDoctor: null }
+      return { ...state, currentDoctor: null };
     case "GET_ALL_USERS":
       return {
         ...state,
-        users: action.payload
-      }
-      case "GET_ALL_PENDINGUSERS":
+        users: action.payload,
+      };
+    case "GET_ALL_PENDINGUSERS":
       return {
         ...state,
-        users: action.payload
-      }
-      
+        users: action.payload,
+      };
+
     case "GET_ALL_PATIENTS":
       return {
         ...state,
         currentPatient: null,
-        patients: action.payload
+        patients: action.payload,
       };
     case "GET_ALL_DOCTORS":
-        return {
-          ...state,
-          currentDoctor: null,
-          doctors: action.payload
-        };
+      return {
+        ...state,
+        currentDoctor: null,
+        doctors: action.payload,
+      };
     case "GET_ALL_EQUIPMENT":
       return {
         ...state,
         equipments: action.payload.equipments,
         id_to_equipment: action.payload.equipmentMapping,
-        equipment_to_id: action.payload.swappedMap
+        equipment_to_id: action.payload.swappedMap,
       };
     case "GET_ALL_DEPARTMENTS":
       return {
         ...state,
         departments: action.payload.departments,
         id_to_department: action.payload.id_to_department,
-        department_to_id: action.payload.department_to_id
+        department_to_id: action.payload.department_to_id,
       };
     case "GET_ALL_ROOMS":
       return {
         ...state,
         rooms: action.payload,
         currentRoom: null,
+      };
+    case "GET_ALL_BUGS":
+      return {
+        ...state,
+        currentBug: null,
+        bugs: action.payload,
+      };
+    case "GET_ALL_FEEDBACKS":
+      return {
+        ...state,
+        currentFeedback: null,
+        feedbacks: action.payload,
       };
     case "DELETE":
       // delete based on value passes as context
@@ -76,24 +91,28 @@ export const storeReducer = (state, action) => {
           return {
             ...state,
             currentPatient: null,
-            patients: state.patients.filter(patient => patient._id !== action.payload)
+            patients: state.patients.filter(
+              (patient) => patient._id !== action.payload
+            ),
           };
         case "equipment":
           return {
             ...state,
             currentEquipment: null,
-            equipments: state.equipments.filter(equipment => equipment._id !== action.payload)
+            equipments: state.equipments.filter(
+              (equipment) => equipment._id !== action.payload
+            ),
           };
         case "room":
           return {
             ...state,
             currentRoom: null,
-            rooms: state.rooms.filter(room => room._id !== action.payload)
+            rooms: state.rooms.filter((room) => room._id !== action.payload),
           };
         case "user":
           return {
             ...state,
-            users: state.users.filter(user => user._id !== action.payload)
+            users: state.users.filter((user) => user._id !== action.payload),
           };
         default:
           return state;
@@ -106,7 +125,9 @@ export const storeReducer = (state, action) => {
         patients: null,
         departments: null,
         rooms: null,
-        equipments:null,
+        equipments: null,
+        feedbacks: null,
+        bugs: null,
         id_to_department: {},
         department_to_id: {},
         id_to_equipment: {},
@@ -116,12 +137,13 @@ export const storeReducer = (state, action) => {
         currentEquipment: null,
         currentRoom: null,
         currentDoctor: null,
-       BASE_URL: "https://medical360-d65d823d7d75.herokuapp.com"
-        // BASE_URL: "http://localhost:3000"
-      }
+        currentBug: null,
+        currentFeedback: null,
+        BASE_URL: "https://medical360-d65d823d7d75.herokuapp.com",
+        // BASE_URL: "http://localhost:3000",
+      };
   }
-} 
-
+};
 
 function GlobalContextProvider({ children }) {
   const [store, setStore] = useReducer(storeReducer, {
@@ -130,7 +152,9 @@ function GlobalContextProvider({ children }) {
     patients: null,
     departments: null,
     rooms: null,
-    equipments:null,
+    equipments: null,
+    feedbacks: null,
+    bugs: null,
     id_to_department: {},
     department_to_id: {},
     id_to_equipment: {},
@@ -140,45 +164,45 @@ function GlobalContextProvider({ children }) {
     currentEquipment: null,
     currentRoom: null,
     currentDoctor: null,
-    BASE_URL: "https://medical360-d65d823d7d75.herokuapp.com"
-    //BASE_URL: "http://localhost:3000"
-
+    currentBug: null,
+    currentFeedback: null,
+    BASE_URL: "https://medical360-d65d823d7d75.herokuapp.com",
+    // BASE_URL: "http://localhost:3000"
   });
   const [lastUpdated, setLastUpdated] = useState(Date.now());
   // get all users to the application
-  const getAllUsers = async function() {
-    console.log(`Pinging ${store.BASE_URL}/users`)
+  const getAllUsers = async function () {
+    console.log(`Pinging ${store.BASE_URL}/users`);
     try {
       const response = await fetch(`${store.BASE_URL}/users`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({"Why": "God"})
+        body: JSON.stringify({ Why: "God" }),
       });
       if (!response.ok) {
         throw new Error("Failed to fetch users");
       }
       let json = await response.json(); // This should be the array directly
-      console.log(json)
+      console.log(json);
       let users = json.users;
-      console.log(users)
+      console.log(users);
       if (!Array.isArray(users)) {
         // Check if the data is an array
         console.error("Expected an array of users, received:", users);
         throw new Error("Data format error: Expected an array of users");
       }
-      console.log("setting store")
+      console.log("setting store");
       setStore({ type: "GET_ALL_USERS", payload: users }); // Set fetched user data to state, ensuring you're setting the array
     } catch (error) {
       console.error("Error fetching users:", error);
     }
-  }
-
+  };
 
   const reset = () => {
-    setStore({ type: "RESET" })
-  }
+    setStore({ type: "RESET" });
+  };
 
   // create patient with given data
   const createPatient = async function (data) {
@@ -189,7 +213,7 @@ function GlobalContextProvider({ children }) {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(data)
+        body: JSON.stringify(data),
       });
       if (response.ok) {
         console.log("patient created");
@@ -208,14 +232,17 @@ function GlobalContextProvider({ children }) {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(data)
+        body: JSON.stringify(data),
       });
 
       if (response.ok) {
         const new_patient = (await response.json()).patient;
-        setStore({ type: "GET_RESOURCE", context: "patient", payload: new_patient});
+        setStore({
+          type: "GET_RESOURCE",
+          context: "patient",
+          payload: new_patient,
+        });
       }
-
     } catch (err) {
       console.log(err.message);
     }
@@ -229,12 +256,16 @@ function GlobalContextProvider({ children }) {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({id})
+        body: JSON.stringify({ id }),
       });
       if (response.ok) {
         const patient = (await response.json()).patient;
-        setStore({ type: "GET_RESOURCE", context: "patient", payload: patient});
-        return patient
+        setStore({
+          type: "GET_RESOURCE",
+          context: "patient",
+          payload: patient,
+        });
+        return patient;
       }
     } catch (err) {
       console.log(err.message);
@@ -245,27 +276,33 @@ function GlobalContextProvider({ children }) {
   const getAllPatients = async function () {
     const response = await fetch(`${store.BASE_URL}/patients/all`, {
       method: "POST",
-      headers: {"Content-Type": "application/json"},
-      body: JSON.stringify({"Why": "god"})
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ Why: "god" }),
     });
     if (response.status === 200) {
       const patients = (await response.json()).patients;
-      setStore({ type: "GET_ALL_PATIENTS", payload: patients});
+      setStore({ type: "GET_ALL_PATIENTS", payload: patients });
     }
   };
 
   const setPatients = async function (listOfPatientIds) {
     const response = await fetch(`${store.BASE_URL}/patients/all`, {
       method: "POST",
-      headers: {"Content-Type": "application/json"},
-      body: JSON.stringify({"Why": "god"})
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ Why: "god" }),
     });
     if (response.ok) {
       let patients = (await response.json()).patients;
-      patients = patients.filter(patient => listOfPatientIds.includes(patient._id));
-      setStore({ type: "GET_RESOURCE", context: "patients", payload: patients});
+      patients = patients.filter((patient) =>
+        listOfPatientIds.includes(patient._id)
+      );
+      setStore({
+        type: "GET_RESOURCE",
+        context: "patients",
+        payload: patients,
+      });
     }
-  }
+  };
 
   // get room by id
   const getRoom = async function (id) {
@@ -275,11 +312,11 @@ function GlobalContextProvider({ children }) {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({id})
+        body: JSON.stringify({ id }),
       });
       if (response.ok) {
         const room = (await response.json()).room;
-        setStore({ type: "GET_RESOURCE", context: "room", payload: room});
+        setStore({ type: "GET_RESOURCE", context: "room", payload: room });
       }
     } catch (err) {
       console.log(err.message);
@@ -292,11 +329,11 @@ function GlobalContextProvider({ children }) {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({id})
+        body: JSON.stringify({ id }),
       });
       if (response.ok) {
         const user = (await response.json()).user;
-        setStore({ type: "GET_RESOURCE", context: "user", payload: user});
+        setStore({ type: "GET_RESOURCE", context: "user", payload: user });
         return user;
       }
     } catch (err) {
@@ -309,8 +346,8 @@ function GlobalContextProvider({ children }) {
     try {
       const response = await fetch(`${store.BASE_URL}/rooms/all`, {
         method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({"Why": "god"})
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ Why: "god" }),
       });
       if (response.status === 200) {
         let rooms = (await response.json()).rooms;
@@ -318,7 +355,7 @@ function GlobalContextProvider({ children }) {
           !store.id_to_equipment ||
           Object.keys(store.id_to_equipment).length === 0
         ) {
-          await getAllEquipments(); 
+          await getAllEquipments();
         }
 
         // Add equipment names to each room
@@ -331,7 +368,6 @@ function GlobalContextProvider({ children }) {
 
         setStore({ type: "GET_ALL_ROOMS", payload: roomsWithEquipmentNames });
       }
-
     } catch (error) {
       console.error("Error fetching rooms:", error);
     }
@@ -345,15 +381,15 @@ function GlobalContextProvider({ children }) {
       if (response.status === 201) {
         setStore({
           type: "CREATE_ROOM",
-          payload: response.data  
-      });
+          payload: response.data,
+        });
 
-      // Update last updated time or handle other side effects
-      setLastUpdated(Date.now());
-      
+        // Update last updated time or handle other side effects
+        setLastUpdated(Date.now());
+
         console.log("room created");
         return response;
-    }
+      }
     } catch (err) {
       console.log(err.message);
     }
@@ -367,7 +403,7 @@ function GlobalContextProvider({ children }) {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(data)
+        body: JSON.stringify(data),
       });
       if (response.ok) {
         console.log((await response.json()).room);
@@ -381,8 +417,8 @@ function GlobalContextProvider({ children }) {
   const getAllEquipments = async function () {
     const response = await fetch(`${store.BASE_URL}/equipments/all`, {
       method: "POST",
-      headers: {"Content-Type": "application/json"},
-      body: JSON.stringify({"Why": "god"})
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ Why: "god" }),
     });
 
     if (response.status === 200) {
@@ -391,12 +427,18 @@ function GlobalContextProvider({ children }) {
         acc[equipment._id] = equipment.equipmentName; // Store only the equipment name
         return acc;
       }, {});
-      console.log(equipmentMapping)
-      const swappedMap = Object.entries(equipmentMapping).reduce((acc, [id, name]) => {
-        acc[name] = id;
-        return acc;
-      }, {});
-      setStore({ type: "GET_ALL_EQUIPMENT", payload: {equipments, equipmentMapping, swappedMap} });
+      console.log(equipmentMapping);
+      const swappedMap = Object.entries(equipmentMapping).reduce(
+        (acc, [id, name]) => {
+          acc[name] = id;
+          return acc;
+        },
+        {}
+      );
+      setStore({
+        type: "GET_ALL_EQUIPMENT",
+        payload: { equipments, equipmentMapping, swappedMap },
+      });
     }
     return response;
   };
@@ -409,11 +451,15 @@ function GlobalContextProvider({ children }) {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({id})
+        body: JSON.stringify({ id }),
       });
       if (response.ok) {
         const equipment = (await response.json()).equipment;
-        setStore({ type: "GET_RESOURCE", context: "equipment", payload: equipment});
+        setStore({
+          type: "GET_RESOURCE",
+          context: "equipment",
+          payload: equipment,
+        });
       }
     } catch (err) {
       console.log(err.message);
@@ -422,21 +468,21 @@ function GlobalContextProvider({ children }) {
 
   // update equipment by id with data
   const updateEquipment = async function (id, data) {
-  try {
-    const response = await fetch(`${store.BASE_URL}/equipments/${id}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data)
-    });
-    if (response.ok) {
-      console.log((await response.json()).equipment);
+    try {
+      const response = await fetch(`${store.BASE_URL}/equipments/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+      if (response.ok) {
+        console.log((await response.json()).equipment);
+      }
+    } catch (err) {
+      console.log(err.message);
     }
-  } catch (err) {
-    console.log(err.message);
-  }
-};
+  };
 
   // delete a equipment
   const deleteEquipment = async function (id) {
@@ -451,7 +497,7 @@ function GlobalContextProvider({ children }) {
       console.log(err.message);
     }
   };
-  //delete a room 
+  //delete a room
   const deleteRoom = async function (id) {
     try {
       const response = await storeApi.deleteRoom(id);
@@ -474,8 +520,8 @@ function GlobalContextProvider({ children }) {
         // headers: {
         //   "Content-Type": "application/json",
         // },
-       // body: JSON.stringify(data)
-       body:data
+        // body: JSON.stringify(data)
+        body: data,
       });
       if (response.ok) {
         console.log("department created");
@@ -506,12 +552,16 @@ function GlobalContextProvider({ children }) {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({id})
+        body: JSON.stringify({ id }),
       });
       if (response.ok) {
         const department = (await response.json()).department;
-        setStore({ type: "GET_RESOURCE", context: "department", payload: department });
-         return department;
+        setStore({
+          type: "GET_RESOURCE",
+          context: "department",
+          payload: department,
+        });
+        return department;
       }
     } catch (err) {
       console.log(err.message);
@@ -524,7 +574,7 @@ function GlobalContextProvider({ children }) {
       const response = await fetch(store.BASE_URL + "/departments/all", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({"email": "hello there"})
+        body: JSON.stringify({ email: "hello there" }),
       });
       const json = await response.json();
       if (response.status === 200) {
@@ -539,7 +589,10 @@ function GlobalContextProvider({ children }) {
             key,
           ])
         );
-        setStore({ type: "GET_ALL_DEPARTMENTS", payload: {departments, id_to_department, department_to_id} });
+        setStore({
+          type: "GET_ALL_DEPARTMENTS",
+          payload: { departments, id_to_department, department_to_id },
+        });
       }
     } catch (err) {
       console.log(err);
@@ -549,11 +602,11 @@ function GlobalContextProvider({ children }) {
   const deletePatient = async function (id) {
     try {
       const response = await fetch(`${store.BASE_URL}/patients/${id}`, {
-        method: "DELETE"
+        method: "DELETE",
       });
       if (response.ok) {
         console.log("deleted Patient");
-        setStore({ type: "DELETE", context: "patient", payload: id})
+        setStore({ type: "DELETE", context: "patient", payload: id });
       }
     } catch (err) {
       console.log(err.message);
@@ -565,7 +618,7 @@ function GlobalContextProvider({ children }) {
       const response = await userApi.deleteUser(id);
       if (response.status === 200) {
         console.log("deleted user");
-        setStore({ type: "DELETE", context: "user", payload: id })
+        setStore({ type: "DELETE", context: "user", payload: id });
       }
     } catch (err) {
       console.log(err.message);
@@ -579,19 +632,18 @@ function GlobalContextProvider({ children }) {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({"Why": "God"})
+        body: JSON.stringify({ Why: "God" }),
       });
       if (!response.ok) {
         throw new Error("Failed to fetch users");
       }
 
       const doctors = (await response.json()).doctors;
-      setStore({ type: "GET_ALL_DOCTORS", payload: doctors })
-
+      setStore({ type: "GET_ALL_DOCTORS", payload: doctors });
     } catch (err) {
       console.log(err.message);
     }
-  }
+  };
 
   const updateDoctor = async function (id, data) {
     try {
@@ -600,7 +652,7 @@ function GlobalContextProvider({ children }) {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(data)
+        body: JSON.stringify(data),
       });
     } catch (err) {
       console.log(err.message);
@@ -615,11 +667,11 @@ function GlobalContextProvider({ children }) {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({id})
+        body: JSON.stringify({ id }),
       });
       if (response.ok) {
         const doctor = (await response.json()).doctor;
-        setStore({ type: "GET_RESOURCE", context: "doctor", payload: doctor});
+        setStore({ type: "GET_RESOURCE", context: "doctor", payload: doctor });
         return doctor;
       }
     } catch (err) {
@@ -627,9 +679,92 @@ function GlobalContextProvider({ children }) {
     }
   };
 
+  // Create a new bug report
+  const createBug = async function (bugData) {
+    try {
+      const response = await fetch(`${store.BASE_URL}/bugs`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(bugData),
+      });
+      if (response.ok) {
+        console.log("Bug report created successfully");
+        getAllBugs();
+      } else {
+        const errorData = await response.json();
+        console.error("Failed to create bug report:", errorData.message);
+      }
+    } catch (err) {
+      console.error("Error creating bug report:", err.message);
+    }
+  };
+
+  // Get all the bugs
+  const getAllBugs = async function () {
+    try {
+      const response = await fetch(`${store.BASE_URL}/bugs/all`, {
+        method: "POST", 
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ Why: "god" }), 
+      });
+      if (response.status === 200) {
+        let bugs = (await response.json()).bugs;
+
+        setStore({ type: "GET_ALL_BUGS", payload: bugs });
+      } else {
+        console.error("Failed to fetch bugs:", response.status);
+      }
+    } catch (error) {
+      console.error("Error fetching bugs:", error);
+    }
+  };
+
+  // Create a new bug report
+  const createFeedback = async function (bugData) {
+    try {
+      const response = await fetch(`${store.BASE_URL}/feedbacks`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(bugData),
+      });
+      if (response.ok) {
+        console.log("feedback created successfully");
+      } else {
+        const errorData = await response.json();
+        console.error("Failed to create feedback:", errorData.message);
+      }
+    } catch (err) {
+      console.error("Error creating feedback:", err.message);
+    }
+  };
+
+  // Get all the bugs
+  const getAllFeedbacks = async function () {
+    try {
+      const response = await fetch(`${store.BASE_URL}/bugs/all`, {
+        method: "POST", 
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ Why: "god" }), 
+      });
+      if (response.status === 200) {
+        let bugs = (await response.json()).feedbacks;
+
+        setStore({ type: "GET_ALL_FEEDBACKS", payload: feedbacks });
+      } else {
+        console.error("Failed to fetch feedbacks:", response.status);
+      }
+    } catch (error) {
+      console.error("Error fetching feedbacks:", error);
+    }
+  };
+
   const removeCurrentDoctor = () => {
     setStore({ type: "REMOVE_DOCTOR" });
-  }
+  };
 
   return (
     <GlobalContext.Provider
@@ -662,7 +797,11 @@ function GlobalContextProvider({ children }) {
         getDoctor,
         getUser,
         setPatients,
-        reset
+        reset,
+        getAllBugs,
+        createBug,
+        getAllFeedbacks,
+        createFeedback,
       }}
     >
       {children}

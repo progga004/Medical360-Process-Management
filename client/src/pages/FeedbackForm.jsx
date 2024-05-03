@@ -1,8 +1,11 @@
 import React, { useState } from "react";
-import { InformationCircleIcon, StarIcon } from "@heroicons/react/solid";
-import { QuestionMarkCircleIcon } from "@heroicons/react/outline";
-import AccountCircle from "../components/AccountCircle";
+import { useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { StarIcon } from "@heroicons/react/solid";
 import Banner from "../components/Banner";
+import { useGlobalContext } from "../hooks/useGlobalContext";
+
 const FeedbackForm = () => {
   const [feedback, setFeedback] = useState({
     name: "",
@@ -10,6 +13,8 @@ const FeedbackForm = () => {
     comments: "",
     rating: 0,
   });
+  const { createFeedback } = useGlobalContext();
+  const navigate = useNavigate();
 
   const handleRating = (ratingValue) => {
     setFeedback({ ...feedback, rating: ratingValue });
@@ -20,14 +25,26 @@ const FeedbackForm = () => {
     setFeedback({ ...feedback, [name]: value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Logic to submit feedback
-    console.log(feedback);
+    try {
+      await createFeedback(feedback);
+      toast.success('Feedback has been submitted successfully!', {
+        position: "top-center",
+        autoClose: 1000,
+        onClose: () => navigate("/apppage") 
+      });
+    } catch (error) {
+      toast.error('Failed to submit feedback. Please try again later.', {
+        position: "top-center",
+        autoClose: 1000
+      });
+    }
   };
 
   return (
     <>
+      <ToastContainer />
       <Banner goBackPath={"/apppage"} />
       <div className="flex justify-center items-center h-screen bg-gray-100">
         <div className="bg-white p-10 rounded-lg shadow-lg w-full max-w-2xl">
@@ -89,6 +106,7 @@ const FeedbackForm = () => {
             <div className="flex justify-between mt-8">
               <button
                 type="button"
+                onClick={() => navigate("/apppage")}
                 className="px-4 py-2 rounded text-gray-700 border border-gray-300 shadow-sm hover:bg-gray-100"
               >
                 Cancel
