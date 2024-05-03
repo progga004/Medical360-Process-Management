@@ -3,24 +3,6 @@ const fs = require('fs');
 const crypto = require('crypto');
 const multer = require('multer');
 const path=require('path');
-// Ensure the uploads directory exists
-// const uploadsDir = path.join(__dirname, '../uploads');
-// fs.mkdirSync(uploadsDir, { recursive: true });
-
-// var storage = multer.diskStorage({
-//     destination: function (req, file, cb) {
-//         cb(null, uploadsDir)
-//     },
-//     filename: function (req, file, cb) {
-//         crypto.pseudoRandomBytes(16, function (err, raw) {
-//             if (err) return cb(err);
-//             const fileExt = path.extname(file.originalname); // Get the file extension from the original file name
-//             cb(null, raw.toString('hex') + Date.now() + fileExt); // Append the original file extension
-//         });
-//     }
-// });
-
-// const upload = multer({ storage: storage });
 async function createDepartment(req, res) {
   const newDepartment = new Department({
       departmentName: req.body.Name,

@@ -50,24 +50,6 @@ var storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-// // POST route to create a new department with image upload
-// router.post('/department', upload.single('Icon'), (req, res) => {
-//     console.log("here I am");
-//     const newDepartment = new Department({
-       
-//         departmentName: req.body.Name,
-//         // Assuming `file` is the file object provided by multer in the request after upload
-
-//         // iconPath: req.file ? req.file.path : null  
-//         iconPath: req.file ? `uploads/${req.file.filename}` : null
-//     });
-
-//     newDepartment.save()
-//         .then(department => res.status(201).json(department))
-//         .catch(error => res.status(400).json({ error: 'Error saving department: ' + error }));
-// });
-
-
 
  //get all departments
 router.get('/alldepartments', (req, res) => {
