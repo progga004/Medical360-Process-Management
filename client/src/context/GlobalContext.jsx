@@ -769,6 +769,130 @@ function GlobalContextProvider({ children }) {
       console.log(err.message);
     }
   };
+  // Create a new bug report
+  const createBug = async function (bugData) {
+    try {
+      const response = await fetch(`${store.BASE_URL}/bugs`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(bugData),
+      });
+      if (response.ok) {
+        console.log("Bug report created successfully");
+        getAllBugs();
+      } else {
+        const errorData = await response.json();
+        console.error("Failed to create bug report:", errorData.message);
+      }
+    } catch (err) {
+      console.error("Error creating bug report:", err.message);
+    }
+  };
+
+  // Get all the bugs
+  const getAllBugs = async function () {
+    try {
+      const response = await fetch(`${store.BASE_URL}/bugs/all`, {
+        method: "POST", 
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ Why: "god" }), 
+      });
+      if (response.status === 200) {
+        let bugs = (await response.json()).bugs;
+
+        setStore({ type: "GET_ALL_BUGS", payload: bugs });
+      } else {
+        console.error("Failed to fetch bugs:", response.status);
+      }
+    } catch (error) {
+      console.error("Error fetching bugs:", error);
+    }
+  };
+
+  // Create a new bug report
+  const createFeedback = async function (bugData) {
+    try {
+      const response = await fetch(`${store.BASE_URL}/feedbacks`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(bugData),
+      });
+      if (response.ok) {
+        console.log("feedback created successfully");
+      } else {
+        const errorData = await response.json();
+        console.error("Failed to create feedback:", errorData.message);
+      }
+    } catch (err) {
+      console.error("Error creating feedback:", err.message);
+    }
+  };
+
+  const createDoctor = async function (doctorData) {
+    try {
+      console.log(doctorData);
+      const response = await fetch(`${store.BASE_URL}/doctors/create`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(doctorData),
+      });
+      if (response.ok) {
+        console.log("doctor created successfully");
+        return await response.json();
+      } else {
+        const errorData = await response.json();
+        console.error("Failed to create doctor:", errorData.message);
+      }
+    } catch (err) {
+      console.error("Error creating doctor:", err.message);
+    }
+  }
+
+  const createUser = async function (userData) {
+    try {
+      const response = await fetch(`${store.BASE_URL}/auth/register`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(userData),
+      });
+      if (response.ok) {
+        console.log("user created successfully");
+      } else {
+        const errorData = await response.json();
+        console.error("Failed to create user:", errorData.message);
+      }
+    } catch (err) {
+      console.error("Error creating user:", err.message);
+    }
+  }
+
+  // Get all the bugs
+  const getAllFeedbacks = async function () {
+    try {
+      const response = await fetch(`${store.BASE_URL}/bugs/all`, {
+        method: "POST", 
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ Why: "god" }), 
+      });
+      if (response.status === 200) {
+        let bugs = (await response.json()).feedbacks;
+
+        setStore({ type: "GET_ALL_FEEDBACKS", payload: feedbacks });
+      } else {
+        console.error("Failed to fetch feedbacks:", response.status);
+      }
+    } catch (error) {
+      console.error("Error fetching feedbacks:", error);
+    }
+  };
 
   const removeCurrentDoctor = () => {
     setStore({ type: "REMOVE_DOCTOR" });
@@ -810,6 +934,8 @@ function GlobalContextProvider({ children }) {
         createBug,
         getAllFeedback,
         createFeedback,
+        createDoctor,
+        createUser,
       }}
     >
       {children}
