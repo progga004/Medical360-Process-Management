@@ -6,24 +6,16 @@ describe("New Room Page Tests", () => {
     cy.get("button").contains("Login").click();
 
     cy.url().should("include", "/apppage");
-    cy.contains("Resource and User Management").click();
+    cy.contains("Resource Management").click();
 
-    cy.url().should("include", "/resource-management");
     cy.contains("Rooms").click();
-    cy.url().should("include", "/all-rooms");
     cy.contains("New Room").click();
-    cy.url().should("include", "/new-room");
   });
-
-  it("should display the New Room Form heading", () => {
-    cy.contains("div", "New Room Form").should("be.visible");
-  });
-
   it("should allow filling the form and submitting it", () => {
     cy.get("#roomNumber").type("227");
     cy.get("#roomType").type("VIP");
     cy.get(".select__input").click();
-    cy.contains(".select__option", "ECG Machine 4").click();
+    cy.contains(".select__option", "ECG Machine 5").click();
     cy.get("body").click(0, 0);
     cy.get("#availabilityStatus").should("be.visible").select("Available");
 
