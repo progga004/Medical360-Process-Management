@@ -40,6 +40,7 @@ import { useGlobalContext } from "./hooks/useGlobalContext";
 import AddProcedurePage from "./pages/AddProcedurePage";
 import UserInfoPage from "./pages/UserInfo";
 import MyPatientsPage from "./pages/MyPatientsPage";
+import ChangePasswordPage from "./pages/ChangePasswordPage";
 
 function App() {
 
@@ -102,7 +103,8 @@ function App() {
         <Route path="/departmentratio" element={<DepartmentRatioPage />} />
         <Route path="/admin-notification" element={<PatientNotification />} />
             <Route path="/department-form" element={< DepartmentForm/>} />
-        <Route path="my-patients" element={user ? <MyPatientsPage /> : <Navigate to="/" />} />
+        <Route path="/my-patients" element={user ? <MyPatientsPage /> : <Navigate to="/" />} />
+        <Route path="/change-password/:id" element={<ChangePasswordPage />} />
       </Routes>
     </BrowserRouter>
   );
