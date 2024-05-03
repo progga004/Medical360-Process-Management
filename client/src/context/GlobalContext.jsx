@@ -143,7 +143,7 @@ export const storeReducer = (state, action) => {
         currentBug: null,
         currentFeedback: null,
         BASE_URL: "https://medical360-d65d823d7d75.herokuapp.com",
-        // BASE_URL: "http://localhost:3000",
+         //BASE_URL: "http://localhost:3000",
       };
   }
 };
@@ -170,7 +170,7 @@ function GlobalContextProvider({ children }) {
     currentBug: null,
     currentFeedback: null,
     BASE_URL: "https://medical360-d65d823d7d75.herokuapp.com",
-    // BASE_URL: "http://localhost:3000",
+     //BASE_URL: "http://localhost:3000",
   });
   const [lastUpdated, setLastUpdated] = useState(Date.now());
 

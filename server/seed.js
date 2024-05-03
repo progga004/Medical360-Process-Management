@@ -103,12 +103,14 @@ db.once("open", async () => {
         departmentName: departments[i],
         head: doctor._id, // Head can be added later
         headModel: departments[i],
+        doctorList:[],
       });
 
       await dep.save();
 
       department_ids.push(dep._id);
 
+      
       // update user and doctor with department
       await User.findOneAndUpdate({ _id: user._id }, { department: dep._id });
 
@@ -123,9 +125,10 @@ db.once("open", async () => {
     const doctors = [];
     for (let i = 0; i < 30; i++) {
       const name = chance.name();
+      const departmentId = chance.pickone(department_ids); 
       const doctor = new Doctor({
         name: name,
-        departmentName: chance.pickone(department_ids),
+        departmentName: departmentId,
         surgeryCount: chance.integer({min: 0, max: 1000}),
         appointmentNo: chance.integer({min: 1000, max: 9999}),
         hours: chance.integer({min: 20, max: 60}),
@@ -154,13 +157,19 @@ db.once("open", async () => {
         email,
         passwordHash,
         isAdmin,
-        department, // Set department reference
+        department:departmentId, // Set department reference
         doctor: doctor._id,
       });
       doctors.push(doctor);
       users.push(user);
-    }
+      const departmentDoc = await Department.findById(departmentId);
+  if (departmentDoc) {
+    departmentDoc.doctorList.push(doctor._id);
+    await departmentDoc.save();
+  }
 
+    }
+    
     await User.insertMany(users);
     await Doctor.insertMany(doctors);
 

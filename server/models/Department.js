@@ -9,7 +9,6 @@ const departmentSchema = new Schema({
      },
      head: {
         type: mongoose.Schema.Types.ObjectId,
-        // refPath: 'headModel',
         ref:'Doctor',
         required: false,
     },
@@ -28,7 +27,7 @@ const departmentSchema = new Schema({
         required: false
     },
 
-})
+},{ strict: false })
 
 const Department = mongoose.model('Department',departmentSchema)
 module.exports = Department;
