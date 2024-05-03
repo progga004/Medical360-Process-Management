@@ -2,10 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Banner from '../components/Banner';
 import { useGlobalContext } from '../hooks/useGlobalContext';
+import { Link } from 'react-router-dom';
 
 const UserInfoPage = () => {
   const { id } = useParams();
-  const navigate = useNavigate();
   const { getUser, getDepartment } = useGlobalContext();
   const [user, setUser] = useState(null);
 
@@ -51,6 +51,11 @@ const UserInfoPage = () => {
                 <p className="text-gray-600">{user.isAdmin|| "not an admin"}</p>
               </div>
             </div>
+          </div>
+          <div className="flex justify-center mt-8">
+            <Link to={`/change-password/${id}`} state={user}>
+              <button className="bg-red-500 text-white px-4 py-2 rounded-md shadow-md hover:bg-red-600 transition-colors">Change Password</button>
+            </Link>
           </div>
         </div>
       </div>

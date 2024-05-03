@@ -123,7 +123,7 @@ db.once("open", async () => {
     // Populate users that are doctors and not heads
     const users = [];
     const doctors = [];
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < 30; i++) {
       const name = chance.name();
       const departmentId = chance.pickone(department_ids); 
       const doctor = new Doctor({
@@ -198,9 +198,8 @@ db.once("open", async () => {
     // Populate patients
     const patients = [];
     let allDoctors = await Doctor.find();
+    console.log(department_ids)
     for (let i = 0; i < 300; i++) {
-      let doctor = chance.pickone(allDoctors);
-
       const patient = new Patient({
         patientName: chance.name(),
         email: chance.email(),
@@ -268,14 +267,22 @@ db.once("open", async () => {
         patient.department = null;
         patient.roomNo = "N/A";
       }
+  
       // add doctor to patients assigned doctor
-      patient.doctorAssigned = doctor._id;
+      let departmentDoctors = allDoctors.filter(doc => {
+        return doc.departmentName.equals(patient.department);
+
+      });
+      if (departmentDoctors.length !== 0) {
+        let doctor = chance.pickone(departmentDoctors);
+        patient.doctorAssigned = doctor._id;
+        doctor.patientList.push(patient._id);
+        await doctor.save();
+      }
 
       patients.push(patient);
 
       // add patient to doctors patients
-      doctor.patientList.push(patient._id);
-      await doctor.save();
     }
     await Patient.insertMany(patients);
 

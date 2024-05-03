@@ -1,6 +1,15 @@
 describe('Search Equipment Page Tests', () => {
   beforeEach(() => {
-    cy.visit('/all-equipments'); 
+    cy.visit("/login");
+    cy.get("#Email").type("admin@example.com");
+    cy.get("#Password").type("admin@123");
+    cy.get("button").contains("Login").click();
+
+    cy.url().should("include", "/apppage");
+    cy.contains("Resource Management").click();
+
+    cy.url().should("include", "/resource-management");
+    cy.contains("Equipment").click();
   });
 
   it('allows users to filter equipments', () => {

@@ -6,7 +6,7 @@ describe("Add procedure to patient", () => {
     cy.get("button").contains("Login").click();
 
     cy.url().should("include", "/apppage");
-    cy.contains("Resource and User Management").click();
+    cy.contains("Resource Management").click();
 
     cy.url().should("include", "/resource-management");
     cy.contains("Patients").click();

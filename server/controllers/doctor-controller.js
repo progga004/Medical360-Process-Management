@@ -1,3 +1,4 @@
+const Department = require('../models/Department');
 const Doctor = require('../models/Doctor')
 
 async function updateDoctor(req, res) {
@@ -60,10 +61,43 @@ async function getAllDoctors(req, res) {
   }
 }
 
+async function createDoctor(req, res) {
+  const { name, department } = req.body;
+  console.log(name, department);
+
+  try {
+
+    // Find the department's ObjectId using the departmentName
+    let departmentId = null;
+    if (department) {
+      const departmentDoc = await Department.findOne({ departmentName: department });
+      if (!departmentDoc) {
+        res.status(400).send("Invalid department name provided.");
+        return;
+      }
+      departmentId = departmentDoc._id;
+    }
+
+    // Create a new user with the hashed password and other details
+    const doctor = new Doctor({
+      name,
+      departmentName: departmentId
+    });
+
+    // Save the user
+    await doctor.save();
+    res.status(200).json(doctor);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send(err.message);
+  }
+}
+
   const DoctorController = {
     updateDoctor,
     getDoctor,
-    getAllDoctors
+    getAllDoctors,
+    createDoctor,
   }
 
   module.exports = DoctorController;
