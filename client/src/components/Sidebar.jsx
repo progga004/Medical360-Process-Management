@@ -10,9 +10,11 @@ const Sidebar = () => {
     <div className="flex-shrink-0 w-64 bg-[#409BEF]  p-5 text-white block text-center text-xl font-bold md:text-2xl lg:text-3xl mt-20">
       <ul className="space-y-5 md:space-y-12 lg:space-y-23">
         <li>
+        {(user.name != "Admin") && (
           <Link to="/my-patients" className="hover:underline">
             My Patients
           </Link>
+           )}
         </li>
         {user && (
           <li>
@@ -21,14 +23,14 @@ const Sidebar = () => {
             </Link>
           </li>
         )}
-        {user && (
+        {(user.name == "Admin") && (
           <li>
             <Link to="/departmentratio" className="hover:underline">
               Department Ratio
             </Link>
           </li>
         )}
-        {user && (
+        {(user.name == "Admin" ) && (
           <li>
             <Link to="/resource-management" className="hover:underline">
               Resource and User Management
@@ -41,10 +43,16 @@ const Sidebar = () => {
           </Link>
         </li>
         <li>
-          {(user.isDoctor ||
-            user.isNurse) && (
+          {(user.name != "Admin" ) && (
               <Link to="/bugs" className="hover:underline">
                 Report Bug
+              </Link>
+            )}
+        </li>
+        <li>
+          {(user.name != "Admin" ) && (
+              <Link to="/feedback" className="hover:underline">
+                Give Feedback
               </Link>
             )}
         </li>

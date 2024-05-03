@@ -1,11 +1,13 @@
 import React, { useState } from "react"; 
 import { useGlobalContext } from "../hooks/useGlobalContext";
+import { useAuthContext } from "../hooks/useAuthContext";
 
 const DepartmentList = ({ departments, onDelete, isAdmin }) => {
   const gradient = "linear-gradient(to right, #B3E3F8, #A5CDF6, #96B5F4, #849AF1, #6F79EE, #5552EB, #5552EB, #5552EB)";
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [itemToDelete, setItemToDelete] = useState(null); 
   const { BASE_URL } = useGlobalContext();
+  const {user} = useAuthContext();
 
   const handleDelete = () => {
     console.log("Deleting department with ID:", itemToDelete); 
@@ -36,7 +38,7 @@ const DepartmentList = ({ departments, onDelete, isAdmin }) => {
           <div key={index} className="flex-none w-48 h-50 rounded-lg shadow bg-white p-4 flex flex-col items-center justify-center">
            <img src={`${BASE_URL}/${department.iconPath}`} alt={department.departmentName} className="rounded-full w-25 h-21" />
             <p className="mt-2 text-center">{department.departmentName}</p>
-            {isAdmin && (
+            {(user.name == "Admin") && (
               <button onClick={() => openDeleteModal(department._id)} className="mt-2 bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded">
                 Delete
               </button>

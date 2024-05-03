@@ -45,7 +45,7 @@ const DepartmentPage = () => {
           <h2 className="text-2xl font-bold text-center flex-1">
             Departments List
           </h2>
-          {user.isAdmin && (
+          {(user.name == "Admin") && (
             <button onClick={() => navigate("/department-form")} className="p-2 bg-blue-500 text-white rounded-md mb-5">
               Create Department
             </button>
