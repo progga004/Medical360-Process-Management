@@ -37,7 +37,7 @@ const DoctorInfo = () => {
     return <p>Loading...</p>;
   }
   const doctorName = location.state?.doctorName;
-  console.log("Doctor biography",doctor.profileDetails.biography);
+
   return (
     <>
       <Banner goBackPath={"/all-doctors"} />

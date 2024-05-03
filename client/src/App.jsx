@@ -68,7 +68,7 @@ function App() {
         <Route path="/edit-room/" element={<EditRoomPage />} />
         <Route path="/edit-patient" element={<EditPatientPage />} />
         <Route path="/edit-user" element={<EditUserPage />} />
-        <Route path="/department-staff" element={<DepartmentStaffPage />} />
+        <Route path="/department-staff/:id" element={<DepartmentStaffPage />} />
         <Route path="/departmentpage" element={user ? <DepartmentPage /> : <Navigate to="/" />} />
         <Route path="/new-equipment" element={<NewEquipmentPage />} />
         <Route path="/new-room" element={<NewRoomPage />} />
