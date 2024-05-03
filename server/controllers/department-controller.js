@@ -1,5 +1,23 @@
 const Department = require("../models/Department");
-
+const fs = require('fs');
+const crypto = require('crypto');
+const multer = require('multer');
+const path=require('path');
+async function createDepartment(req, res) {
+  const newDepartment = new Department({
+      departmentName: req.body.Name,
+      iconPath: req.file ? `uploads/${req.file.filename}` : null
+      
+      
+  });
+  try {
+    const savedDepartment = await newDepartment.save();
+    console.log("saved department",savedDepartment);
+    res.status(201).json({ newDepartment: savedDepartment });
+  } catch (error) {
+    res.status(400).json({ error: 'Error saving department: ' + error });
+  }
+}
 async function updateDepartment(req, res) {
     try {
         // Construct the update object with $set operator
@@ -64,6 +82,7 @@ async function getDepartment(req, res) {
 
 const DepartmentController = {
     getDepartment,
+    createDepartment,
     getAllDepartments,
     updateDepartment
 }

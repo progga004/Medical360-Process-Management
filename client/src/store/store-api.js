@@ -29,7 +29,10 @@ export const getDoctor = (id) => {
   return api.get(`/doctors/${id}`);
 };
 
-
+export const createDepartment = (departmentData) =>{
+  console.log("Wait here I am in store.api",departmentData);
+  api.post("/departments/", departmentData);
+}
 export const getAllDepartments = () => api.get("/departments/");
 
 export const getAllEquipments = () => api.get("/equipments/");
@@ -66,6 +69,7 @@ export default {
   getDoctor,
   getAllDepartments,
   getDepartment,
+  createDepartment,
   updateDepartment,
   deletePatient,
   getAllEquipments,

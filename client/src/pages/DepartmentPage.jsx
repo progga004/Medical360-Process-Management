@@ -6,39 +6,37 @@ import { useNavigate } from "react-router-dom";
 import { useAuthContext } from "../hooks/useAuthContext";
 import { useGlobalContext } from "../hooks/useGlobalContext";
 
+
+
 const DepartmentPage = () => {
   const { user } = useAuthContext();
   const { BASE_URL } = useGlobalContext();
   const navigate = useNavigate();
-  const [departments, setDepartments] = useState([]);
+  const { departments, getAllDepartments } = useGlobalContext();
 
   useEffect(() => {
     localStorage.setItem("lastRoute", "/departmentpage");
-    fetchDepartments();
-    return () => {
-      localStorage.removeItem("lastRoute");
+    async function getDepartments() {
+        await getAllDepartments();
+        
     }
-  }, []);
-
-  const fetchDepartments = async () => {
-    const response = await fetch(`${BASE_URL}/departments/alldepartments`);
-    const data = await response.json();
-    setDepartments(data);
-  };
-
+    getDepartments();
+}, []);
+  
   const deleteDepartment = async (id) => {
     try {
       const response = await fetch(`${BASE_URL}/departments/${id}`, {
-            method: 'DELETE',
+        method: 'DELETE',
       });
       if (!response.ok) {
         throw new Error('Failed to delete the department.');
       }
-      fetchDepartments();  
+      getAllDepartments();  
     } catch (error) {
       console.error('Error deleting department:', error);
     }
   };
+
   return (
     <>
       <Banner goBackPath="/apppage" />
@@ -53,7 +51,11 @@ const DepartmentPage = () => {
             </button>
           )}
         </div>
+        {departments ? (
         <DepartmentList departments={departments} onDelete={deleteDepartment} isAdmin={user.isAdmin} />
+      ) : (
+        <p>Loading departments...</p> // Placeholder while data is loading
+      )}
       </div>
       {/* <DepartmentHead /> */}
     </>

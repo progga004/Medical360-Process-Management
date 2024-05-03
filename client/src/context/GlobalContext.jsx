@@ -116,7 +116,7 @@ export const storeReducer = (state, action) => {
         currentEquipment: null,
         currentRoom: null,
         currentDoctor: null,
-        BASE_URL: "https://medical360-d65d823d7d75.herokuapp.com"
+       BASE_URL: "https://medical360-d65d823d7d75.herokuapp.com"
         // BASE_URL: "http://localhost:3000"
       }
   }
@@ -141,7 +141,8 @@ function GlobalContextProvider({ children }) {
     currentRoom: null,
     currentDoctor: null,
     BASE_URL: "https://medical360-d65d823d7d75.herokuapp.com"
-    // BASE_URL: "http://localhost:3000"
+    //BASE_URL: "http://localhost:3000"
+
   });
   const [lastUpdated, setLastUpdated] = useState(Date.now());
   // get all users to the application
@@ -464,6 +465,27 @@ function GlobalContextProvider({ children }) {
     }
   };
 
+  //create department
+  const createDepartment = async function (data) {
+    // get whether user is logged in or not
+    try {
+      const response = await fetch(`${store.BASE_URL}/departments`, {
+        method: "POST",
+        // headers: {
+        //   "Content-Type": "application/json",
+        // },
+       // body: JSON.stringify(data)
+       body:data
+      });
+      if (response.ok) {
+        console.log("department created");
+        getAllDepartments();
+      }
+    } catch (err) {
+      console.log(err.message);
+    }
+  };
+
   // update department by id with data
   const updateDepartment = async function (id, data) {
     try {
@@ -499,7 +521,7 @@ function GlobalContextProvider({ children }) {
   // get all the patients
   const getAllDepartments = async function () {
     try {
-      const response = await fetch(store.BASE_URL + "/departments", {
+      const response = await fetch(store.BASE_URL + "/departments/all", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({"email": "hello there"})
@@ -625,6 +647,7 @@ function GlobalContextProvider({ children }) {
         deleteEquipment,
         deleteUser,
         deleteRoom,
+        createDepartment,
         updateDepartment,
         getDepartment,
         getAllDepartments,
