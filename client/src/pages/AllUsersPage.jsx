@@ -9,12 +9,10 @@ import { Link } from "react-router-dom";
 const AllUsersPage = () => {
   const { user } = useAuthContext();
   const { getAllDepartments, getAllUsers, users } = useGlobalContext();
-  const [filteredUsers, setFilteredUsers] = useState([]);
-  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     localStorage.setItem("lastRoute", "/all-users");
-    console.log(users);
+    console.log(users)
     const fetchUsers = async () => {
       if (user && !users) {
         await getAllDepartments();
@@ -24,25 +22,9 @@ const AllUsersPage = () => {
     fetchUsers();
 
     return () => {
-      localStorage.removeItem("lastRoute");
-    };
-  }, [user, users]); // Re-fetch when auth.token changes
-
-  useEffect(() => {
-    if (searchTerm) {
-      const lowercasedTerm = searchTerm.toLowerCase();
-      const filtered = users.filter(
-        (user) =>
-          user.name.toLowerCase().includes(lowercasedTerm) ||
-          user.email.toLowerCase().includes(lowercasedTerm) ||
-          (user.department &&
-            user.department.name.toLowerCase().includes(lowercasedTerm))
-      );
-      setFilteredUsers(filtered);
-    } else {
-      setFilteredUsers(users);
+      localStorage.removeItem("lastRoute")
     }
-  }, [searchTerm, users]);
+  }, [user, users]); // Re-fetch when auth.token changes
 
   return (
     <>
@@ -51,25 +33,20 @@ const AllUsersPage = () => {
         <h1 className="text-3xl font-bold text-blue-500">All Users</h1>
       </div>
       <div className="flex justify-between items-center mx-8 mb-4">
-        <SearchBar onSearch={setSearchTerm} />
+        <SearchBar />
         {user && user.isAdmin && (
-          <Link
-            to={"/register"}
-            className="bg-[#2260FF] text-white px-2 py-1 rounded-md font-medium text-xl"
-          >
-            New User
-          </Link>
+            <Link to={"/register"} className="bg-[#2260FF] text-white px-2 py-1 rounded-md font-medium text-xl">
+                New User
+            </Link>
         )}
       </div>
       <div className="p-8">
         {users && (
-          <Table
-            cards={filteredUsers}
-            isAdmin={user && user.isAdmin}
-            context="user"
-          />
+          <Table cards={users} isAdmin={user && user.isAdmin} context="user" />
         )}
-        {!users && <p>No user data available.</p>}
+        {!users && (
+          <p>No user data available.</p>
+        )}
       </div>
     </>
   );
