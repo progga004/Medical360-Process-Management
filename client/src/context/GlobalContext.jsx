@@ -267,11 +267,11 @@ function GlobalContextProvider({ children }) {
   const fetchUserEvents = async function (userId) {
     try {
       const response = await fetch(`${store.BASE_URL}/events/user/${userId}`, {
-        method: "GET",
+        method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-       // body: JSON.stringify({ userId }),
+       body: JSON.stringify({ userId }),
       });
       if (response.ok) {
         const events = (await response.json());
