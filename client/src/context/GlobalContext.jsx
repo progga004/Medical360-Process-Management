@@ -153,7 +153,7 @@ export const storeReducer = (state, action) => {
         currentFeedback: null,
         currentEvent:null,
         BASE_URL: "https://medical360-d65d823d7d75.herokuapp.com",
-        // BASE_URL: "http://localhost:3000",
+         //BASE_URL: "http://localhost:3000",
       };
   }
 };
@@ -183,7 +183,7 @@ function GlobalContextProvider({ children }) {
     currentEvent:null,
     
    BASE_URL: "https://medical360-d65d823d7d75.herokuapp.com",
-    // BASE_URL: "http://localhost:3000",
+     //BASE_URL: "http://localhost:3000",
   });
   const [lastUpdated, setLastUpdated] = useState(Date.now());
 
@@ -264,17 +264,18 @@ function GlobalContextProvider({ children }) {
     setStore({ type: "RESET" });
   };
 
-  const fetchUserEvents = async function (userId) {
+  //get all events
+  const getEvents = async function (id) {
     try {
-      const response = await fetch(`${store.BASE_URL}/events/user/${userId}`, {
+      const response = await fetch(`${store.BASE_URL}/events/user/${id}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-       body: JSON.stringify({ userId }),
+       body: JSON.stringify({ id }),
       });
       if (response.ok) {
-        const events = (await response.json());
+        const events = (await response.json()).events;
         setStore({
           type: "GET_USER_EVENTS",
           payload: events,
@@ -286,6 +287,76 @@ function GlobalContextProvider({ children }) {
     }
   };
   
+//create events
+const createEvent = async function (event) {
+  try {
+    const id =event.userId;
+    const response = await fetch(`${store.BASE_URL}/events`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(event),
+    });
+    if (response.ok) {
+      const responseData = await response.json(); 
+      console.log("event created:", responseData); 
+      getEvents(id);
+      return responseData;
+      
+    }
+    
+  } catch (error) {
+    console.error('Error saving event:', error.message);
+  }
+};
+
+const updateEvent = async function (event) {
+  try {
+    const response = await fetch(`${store.BASE_URL}/events/${event._id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(event),
+    });
+
+    if (response.ok) {
+      const updatedEvent = await response.json();
+      setLastUpdated(Date.now());
+      console.log('Event updated:', updatedEvent);
+      return updatedEvent;
+    } else {
+      console.error('Failed to update event');
+    }
+  } catch (error) {
+    console.error('Error updating event:', error);
+  }
+};
+
+
+
+
+// Delete event by id
+const deleteEvent = async function (eventId) {
+  try {
+    const response = await fetch(`${store.BASE_URL}/events/${eventId}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    });
+
+    if (response.ok) {
+      console.log('Event deleted');
+      return eventId; 
+    } else {
+      console.error('Failed to delete event');
+    }
+  } catch (error) {
+    console.error('Error deleting event:', error);
+  }
+};
   
   // create patient with given data
   const createPatient = async function (data) {
@@ -892,6 +963,7 @@ function GlobalContextProvider({ children }) {
         getAllDepartments,
         deletePatient,
         getAllUsers,
+        getEvents,
         getEquipment,
         updateEquipment,
         getRoom,
@@ -908,7 +980,11 @@ function GlobalContextProvider({ children }) {
         createFeedback,
         createDoctor,
         createUser,
-        fetchUserEvents,
+        createEvent,
+        getAllFeedbacks,
+        updateEvent,
+        deleteEvent,
+        
       }}
     >
       {children}
