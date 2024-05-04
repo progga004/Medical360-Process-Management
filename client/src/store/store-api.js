@@ -68,6 +68,10 @@ export const getUser = (id) => api.get(`/users/${id}`);
 export const updateDepartment = (id, newData) =>
   api.put(`/departments/${id}`, newData);
 
+export const fetchUserEvents = (userId) => {
+    return api.get(`/events/user/${userId}`);
+  };
+
 export default {
   getPatient,
   getAllPatients,
@@ -95,4 +99,5 @@ export default {
   createFeedback,
   getFeedback,
   getAllFeedbacks,
+  fetchUserEvents,
 };

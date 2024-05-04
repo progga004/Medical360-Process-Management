@@ -46,7 +46,7 @@ const equipmentRouter = require("./routes/equipment-router");
 const doctorRouter = require("./routes/doctor-router");
 const feedbackRouter = require("./routes/feedback-router");
 const bugRouter = require("./routes/bug-router");
-
+const eventRouter=require("./routes/event-router");
 
 
 app.use("/patients", patientRouter);
@@ -59,6 +59,7 @@ app.use("/equipments", equipmentRouter);
 app.use("/doctors", doctorRouter);
 app.use("/feedbacks", feedbackRouter);
 app.use("/bugs", bugRouter);
+app.use("/events", eventRouter);
 
 
 

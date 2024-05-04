@@ -117,6 +117,14 @@ export const storeReducer = (state, action) => {
             ...state,
             users: state.users.filter((user) => user._id !== action.payload),
           };
+          
+          case "GET_USER_EVENTS":
+  return {
+    ...state,
+    currentEvent:null,
+    events:action.payload,
+  };
+
         default:
           return state;
       }
@@ -131,6 +139,7 @@ export const storeReducer = (state, action) => {
         equipments: null,
         feedbacks: null,
         bugs: null,
+        events:null,
         id_to_department: {},
         department_to_id: {},
         id_to_equipment: {},
@@ -142,8 +151,9 @@ export const storeReducer = (state, action) => {
         currentDoctor: null,
         currentBug: null,
         currentFeedback: null,
+        currentEvent:null,
         BASE_URL: "https://medical360-d65d823d7d75.herokuapp.com",
-         //BASE_URL: "http://localhost:3000",
+        // BASE_URL: "http://localhost:3000",
       };
   }
 };
@@ -158,6 +168,7 @@ function GlobalContextProvider({ children }) {
     equipments: null,
     feedbacks: null,
     bugs: null,
+    events:null,
     id_to_department: {},
     department_to_id: {},
     id_to_equipment: {},
@@ -169,8 +180,10 @@ function GlobalContextProvider({ children }) {
     currentDoctor: null,
     currentBug: null,
     currentFeedback: null,
-    BASE_URL: "https://medical360-d65d823d7d75.herokuapp.com",
-     //BASE_URL: "http://localhost:3000",
+    currentEvent:null,
+    
+   BASE_URL: "https://medical360-d65d823d7d75.herokuapp.com",
+    // BASE_URL: "http://localhost:3000",
   });
   const [lastUpdated, setLastUpdated] = useState(Date.now());
 
@@ -251,6 +264,29 @@ function GlobalContextProvider({ children }) {
     setStore({ type: "RESET" });
   };
 
+  const fetchUserEvents = async function (userId) {
+    try {
+      const response = await fetch(`${store.BASE_URL}/events/user/${userId}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+       // body: JSON.stringify({ userId }),
+      });
+      if (response.ok) {
+        const events = (await response.json());
+        setStore({
+          type: "GET_USER_EVENTS",
+          payload: events,
+        });
+        return events;
+      }
+    } catch (err) {
+      console.log(err.message);
+    }
+  };
+  
+  
   // create patient with given data
   const createPatient = async function (data) {
     // get whether user is logged in or not
@@ -872,6 +908,7 @@ function GlobalContextProvider({ children }) {
         createFeedback,
         createDoctor,
         createUser,
+        fetchUserEvents,
       }}
     >
       {children}
