@@ -92,12 +92,31 @@ async function createDoctor(req, res) {
     res.status(500).send(err.message);
   }
 }
+async function getDoctorByUser(req, res) {
+  try {
+      console.log("me yahi par hu");
+      const doctor = await Doctor.findById(req.params.id).populate('userId');
+      console.log("Kysa doctor hu",doctor.userId);
+      if (!doctor) {
+          return res.status(404).json({ message: "Doctor not found" });
+      }
+      res.status(200).json({
+         userId: doctor.userId 
+      });
+  } catch (error) {
+      res.status(500).json({
+          message: error.message,
+      });
+  }
+}
+
 
   const DoctorController = {
     updateDoctor,
     getDoctor,
     getAllDoctors,
     createDoctor,
+    getDoctorByUser,
   }
 
   module.exports = DoctorController;

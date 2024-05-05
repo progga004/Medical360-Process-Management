@@ -3,7 +3,6 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 const StaffCard = ({ staff,headDoctor,origin }) => {
-  console.log("origin here",origin);
   return (
     <div className="bg-[#CAD6FF] p-4 rounded-lg shadow-lg max-w-xs mx-auto">
       {/* Image and Name */}

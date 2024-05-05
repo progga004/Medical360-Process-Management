@@ -12,7 +12,7 @@ require("dotenv").config();
 
 mongoose.connect(
   "mongodb+srv://medical360:admin123@medical360.wh0h2hw.mongodb.net/medical360",
-  // "mongodb://localhost/medical360",
+  // "mongodb://127.0.0.1/medical360",
   {
     useUnifiedTopology: true,
   }
@@ -60,7 +60,18 @@ db.once("open", async () => {
     for (let i = 0; i < departments.length; i++) {
       // create user that is head doctor
       const name = chance.name();
+      const email = chance.email();
+      const passwordHash = await bcrypt.hash("password@123", 10);
+      const isAdmin = true;
+      const user = new User({
+        name,
+        email,
+        passwordHash,
+        isAdmin,
+      });
+      await user.save();
       const doctor = new Doctor({
+        name:name,
         surgeryCount: chance.integer({min: 0, max: 1000}),
         appointmentNo: chance.integer({min: 1000, max: 9999}),
         hours: chance.integer({min: 20, max: 60}),
@@ -81,22 +92,12 @@ db.once("open", async () => {
           { day: "Tuesday", start: chance.date(), end: chance.date() },
         ],
         patientList: [],
+        userId: user._id
+        
       });
-
+      
       await doctor.save();
-
-      const email = chance.email();
-      const passwordHash = await bcrypt.hash("password@123", 10);
-      const isAdmin = true;
-
-      const user = new User({
-        name,
-        email,
-        passwordHash,
-        isAdmin,
-        doctor: doctor._id,
-      });
-
+      user.doctor = doctor._id;
       await user.save();
 
       const dep = new Department({
@@ -126,6 +127,16 @@ db.once("open", async () => {
     for (let i = 0; i < 30; i++) {
       const name = chance.name();
       const departmentId = chance.pickone(department_ids); 
+      const email = chance.email();
+      const passwordHash = await bcrypt.hash("password@123", 10);
+      const isAdmin = false;
+      const user = new User({
+        name,
+        email,
+        passwordHash,
+        isAdmin,
+        department:departmentId, // Set department reference
+      });
       const doctor = new Doctor({
         name: name,
         departmentName: departmentId,
@@ -145,23 +156,16 @@ db.once("open", async () => {
           { day: "Tuesday", start: chance.date(), end: chance.date() },
         ],
         patientList: [],
+        userId: null,
       });
+      doctor.userId = user._id;
 
-      const email = chance.email();
-      const passwordHash = await bcrypt.hash("password@123", 10);
-      const isAdmin = false;
-      const department = chance.pickone(department_ids); // assign to doctor
+  // Assign the doctor to the user
+  user.doctor = doctor._id;
 
-      const user = new User({
-        name,
-        email,
-        passwordHash,
-        isAdmin,
-        department:departmentId, // Set department reference
-        doctor: doctor._id,
-      });
-      doctors.push(doctor);
-      users.push(user);
+  // Push the instances into their respective arrays
+  users.push(user);
+  doctors.push(doctor);
       const departmentDoc = await Department.findById(departmentId);
   if (departmentDoc) {
     departmentDoc.doctorList.push(doctor._id);

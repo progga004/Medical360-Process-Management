@@ -42,6 +42,7 @@ import MyPatientsPage from "./pages/MyPatientsPage";
 import ChangePasswordPage from "./pages/ChangePasswordPage";
 import AllFeedbacksPage from "./pages/AllFeedbacksPage";
 import AllBugsPage from "./pages/AllBugsPage";
+import MyCalendar from "./pages/MyCalendar";
 
 function App() {
 
@@ -58,6 +59,7 @@ function App() {
         <Route path="/register" element={<RegistrationForm />} />
         <Route path="/login" element={!user ? <LoginForm /> : <Navigate to={lastRoute}/>} />
         <Route path="/chat" element={<ChatPage />} />
+        <Route path="/chat/:id" element={<ChatPage />} />
         <Route path="/all-staff" element={<AllStaffPage />} />
         <Route path="/all-equipments" element={user ? <AllEquipmentPage  /> : <Navigate to="/" />} />
         <Route path="/all-rooms" element={user ? <AllRoomsPage /> : <Navigate to="/" />} />
@@ -78,6 +80,8 @@ function App() {
           path="/resource-management"
           element={<ResourceManagementPage />}
         />
+        <Route path="/doctor-schedule/:userId" element={<MyCalendar />} />
+        <Route path="/user-schedule/:userId" element={<MyCalendar />} />
         <Route path="/bugs" element={<BugReport />} />
         <Route path="/feedback" element={<FeedbackForm />} />
         <Route
@@ -97,6 +101,7 @@ function App() {
         <Route path="/add-procedure" element={user ? <AddProcedurePage /> : <Navigate to="/" />} />
         <Route path="/patient-info" element={user ? <PatientInfo /> : <Navigate to="/" />} />
         <Route path="/doctorinfo/:doctorId" element={<DoctorInfo />} />
+        {/* <Route path="/doctor-schedule/:userId" element={<MyCalendar />} /> */}
         <Route path="/patient-info/:id" element={<PatientInfo />} />
         <Route path="/user-info/:id" element={<UserInfoPage />} />
         <Route path="/emergency" element={<EmergencyReassignment />} />

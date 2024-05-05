@@ -3,7 +3,8 @@ const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const mongoose = require("mongoose");
 const path = require("path");
-
+const registerSocketServer = require('./socket'); 
+const http = require('http');
 
 // config .env files
 require("dotenv").config();
@@ -11,10 +12,12 @@ require("dotenv").config();
 const PORT = process.env.PORT || 3000;
 const app = express();
 
+
 app.use(express.urlencoded({ extended: true }));
 app.use(
   cors({
-     //origin: "http://localhost:5173", // Ensure the client's address is correctly listed
+
+    //origin: "http://localhost:5173", // Ensure the client's address is correctly listed
     origin: "https://medical360-d65d823d7d75.herokuapp.com" ,
     credentials: true, // For sending cookies over CORS
   })
@@ -46,6 +49,9 @@ const equipmentRouter = require("./routes/equipment-router");
 const doctorRouter = require("./routes/doctor-router");
 const feedbackRouter = require("./routes/feedback-router");
 const bugRouter = require("./routes/bug-router");
+const chatRouter = require("./routes/chat-router");
+const messageRouter = require("./routes/message-router");
+const eventRouter=require("./routes/event-router");
 
 
 
@@ -56,9 +62,13 @@ app.use("/users", userRouter);
 app.use("/departments", departmentRouter);
 app.use("/rooms", roomRouter);
 app.use("/equipments", equipmentRouter);
-app.use("/doctors", doctorRouter);
 app.use("/feedbacks", feedbackRouter);
 app.use("/bugs", bugRouter);
+
+app.use("/chat", chatRouter);
+app.use("/message", messageRouter);
+app.use("/events", eventRouter);
+
 
 
 
@@ -66,7 +76,7 @@ app.use("/bugs", bugRouter);
 mongoose
   .connect(
     "mongodb+srv://medical360:admin123@medical360.wh0h2hw.mongodb.net/medical360",
-    // "mongodb://localhost/medical360",
+    // "mongodb://127.0.0.1/medical360",
     {
       useNewUrlParser: true,
       useUnifiedTopology: true,
@@ -78,5 +88,9 @@ mongoose
 const db = mongoose.connection;
 db.on("error", console.error.bind(console, "MongoDB connection error:"));
 
+// const io = registerSocketServer(server);
 // Run the server
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+// app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+const server = http.createServer(app);
+const io = registerSocketServer(server);
+server.listen(PORT, () => console.log(`Server with sockets running on port ${PORT}`));

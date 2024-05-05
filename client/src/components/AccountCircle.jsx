@@ -14,7 +14,6 @@ const AccountCircle = () => {
     logout();
     navigate("/")
   };
-
   const handleAccountInfo = () => {
     // Handle account info logic here
     console.log('Viewing account info...');
