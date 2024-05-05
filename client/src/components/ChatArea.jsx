@@ -10,68 +10,64 @@ const ChatArea = ({ chatId }) => {
   const [input, setInput] = useState('');
   const { getChat, getMessages } = useGlobalContext();
   const { user } = useAuthContext();
+
   useEffect(() => {
-  if (chatId) {
-    const fetchMessages = async () => {
-      try {
-        // Ensure that chatData and chatData.messages are defined
-        const chatData = await getChat(chatId);
-        const messagesFromChat = await getMessages(chatId); // Make sure this is awaited
-        
-        if (Array.isArray(messagesFromChat)) {
-          setMessages(messagesFromChat);
-        } else {
+    if (chatId) {
+      const fetchMessages = async () => {
+        try {
+          const messagesFromChat = await getMessages(chatId);
+          if (Array.isArray(messagesFromChat)) {
+            messagesFromChat.sort((a, b) => new Date(a.sentAt) - new Date(b.sentAt));
+            setMessages(messagesFromChat);
+          } else {
+            setMessages([]);
+          }
+        } catch (error) {
+          console.error("Failed to fetch chat messages:", error);
           setMessages([]);
         }
-      } catch (error) {
-        console.error("Failed to fetch chat messages:", error);
-        setMessages([]); // Handle error by setting messages to an empty array
-      }
-    };
+      };
 
-    fetchMessages();
+      fetchMessages();
 
-    const handleMessageReceive = message => {
-      if (message.chat === chatId) {
-        setMessages(messages => [...messages, message]);
-      }
-    };
+      const handleMessageReceive = message => {
+        if (message.chat === chatId) {
+          setMessages(prevMessages => [...prevMessages, message].sort((a, b) => new Date(a.sentAt) - new Date(b.sentAt)));
+        }
+      };
 
-    socket.on('receiveMessage', handleMessageReceive);
+      socket.on('receiveMessage', handleMessageReceive);
 
-    return () => {
-      socket.off('receiveMessage', handleMessageReceive);
-    };
-  }
-}, [chatId, getChat, getMessages]);
-
+      return () => {
+        socket.off('receiveMessage', handleMessageReceive);
+      };
+    }
+  }, [chatId, getMessages]);
 
   const sendMessage = () => {
-    console.log(chatId)
     if (input && chatId) {
-        const message = {
-            content: input,
-            sender: user["id"], // Adjust this as needed to capture the actual user ID
-            chat: chatId
-        };
-        socket.emit('sendMessage', message);
-        setInput('');
+      const message = {
+        content: input,
+        sender: user.id,
+        chat: chatId,
+        sentAt: new Date()
+      };
+      socket.emit('sendMessage', message);
+      setInput('');
     }
-};
+  };
 
-// Add joining to the room
-useEffect(() => {
+  useEffect(() => {
     if (chatId) {
-        socket.emit('joinRoom', chatId);
+      socket.emit('joinRoom', chatId);
     }
-}, [chatId]);
+  }, [chatId]);
 
   return (
     <div className="w-3/4 flex flex-col">
-      {/* Chat header and other UI elements */}
       <div className="flex-1 p-5 overflow-y-auto">
         {messages.map((msg, index) => (
-          <div key={index} className={`rounded px-4 py-2 max-w-xs mb-2 ${msg.sender === 'User_Id' ? 'bg-blue-300 self-end' : 'bg-blue-100'}`}>
+          <div key={index} className={`rounded px-4 py-2 max-w-xs mb-2 ${msg.sender === user.id ? 'self-end bg-blue-300' : 'self-start bg-blue-100'}`}>
             {msg.content}
           </div>
         ))}
@@ -85,5 +81,7 @@ useEffect(() => {
 };
 
 export default ChatArea;
+
+
 
 
