@@ -89,8 +89,8 @@ const Sidebar = ({ onSelectChat }) => {
                       </option>
                   ))}
               </select>
-              <button onClick={handleCreateChat}>Create Chat</button>
-              <button onClick={() => getAllUsers()} className="mt-2">Refresh Users</button>
+              <button onClick={handleCreateChat}>Create </button>
+              <button onClick={() => getAllUsers()} className="mt-2"> Refresh</button>
           </div>
           <div className="mt-4 bg-white">
               <h3 className="font-bold text-lg">Chats</h3>
