@@ -11,7 +11,7 @@ require("dotenv").config();
 
 const PORT = process.env.PORT || 3000;
 const app = express();
-// const server = http.createServer(app);
+
 
 app.use(express.urlencoded({ extended: true }));
 app.use(
@@ -83,4 +83,7 @@ db.on("error", console.error.bind(console, "MongoDB connection error:"));
 
 // const io = registerSocketServer(server);
 // Run the server
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+// app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+const server = http.createServer(app);
+const io = registerSocketServer(server);
+server.listen(PORT, () => console.log(`Server with sockets running on port ${PORT}`));

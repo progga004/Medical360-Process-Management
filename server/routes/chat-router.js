@@ -14,4 +14,6 @@ router.post('/:id', ChatController.getChat);
 // PUT route to update a chat by id
 router.put('/:id', ChatController.updateChat);
 
+router.post('/user/:userId', ChatController.getChatsForUser);
+
 module.exports = router;

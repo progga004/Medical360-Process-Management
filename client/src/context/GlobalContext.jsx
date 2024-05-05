@@ -411,6 +411,45 @@ function GlobalContextProvider({ children }) {
       console.log(err.message);
     }
   };
+  const getUserChats = async function (id) {
+    try {
+      const response = await fetch(`${store.BASE_URL}/chat/user/${id}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ id }),
+      });
+      if (response.ok) {
+        console.log(response, "chatststtst")
+        const chats = (await response.json());
+        setStore({ type: "GET_RESOURCE", context: "chats", payload: chats });
+        return chats;
+      }
+    } catch (err) {
+      console.log(err.message);
+    }
+  };
+  
+  //gets all messages from a given chat
+  const getMessages = async function (id) {
+    try {
+      const response = await fetch(`${store.BASE_URL}/message/chat/${id}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ id }),
+      });
+      if (response.ok) {
+        const message = (await response.json());
+        setStore({ type: "GET_RESOURCE", context: "message", payload: message });
+        return message;
+      }
+    } catch (err) {
+      console.log(err.message);
+    }
+  };
 
   // get all the rooms
   const getAllRooms = async function () {
@@ -896,7 +935,9 @@ function GlobalContextProvider({ children }) {
         createFeedback,
         createDoctor,
         createUser,
-        getChat
+        getChat,
+        getMessages,
+        getUserChats
       }}
     >
       {children}

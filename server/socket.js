@@ -1,10 +1,10 @@
-// socket.js
 const { Server } = require("socket.io");
+const axios = require('axios');  // Make sure axios is installed on the backend
 
 const registerSocketServer = (server) => {
     const io = new Server(server, {
         cors: {
-            origin: "http://localhost:5173",
+            origin: "http://localhost:5173",  // Adjust as per your frontend URL
             methods: ["GET", "POST"]
         }
     });
@@ -12,18 +12,25 @@ const registerSocketServer = (server) => {
     io.on('connection', (socket) => {
         console.log('A user connected: ' + socket.id);
 
-        // Join a room
         socket.on('joinRoom', (chatId) => {
             socket.join(chatId);
             console.log(`User ${socket.id} joined room ${chatId}`);
         });
 
-        // Handle message event
-        socket.on('sendMessage', (message, chatId) => {
-            io.to(chatId).emit('receiveMessage', message);
+        socket.on('sendMessage', async (message) => {
+            // Emit the message first to ensure real-time response
+            io.to(message.chat).emit('receiveMessage', message);
+            
+            // Then save the message to the database
+            try {
+                // Replace 'http://localhost:3000/message' with your actual API endpoint if different
+                const response = await axios.post('http://localhost:3000/message', message);
+                console.log('Message saved:', response.data);
+            } catch (error) {
+                console.error('Failed to save message:', error);
+            }
         });
 
-        // Disconnect
         socket.on('disconnect', () => {
             console.log('User disconnected: ' + socket.id);
         });
@@ -33,3 +40,4 @@ const registerSocketServer = (server) => {
 };
 
 module.exports = registerSocketServer;
+

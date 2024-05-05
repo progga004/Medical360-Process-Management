@@ -1,48 +1,70 @@
 import React, { useState, useEffect } from 'react';
 import io from 'socket.io-client';
 import { useGlobalContext } from '../hooks/useGlobalContext';
+import { useAuthContext } from "../hooks/useAuthContext";
 
-const socket = io("http://localhost:5173");
+const socket = io("http://localhost:3000");
 
 const ChatArea = ({ chatId }) => {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
-  const { getChat } = useGlobalContext();
-
+  const { getChat, getMessages } = useGlobalContext();
+  const { user } = useAuthContext();
   useEffect(() => {
-    console.log("test message")
-    if (chatId) {
-      // Fetch chat data and safely handle potential undefined values
-      getChat(chatId).then(chatData => {
+  if (chatId) {
+    const fetchMessages = async () => {
+      try {
         // Ensure that chatData and chatData.messages are defined
-        if (chatData && Array.isArray(chatData.messages)) {
-          setMessages(chatData.messages);
+        const chatData = await getChat(chatId);
+        const messagesFromChat = await getMessages(chatId); // Make sure this is awaited
+        
+        if (Array.isArray(messagesFromChat)) {
+          setMessages(messagesFromChat);
         } else {
-          setMessages([]); // Set to empty array if no messages are found
+          setMessages([]);
         }
-      }).catch(error => {
+      } catch (error) {
         console.error("Failed to fetch chat messages:", error);
         setMessages([]); // Handle error by setting messages to an empty array
-      });
+      }
+    };
 
-      socket.on('receiveMessage', message => {
-        if (message.chat === chatId) {
-          setMessages(messages => [...messages, message]);
-        }
-      });
+    fetchMessages();
 
-      return () => {
-        socket.off('receiveMessage');
-      };
-    }
-  }, [chatId]);
+    const handleMessageReceive = message => {
+      if (message.chat === chatId) {
+        setMessages(messages => [...messages, message]);
+      }
+    };
+
+    socket.on('receiveMessage', handleMessageReceive);
+
+    return () => {
+      socket.off('receiveMessage', handleMessageReceive);
+    };
+  }
+}, [chatId, getChat, getMessages]);
+
 
   const sendMessage = () => {
+    console.log(chatId)
     if (input && chatId) {
-      socket.emit('sendMessage', { content: input, sender: 'User_Id', chat: chatId });
-      setInput('');
+        const message = {
+            content: input,
+            sender: user["id"], // Adjust this as needed to capture the actual user ID
+            chat: chatId
+        };
+        socket.emit('sendMessage', message);
+        setInput('');
     }
-  };
+};
+
+// Add joining to the room
+useEffect(() => {
+    if (chatId) {
+        socket.emit('joinRoom', chatId);
+    }
+}, [chatId]);
 
   return (
     <div className="w-3/4 flex flex-col">
