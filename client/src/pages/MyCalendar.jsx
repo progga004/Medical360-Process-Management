@@ -1,13 +1,20 @@
 import React, { useState, useEffect } from "react";
+import { useParams,useLocation } from "react-router-dom";
 import { Calendar, momentLocalizer } from "react-big-calendar";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import { useGlobalContext } from "../hooks/useGlobalContext";
 import EditEventModel from "./EditEventModel";
+import { useAuthContext } from "../hooks/useAuthContext";
 import moment from "moment";
 
 const localizer = momentLocalizer(moment);
 
-const MyCalendar = ({ userId }) => {
+const MyCalendar = () => {
+  const location = useLocation();
+  const { userId } = useParams();
+  const { patientId, patientName,doctorId } = location.state || {};
+  console.log("Patient Name",doctorId);
+  const { user } = useAuthContext();
   const [events, setEvents] = useState([]);
   const { getEvents, createEvent, updateEvent, deleteEvent, lastUpdated } =
     useGlobalContext();
@@ -46,11 +53,12 @@ const MyCalendar = ({ userId }) => {
 
   const eventPropGetter = (event, start, end, isSelected) => {
     let backgroundColor = "";
-
     if (event.status === "available") {
       backgroundColor = "green";
     } else if (event.status === "unavailable") {
       backgroundColor = "red";
+    } else if (event.status === "patient_assigned") { 
+      backgroundColor = "blue";
     }
 
     return {
@@ -89,6 +97,7 @@ const MyCalendar = ({ userId }) => {
   }, [userId]);
 
   const handleSelectSlot = async ({ start, end }) => {
+    if (userId === user.id){
     const newEvent = {
       title: eventStatus === "available" ? "Available" : "Unavailable",
       start: new Date(start),
@@ -97,7 +106,7 @@ const MyCalendar = ({ userId }) => {
       userId,
       status: eventStatus,
     };
-
+  
     try {
       const response = await createEvent(newEvent);
       if (response && response.event) {
@@ -115,18 +124,22 @@ const MyCalendar = ({ userId }) => {
       console.error("Error saving event:", error);
     }
   };
-
-  const handleSelectEvent = (event) => {
-    setSelectedEvent(event);
-    console.log("Selected evemt");
-    setShowModal(true);
   };
-
+  const handleSelectEvent = (event) => {
+    if ((user.isAdmin && event.status === "available") || userId === user.id || (user.isAdmin && (event.status === "patient_assigned"))) {
+      setSelectedEvent(event);
+      setShowModal(true);
+  };
+  };
   const handleDateChange = () => {
     const newDate = new Date(year, month - 1, 1);
     setCurrentDate(newDate);
   };
   const handleEditEvent = async (updatedEvent) => {
+    console.log("handle edit one");
+    if (user.isAdmin && userId!==user.id) {
+      updatedEvent.status = "patient_assigned"; 
+    }
     try {
       const response = await updateEvent(updatedEvent);
       if (response && response.event) {
@@ -142,6 +155,7 @@ const MyCalendar = ({ userId }) => {
           )
         );
         setTimestamp(Date.now());
+        
       }
     } catch (error) {
       console.error("Error updating event:", error);
@@ -149,17 +163,46 @@ const MyCalendar = ({ userId }) => {
     setShowModal(false);
   };
 
-  const handleDeleteEvent = async (eventId) => {
+  const handleDeleteEvent = async (event) => {
     try {
-      await deleteEvent(eventId);
-      setEvents(events.filter((e) => e._id !== eventId));
+      console.log("Event",event);
+      // If the admin is deleting a patient-assigned event, change its status back to available
+      console.log("Event coming",user.isAdmin,userId,user.id,event.status);
+      if (user.isAdmin && userId !== user.id && event.status === "patient_assigned") {
+        const updatedEvent = {
+          ...event,
+          title: "Available", 
+          status: "available", 
+        };
+        const response = await updateEvent(updatedEvent);
+        if (response && response.event) {
+          const eventWithDates = {
+            ...response.event,
+            start: new Date(response.event.start),
+            end: new Date(response.event.end),
+            status: response.event.status,
+          };
+          setEvents((prevEvents) =>
+            prevEvents.map((e) =>
+              e._id === event._id ? eventWithDates : e
+            )
+          );
+        }
+      } else if (userId===user.id) {
+        console.log("here or where");
+        await deleteEvent(event._id);
+        setEvents(events.filter((e) => e._id !== event._id));
+      }
     } catch (error) {
-      console.error("Error deleting event:", error);
+      console.error("Error deleting or updating event:", error);
     }
     setShowModal(false);
+    fetchEvents();
   };
-
+  
   return (
+    <div className="flex items-center justify-center min-h-screen bg-white">
+  <div className="bg-[#CAD6FF] p-8 rounded-lg shadow-lg w-full md:w-[80%] min-h-[600px]">
     <div style={{ height: "100vh" ,display: "flex", flexDirection: "column" }}>
       <div style={{marginBottom: "10px" }}>
         <label>
@@ -205,7 +248,7 @@ const MyCalendar = ({ userId }) => {
         onView={handleViewChange}
         startAccessor="start"
         endAccessor="end"
-        selectable
+        selectable={userId === user.id}
         onSelectSlot={handleSelectSlot}
         onSelectEvent={handleSelectEvent}
         date={currentDate}
@@ -217,12 +260,19 @@ const MyCalendar = ({ userId }) => {
         <EditEventModel
           event={selectedEvent}
           onSave={handleEditEvent}
-          onDelete={() => handleDeleteEvent(selectedEvent._id)}
+          userId={userId}
+          currentOwner={user.id}
+          userAdmin={user.isAdmin}
+          onDelete={() => handleDeleteEvent(selectedEvent)}
           onClose={() => setShowModal(false)}
+          patientName={patientName}
+          doctorId={doctorId}
+          patientId={patientId}
         />
       )}
+      </div>
+      </div>
     </div>
   );
 };
-
 export default MyCalendar;

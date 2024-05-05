@@ -153,7 +153,7 @@ export const storeReducer = (state, action) => {
         currentFeedback: null,
         currentEvent:null,
         BASE_URL: "https://medical360-d65d823d7d75.herokuapp.com",
-         //BASE_URL: "http://localhost:3000",
+        //BASE_URL: "http://localhost:3000",
       };
   }
 };
@@ -183,7 +183,7 @@ function GlobalContextProvider({ children }) {
     currentEvent:null,
     
    BASE_URL: "https://medical360-d65d823d7d75.herokuapp.com",
-     //BASE_URL: "http://localhost:3000",
+    // BASE_URL: "http://localhost:3000",
   });
   const [lastUpdated, setLastUpdated] = useState(Date.now());
 
@@ -358,6 +358,8 @@ const deleteEvent = async function (eventId) {
   }
 };
   
+
+
   // create patient with given data
   const createPatient = async function (data) {
     // get whether user is logged in or not
@@ -832,6 +834,31 @@ const deleteEvent = async function (eventId) {
       console.log(err.message);
     }
   };
+  const getDoctorByUser = async (id) => {
+    try {
+      console.log("Here get doctors by user",id);
+      const response= await fetch(`${store.BASE_URL}/doctors/users/${id}`, {
+        method: "POST", 
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ id }),
+      });
+      
+      if (response.ok) {
+        const {userId} = await response.json();
+        console.log("response coming",userId);
+        return userId; 
+      } else {
+        console.error("Failed to fetch doctor:", response.status);
+        return null;
+      }
+    } catch (error) {
+      console.error("Error fetching doctor:", error);
+      return null;
+    }
+  };
+  
   // Create a new bug report
   const createBug = async function (bugData) {
     try {
@@ -984,6 +1011,7 @@ const deleteEvent = async function (eventId) {
         getAllFeedbacks,
         updateEvent,
         deleteEvent,
+        getDoctorByUser,
         
       }}
     >

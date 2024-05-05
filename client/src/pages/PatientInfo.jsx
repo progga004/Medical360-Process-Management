@@ -12,7 +12,7 @@ const PatientInfo = ({}) => {
   const [modal, setModal] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
-
+  const origin="/patient-info";
   useEffect(() => {
     async function fetchDoctor(doctorId) {
       await getDoctor(doctorId);
@@ -27,6 +27,7 @@ const PatientInfo = ({}) => {
     else
       removeCurrentDoctor();
   }, [doctors, currentPatient])
+  
   
 
   const discharge = async () => {
@@ -67,33 +68,68 @@ const PatientInfo = ({}) => {
       }
     }
   }
-
-  const assignDoctor = async (doctorId) => {
-    // update patient with doctorId
-    await updatePatient(currentPatient._id, {
-      doctorAssigned: doctorId
-    })
-
-    // update doctor by adding patient to list
-    try {
+  const viewDoctorSchedule = async(doctorId) => {
+    try{
       const response = await fetch(`${BASE_URL}/doctors/${doctorId}`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({doctorId})
-      });
-      if (response.ok) {
-        const doctor = (await response.json()).doctor;
-        await updateDoctor(doctor._id, {
-          patientList: [...doctor.patientList, currentPatient._id],
-        });
-      }
-    } catch (err) {
-      console.log(err.message);
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({doctorId})
+            });
+            if (response.ok) {
+              const doctor = (await response.json()).doctor;
+              navigate(`/doctorinfo/${doctorId}`, {
+                state: {
+                  doctorName: doctor.name,
+                  patientId: currentPatient._id,
+                  patientName: currentPatient.patientName,origin
+                }
+              });
+              setTimestamp(Date.now());
+            }
     }
-  }
+    catch (err) {
+          console.log(err.message);
+        }
+  };
+  
+  // const assignDoctor = async (doctorId) => {
+  //   // update patient with doctorId
+    
+  //   await updatePatient(currentPatient._id, {
+  //     doctorAssigned: doctorId
+  //   })
+  //   // update doctor by adding patient to list
+  //   try {
+  //     const response = await fetch(`${BASE_URL}/doctors/${doctorId}`, {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify({doctorId})
+  //     });
+  //     if (response.ok) {
+  //       const doctor = (await response.json()).doctor;
+  //       await updateDoctor(doctor._id, {
+  //         patientList: [...doctor.patientList, currentPatient._id],
+  //       });
+  //       navigate(`/doctorinfo/${doctorId}`, {
+  //         state: {
+  //           doctorName: doctor.name,
+  //           patientId: currentPatient._id,
+  //           patientName: currentPatient.patientName,origin
+  //         }
+  //       });
+       
+  //     }
+  //   } catch (err) {
+  //     console.log(err.message);
+  //   }
+  // }
+  
 
+  
   const removeDoctor = async (doctorId) => {
     // update patient with doctorId
     await updatePatient(currentPatient._id, {
@@ -119,6 +155,9 @@ const PatientInfo = ({}) => {
       console.log(err.message);
     }
   }
+  const filteredDoctors = doctors && currentPatient && currentPatient.department
+    ? doctors.filter((doctor) => doctor.departmentName === currentPatient.department)
+    : [];
 
   return (
     <>
@@ -189,20 +228,25 @@ const PatientInfo = ({}) => {
             >
               Assign Doctor
             </button>
-            {isOpen && doctors && (
+            {isOpen &&  filteredDoctors.length > 0 && (
               <div className="absolute z-10 mt-2 w-48 rounded-md bg-white shadow-lg">
                 <div className="py-1">
                   <ul className="overflow-auto max-h-48">
-                    {doctors.map(doctor => (
+                    { filteredDoctors.map(doctor => (
                       <li 
                         key={doctor._id} className="px-4 py-2 text-gray-800 hover:bg-gray-200 cursor-pointer"
-                        onClick={() => assignDoctor(doctor._id)}
+                        onClick={() => viewDoctorSchedule(doctor._id)}
                       >
                         {doctor.name} - {id_to_department[doctor.departmentName]}
                       </li>
                     ))}
                   </ul>
                 </div>
+              </div>
+            )}
+            {isOpen && filteredDoctors.length === 0 && (
+              <div className="absolute z-10 mt-2 w-48 rounded-md bg-white shadow-lg p-4">
+                <p>No doctors available in this department.</p>
               </div>
             )}
           </div>}

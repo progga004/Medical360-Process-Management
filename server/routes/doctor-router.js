@@ -16,6 +16,9 @@ router.post('/all', DoctorController.getAllDoctors)
 //get doctor by id
 router.post("/:id", DoctorController.getDoctor);
 
+router.post("/users/:id", DoctorController.getDoctorByUser);
+
+
 
 
 module.exports = router
