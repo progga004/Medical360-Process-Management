@@ -3,6 +3,8 @@ import Banner from "../components/Banner";
 import { useParams,useLocation,useNavigate } from 'react-router-dom';
 import { Link } from "react-router-dom";
 import { useGlobalContext } from "../hooks/useGlobalContext";
+import MyCalendar from "./MyCalendar";
+
 
 const DoctorInfo = () => {
  
@@ -11,7 +13,9 @@ const DoctorInfo = () => {
   const navigate = useNavigate();
   const [doctor, setDoctor] = useState(null);
   const[department,setDepartment]=useState(null);
-  const { getDoctor,getDepartment } = useGlobalContext(); 
+  const [userId, setUserId] = useState(null);
+  const [showCalendar, setShowCalendar] = useState(false); 
+  const { getDoctor,getDepartment,getDoctorByUser} = useGlobalContext(); 
 
 
   useEffect(() => {
@@ -22,6 +26,11 @@ const DoctorInfo = () => {
           setDoctor(doc);
           const dept = await getDepartment(doc.departmentName);
           setDepartment(dept.departmentName);
+          console.log("Doctor Id",doctorId);
+          const userData = await getDoctorByUser(doctorId);
+          setUserId(userData._id);
+          
+
         }
       } catch (error) {
         console.error('Failed to fetch doctor or department details', error);
@@ -37,7 +46,9 @@ const DoctorInfo = () => {
     return <p>Loading...</p>;
   }
   const doctorName = location.state?.doctorName;
+  const { patientId, patientName } = location.state || {};
   const previousPage = location.state?.origin || '/apppage';
+  console.log("lets see",location.state?.origin);
   return (
     <>
       <Banner goBackPath={previousPage} showGoBackButton={true} />
@@ -111,14 +122,31 @@ const DoctorInfo = () => {
           </div>
 
           {/* Row 5: Schedule Button */}
+          {/* {!showCalendar ? (
+            <div className="flex justify-center mt-4">
+              <button
+                onClick={() => setShowCalendar(true)} // Toggle calendar on button click
+                className="bg-[#2260FF] text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-800"
+              >
+                Schedule
+              </button>
+            </div>
+          ) : (
+            <MyCalendar userId={userId} /> // Pass userId to MyCalendar
+          )} */}
           <div className="flex justify-center mt-4">
-            <Link
-              to="/book-appointment"
+          <Link
+              to={`/doctor-schedule/${userId}`}
+              state={{
+                patientId,
+                patientName,
+                doctorId
+              }}
               className="bg-[#2260FF] text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-800"
             >
               Schedule
             </Link>
-          </div>
+            </div>
         </div>
       </div>
     </>

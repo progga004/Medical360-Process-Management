@@ -23,6 +23,8 @@ async function getUser(req, res) {
     });
   }
 }
+
+
 async function getAllUsers(req, res) {
   try {
     const users = await User.find()

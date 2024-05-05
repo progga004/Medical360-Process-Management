@@ -117,6 +117,14 @@ export const storeReducer = (state, action) => {
             ...state,
             users: state.users.filter((user) => user._id !== action.payload),
           };
+          
+          case "GET_USER_EVENTS":
+  return {
+    ...state,
+    currentEvent:null,
+    events:action.payload,
+  };
+
         default:
           return state;
       }
@@ -131,6 +139,7 @@ export const storeReducer = (state, action) => {
         equipments: null,
         feedbacks: null,
         bugs: null,
+        events:null,
         id_to_department: {},
         department_to_id: {},
         id_to_equipment: {},
@@ -142,8 +151,9 @@ export const storeReducer = (state, action) => {
         currentDoctor: null,
         currentBug: null,
         currentFeedback: null,
+        currentEvent:null,
         BASE_URL: "https://medical360-d65d823d7d75.herokuapp.com",
-         //BASE_URL: "http://localhost:3000",
+        //BASE_URL: "http://localhost:3000",
       };
   }
 };
@@ -158,6 +168,7 @@ function GlobalContextProvider({ children }) {
     equipments: null,
     feedbacks: null,
     bugs: null,
+    events:null,
     id_to_department: {},
     department_to_id: {},
     id_to_equipment: {},
@@ -169,8 +180,10 @@ function GlobalContextProvider({ children }) {
     currentDoctor: null,
     currentBug: null,
     currentFeedback: null,
-    BASE_URL: "https://medical360-d65d823d7d75.herokuapp.com",
-     //BASE_URL: "http://localhost:3000",
+    currentEvent:null,
+    
+   BASE_URL: "https://medical360-d65d823d7d75.herokuapp.com",
+    // BASE_URL: "http://localhost:3000",
   });
   const [lastUpdated, setLastUpdated] = useState(Date.now());
 
@@ -250,6 +263,102 @@ function GlobalContextProvider({ children }) {
   const reset = () => {
     setStore({ type: "RESET" });
   };
+
+  //get all events
+  const getEvents = async function (id) {
+    try {
+      const response = await fetch(`${store.BASE_URL}/events/user/${id}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+       body: JSON.stringify({ id }),
+      });
+      if (response.ok) {
+        const events = (await response.json()).events;
+        setStore({
+          type: "GET_USER_EVENTS",
+          payload: events,
+        });
+        return events;
+      }
+    } catch (err) {
+      console.log(err.message);
+    }
+  };
+  
+//create events
+const createEvent = async function (event) {
+  try {
+    const id =event.userId;
+    const response = await fetch(`${store.BASE_URL}/events`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(event),
+    });
+    if (response.ok) {
+      const responseData = await response.json(); 
+      console.log("event created:", responseData); 
+      getEvents(id);
+      return responseData;
+      
+    }
+    
+  } catch (error) {
+    console.error('Error saving event:', error.message);
+  }
+};
+
+const updateEvent = async function (event) {
+  try {
+    const response = await fetch(`${store.BASE_URL}/events/${event._id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(event),
+    });
+
+    if (response.ok) {
+      const updatedEvent = await response.json();
+      setLastUpdated(Date.now());
+      console.log('Event updated:', updatedEvent);
+      return updatedEvent;
+    } else {
+      console.error('Failed to update event');
+    }
+  } catch (error) {
+    console.error('Error updating event:', error);
+  }
+};
+
+
+
+
+// Delete event by id
+const deleteEvent = async function (eventId) {
+  try {
+    const response = await fetch(`${store.BASE_URL}/events/${eventId}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    });
+
+    if (response.ok) {
+      console.log('Event deleted');
+      return eventId; 
+    } else {
+      console.error('Failed to delete event');
+    }
+  } catch (error) {
+    console.error('Error deleting event:', error);
+  }
+};
+  
+
 
   // create patient with given data
   const createPatient = async function (data) {
@@ -725,6 +834,31 @@ function GlobalContextProvider({ children }) {
       console.log(err.message);
     }
   };
+  const getDoctorByUser = async (id) => {
+    try {
+      console.log("Here get doctors by user",id);
+      const response= await fetch(`${store.BASE_URL}/doctors/users/${id}`, {
+        method: "POST", 
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ id }),
+      });
+      
+      if (response.ok) {
+        const {userId} = await response.json();
+        console.log("response coming",userId);
+        return userId; 
+      } else {
+        console.error("Failed to fetch doctor:", response.status);
+        return null;
+      }
+    } catch (error) {
+      console.error("Error fetching doctor:", error);
+      return null;
+    }
+  };
+  
   // Create a new bug report
   const createBug = async function (bugData) {
     try {
@@ -856,6 +990,7 @@ function GlobalContextProvider({ children }) {
         getAllDepartments,
         deletePatient,
         getAllUsers,
+        getEvents,
         getEquipment,
         updateEquipment,
         getRoom,
@@ -872,6 +1007,12 @@ function GlobalContextProvider({ children }) {
         createFeedback,
         createDoctor,
         createUser,
+        createEvent,
+        getAllFeedbacks,
+        updateEvent,
+        deleteEvent,
+        getDoctorByUser,
+        
       }}
     >
       {children}
