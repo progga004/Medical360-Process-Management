@@ -62,7 +62,7 @@ const Sidebar = ({ onSelectChat }) => {
   const handleCreateChat = async () => {
       if (userId && selectedUser) {
           try {
-              const response = await axios.post('http://localhost:3000/chat', {
+              const response = await axios.post('https://medical360-d65d823d7d75.herokuapp.com/chat', {
                   members: [curUser, selectedUser]
               });
               setChats(prevChats => [...prevChats, response.data]);  // Use prevChats to ensure correct state updates
