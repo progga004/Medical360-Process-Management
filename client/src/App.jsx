@@ -59,6 +59,7 @@ function App() {
         <Route path="/register" element={<RegistrationForm />} />
         <Route path="/login" element={!user ? <LoginForm /> : <Navigate to={lastRoute}/>} />
         <Route path="/chat" element={<ChatPage />} />
+        <Route path="/chat/:id" element={<ChatPage />} />
         <Route path="/all-staff" element={<AllStaffPage />} />
         <Route path="/all-equipments" element={user ? <AllEquipmentPage  /> : <Navigate to="/" />} />
         <Route path="/all-rooms" element={user ? <AllRoomsPage /> : <Navigate to="/" />} />
