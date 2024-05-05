@@ -16,6 +16,7 @@ const app = express();
 app.use(express.urlencoded({ extended: true }));
 app.use(
   cors({
+
     //origin: "http://localhost:5173", // Ensure the client's address is correctly listed
     origin: "https://medical360-d65d823d7d75.herokuapp.com" ,
     credentials: true, // For sending cookies over CORS
@@ -50,6 +51,7 @@ const feedbackRouter = require("./routes/feedback-router");
 const bugRouter = require("./routes/bug-router");
 const chatRouter = require("./routes/chat-router");
 const messageRouter = require("./routes/message-router");
+const eventRouter=require("./routes/event-router");
 
 
 
@@ -62,8 +64,13 @@ app.use("/rooms", roomRouter);
 app.use("/equipments", equipmentRouter);
 app.use("/feedbacks", feedbackRouter);
 app.use("/bugs", bugRouter);
+
 app.use("/chat", chatRouter);
 app.use("/message", messageRouter);
+app.use("/events", eventRouter);
+
+
+
 
 // Connect to the database
 mongoose

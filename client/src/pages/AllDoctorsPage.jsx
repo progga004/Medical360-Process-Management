@@ -58,7 +58,7 @@ const sortedDoctors = sorted ? [...doctors].sort((a, b) => a.name.localeCompare(
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-1 md:gap-1 xl:gap-3">
             {sortedDoctors && sortedDoctors.length > 0 ? (
               sortedDoctors.map((doctor, index) => (
-                <StaffCard key={index} staff={doctor} />
+                <StaffCard key={index} staff={doctor} origin="/all-doctors" />
               ))
             ) : (
               <p>No doctors available or data is loading...</p>

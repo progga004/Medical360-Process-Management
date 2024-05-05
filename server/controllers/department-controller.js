@@ -49,8 +49,8 @@ async function updateDepartment(req, res) {
 // Function to get a department by their ID
 async function getDepartment(req, res) {
     try {
-      const department = await Department.findById(req.params.id);
-      console.log("Department in department controller",department);
+      const department = await Department.findById(req.params.id).populate('head')
+      .populate('doctorList');
       if (!department) {
           return res.status(404).json({
               message: "departmment not found"
