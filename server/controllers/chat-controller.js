@@ -18,8 +18,6 @@ async function createChat(req, res) {
 async function getChat(req, res) {
     try {
         const chat = await Chat.findById(req.params.id)
-            .populate('members')
-            .populate('messages');
         if (!chat) {
             return res.status(404).json({ message: "Chat not found" });
         }

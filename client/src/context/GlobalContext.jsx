@@ -27,6 +27,8 @@ export const storeReducer = (state, action) => {
           return { ...state, currentDoctor: action.payload };
         case "patients":
           return { ...state, currentPatient: null, patients: action.payload };
+        case "chat":
+          return { ...state, currentChat: action.payload };
         default:
           return state;
       }
@@ -141,6 +143,7 @@ export const storeReducer = (state, action) => {
         currentRoom: null,
         currentDoctor: null,
         currentBug: null,
+        currentChat:null,
         currentFeedback: null,
         // BASE_URL: "https://medical360-d65d823d7d75.herokuapp.com",
         BASE_URL: "http://localhost:3000",
@@ -168,6 +171,7 @@ function GlobalContextProvider({ children }) {
     currentRoom: null,
     currentDoctor: null,
     currentBug: null,
+    currentChat: null,
     currentFeedback: null,
     // BASE_URL: "https://medical360-d65d823d7d75.herokuapp.com",
     BASE_URL: "http://localhost:3000",
@@ -240,8 +244,10 @@ function GlobalContextProvider({ children }) {
         console.error("Expected an array of users, received:", users);
         throw new Error("Data format error: Expected an array of users");
       }
+      
       console.log("setting store");
       setStore({ type: "GET_ALL_USERS", payload: users });
+      
     } catch (error) {
       console.error("Error fetching users:", error);
     }
@@ -382,6 +388,24 @@ function GlobalContextProvider({ children }) {
         const user = (await response.json()).user;
         setStore({ type: "GET_RESOURCE", context: "user", payload: user });
         return user;
+      }
+    } catch (err) {
+      console.log(err.message);
+    }
+  };
+  const getChat = async function (id) {
+    try {
+      const response = await fetch(`${store.BASE_URL}/chat/${id}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ id }),
+      });
+      if (response.ok) {
+        const chat = (await response.json()).chat;
+        setStore({ type: "GET_RESOURCE", context: "chat", payload: chat });
+        return chat;
       }
     } catch (err) {
       console.log(err.message);
@@ -872,6 +896,7 @@ function GlobalContextProvider({ children }) {
         createFeedback,
         createDoctor,
         createUser,
+        getChat
       }}
     >
       {children}

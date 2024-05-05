@@ -1,35 +1,52 @@
 import React, { useState, useEffect } from 'react';
 import io from 'socket.io-client';
+import { useGlobalContext } from '../hooks/useGlobalContext';
 
 const socket = io("http://localhost:5173");
 
-const ChatArea = ({}) => {
+const ChatArea = ({ chatId }) => {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
+  const { getChat } = useGlobalContext();
 
   useEffect(() => {
-    socket.on('receiveMessage', message => {
-      setMessages(messages => [...messages, message]);
-    });
+    console.log("test message")
+    if (chatId) {
+      // Fetch chat data and safely handle potential undefined values
+      getChat(chatId).then(chatData => {
+        // Ensure that chatData and chatData.messages are defined
+        if (chatData && Array.isArray(chatData.messages)) {
+          setMessages(chatData.messages);
+        } else {
+          setMessages([]); // Set to empty array if no messages are found
+        }
+      }).catch(error => {
+        console.error("Failed to fetch chat messages:", error);
+        setMessages([]); // Handle error by setting messages to an empty array
+      });
 
-    return () => {
-      socket.off('receiveMessage');
-    };
-  }, []);
+      socket.on('receiveMessage', message => {
+        if (message.chat === chatId) {
+          setMessages(messages => [...messages, message]);
+        }
+      });
+
+      return () => {
+        socket.off('receiveMessage');
+      };
+    }
+  }, [chatId]);
 
   const sendMessage = () => {
-    if (input) {
-      socket.emit('sendMessage', { content: input, sender: 'User_Id', chat: 'Chat_Id' }, 'Chat_Id');
+    if (input && chatId) {
+      socket.emit('sendMessage', { content: input, sender: 'User_Id', chat: chatId });
       setInput('');
     }
   };
 
   return (
     <div className="w-3/4 flex flex-col">
-      <div className="p-5 border-b flex items-center">
-        <div className="rounded-full h-8 w-8 bg-blue-500 flex items-center justify-center text-white text-sm">P</div>
-        <h2 className="ml-2">Peter</h2>
-      </div>
+      {/* Chat header and other UI elements */}
       <div className="flex-1 p-5 overflow-y-auto">
         {messages.map((msg, index) => (
           <div key={index} className={`rounded px-4 py-2 max-w-xs mb-2 ${msg.sender === 'User_Id' ? 'bg-blue-300 self-end' : 'bg-blue-100'}`}>
@@ -46,3 +63,5 @@ const ChatArea = ({}) => {
 };
 
 export default ChatArea;
+
+
