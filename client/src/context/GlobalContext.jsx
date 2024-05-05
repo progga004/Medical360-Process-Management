@@ -1072,8 +1072,7 @@ const deleteEvent = async function (eventId) {
         createUser,
         getChat,
         getMessages,
-        getUserChats
-
+        getUserChats,
         createEvent,
         getAllFeedbacks,
         updateEvent,

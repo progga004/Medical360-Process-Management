@@ -1,10 +1,11 @@
 const { Server } = require("socket.io");
-const axios = require('axios');  // Make sure axios is installed on the backend
+const axios = require('axios');  
 
 const registerSocketServer = (server) => {
     const io = new Server(server, {
         cors: {
-            origin: "http://localhost:5173",  // Adjust as per your frontend URL
+            origin: "https://medical360-d65d823d7d75.herokuapp.com",  
+            //origin: "http://localhost:5173",
             methods: ["GET", "POST"]
         }
     });
@@ -23,8 +24,8 @@ const registerSocketServer = (server) => {
             
             // Then save the message to the database
             try {
-                // Replace 'http://localhost:3000/message' with your actual API endpoint if different
-                const response = await axios.post('http://localhost:3000/message', message);
+                
+                const response = await axios.post('https://medical360-d65d823d7d75.herokuapp.com/message', message);
                 console.log('Message saved:', response.data);
             } catch (error) {
                 console.error('Failed to save message:', error);
