@@ -13,7 +13,7 @@ describe('Search Bug Tests', () => {
       cy.get('input[data-cy=search-bar]').should('be.visible');
       cy.get('[data-cy=search-button]').should('be.visible');
   
-      cy.get('input[data-cy=search-bar]').type('Bary Campbell');
+      cy.get('input[data-cy=search-bar]').type('Martin Roy');
   
       cy.get('[data-cy=search-button]').click();
   

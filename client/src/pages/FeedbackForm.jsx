@@ -5,6 +5,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { StarIcon } from "@heroicons/react/solid";
 import Banner from "../components/Banner";
 import { useGlobalContext } from "../hooks/useGlobalContext";
+import { useAuthContext } from "../hooks/useAuthContext";
 
 const FeedbackForm = () => {
   const [feedback, setFeedback] = useState({
@@ -14,6 +15,8 @@ const FeedbackForm = () => {
     rating: 0,
   });
   const { createFeedback } = useGlobalContext();
+
+  const { user } = useAuthContext()
   const navigate = useNavigate();
 
   const handleRating = (ratingValue) => {
@@ -59,7 +62,7 @@ const FeedbackForm = () => {
                 type="text"
                 name="name"
                 onChange={handleChange}
-                value={feedback.name}
+                value={user.name}
                 className="mt-1 block w-full border border-gray-300 shadow-sm rounded p-2"
               />
             </div>
@@ -70,7 +73,7 @@ const FeedbackForm = () => {
                 type="email"
                 name="email"
                 onChange={handleChange}
-                value={feedback.email}
+                value={user.email}
                 className="mt-1 block w-full border border-gray-300 shadow-sm rounded p-2"
               />
             </div>

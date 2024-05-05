@@ -24,7 +24,7 @@ const UserInfoPage = () => {
   if (!user) return <div>Loading...</div>;
   return (
     <>
-      <Banner goBackPath="/all-users" />
+      <Banner goBackPath="/apppage" />
       <div className="flex items-center justify-center min-h-screen bg-white">
         <div className="bg-[#CAD6FF] p-8 rounded-lg shadow-lg max-w-5xl w-full min-h-[600px]">
           <div className="flex justify-center items-center bg-white p-4 rounded-lg mb-4">
