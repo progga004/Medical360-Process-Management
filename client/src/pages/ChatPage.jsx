@@ -97,7 +97,7 @@ const Sidebar = ({ onSelectChat }) => {
               {Array.isArray(chats) && chats.length > 0 ? (
                   chats.map((chat, index) => (
                       <div onClick={() => onSelectChat(chat._id)} key={index} className="flex items-center p-2 hover:bg-gray-100 cursor-pointer rounded">
-                          {chat.members.map(member => member.name).join(', ')}
+                          {chat.members.map(member => member).join(', ')}
                       </div>
                   ))
               ) : (
