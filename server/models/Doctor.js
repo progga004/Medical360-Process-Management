@@ -40,7 +40,8 @@ const doctorSchema = new Schema({
   patientList: [{
     type: Schema.Types.ObjectId,
     ref: 'Patient',
-  }]
+  }],
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
 });
 
 const Doctor = mongoose.model('Doctor', doctorSchema);

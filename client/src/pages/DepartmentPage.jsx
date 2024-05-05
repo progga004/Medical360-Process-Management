@@ -36,7 +36,7 @@ const DepartmentPage = () => {
       console.error('Error deleting department:', error);
     }
   };
-
+  const gradientBackground = "linear-gradient(to right, #B3E3F8, #A5CDF6, #96B5F4, #849AF1, #6F79EE, #5552EB, #5552EB, #5552EB)";
   return (
     <>
       <Banner goBackPath="/apppage" />
@@ -52,12 +52,18 @@ const DepartmentPage = () => {
           )}
         </div>
         {departments ? (
-        <DepartmentList departments={departments} onDelete={deleteDepartment} isAdmin={user.isAdmin} />
+        <div style={{ background: gradientBackground, minHeight: "100vh", padding: "2rem 0" }}>
+        <DepartmentList
+          departments={departments}
+          onDelete={deleteDepartment}
+          isAdmin={user.isAdmin}
+        />
+      </div>
+        
       ) : (
-        <p>Loading departments...</p> // Placeholder while data is loading
+        <p>Loading departments...</p> 
       )}
       </div>
-      {/* <DepartmentHead /> */}
     </>
   );
 };

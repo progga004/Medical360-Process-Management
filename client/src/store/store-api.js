@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const BASE_URL = "https://medical360-d65d823d7d75.herokuapp.com";
-// const BASE_URL = "http://localhost:3000";
+ //const BASE_URL = "http://localhost:3000";
 
 const api = axios.create({
   baseURL: BASE_URL,
@@ -27,7 +27,9 @@ export const getAllDoctors = () => api.get("/doctors/");
 export const getDoctor = (id) => {
   return api.get(`/doctors/${id}`);
 };
-
+export const getDoctorByUser = (id) => {
+  return api.get(`/doctors/${id}`);
+};
 export const createDepartment = (departmentData) => {
   console.log("Wait here I am in store.api", departmentData);
   api.post("/departments/", departmentData);
@@ -70,6 +72,20 @@ export const getUser = (id) => api.get(`/users/${id}`);
 export const updateDepartment = (id, newData) =>
   api.put(`/departments/${id}`, newData);
 
+export const getEvents = (id) => {
+    return api.get(`/events/user/${id}`);
+  };
+  export const createEvent = (eventData) => {
+    return api.post('/events/', eventData);
+  };
+  export const updateEvent = (eventId, eventData) => {
+    return api.put(`/events/${eventId}`, eventData);
+  };
+  export const deleteEvent = (eventId) => {
+    return api.delete(`/events/${eventId}`);
+  };
+  
+  
 export default {
   getPatient,
   getAllPatients,
@@ -98,4 +114,10 @@ export default {
   getFeedback,
   getAllFeedbacks,
   // getChat,
+  getEvents,
+  createEvent,
+  updateEvent,
+  deleteEvent,
+  getDoctorByUser,
+
 };
