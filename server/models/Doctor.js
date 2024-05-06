@@ -3,10 +3,14 @@ const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
 const doctorSchema = new Schema({
+  name: {
+    type: String,
+    required: true,
+  },
   departmentName: {
     type: Schema.Types.ObjectId,
     ref: 'Department',
-    required: true
+    default: null
   },
   surgeryCount: {
     type: Number,
@@ -20,9 +24,13 @@ const doctorSchema = new Schema({
     type: Number,
     default: 0
   },
+  experience: {
+    type: String,
+  },
   profileDetails: {
     focusAreas: [String],
-    specialization: [String]
+    specialization: [String],
+    biography:String,
   },
   schedule: [{
     day: String,
@@ -31,8 +39,9 @@ const doctorSchema = new Schema({
   }],
   patientList: [{
     type: Schema.Types.ObjectId,
-    ref: 'Patient'
-  }]
+    ref: 'Patient',
+  }],
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
 });
 
 const Doctor = mongoose.model('Doctor', doctorSchema);
