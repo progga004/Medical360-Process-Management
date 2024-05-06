@@ -16,7 +16,6 @@ const FeedbackForm = () => {
   });
   const { createFeedback } = useGlobalContext();
 
-  const { user } = useAuthContext()
   const navigate = useNavigate();
 
   const handleRating = (ratingValue) => {
@@ -62,7 +61,7 @@ const FeedbackForm = () => {
                 type="text"
                 name="name"
                 onChange={handleChange}
-                value={user.name}
+                value={feedback.name}
                 className="mt-1 block w-full border border-gray-300 shadow-sm rounded p-2"
               />
             </div>
@@ -73,7 +72,7 @@ const FeedbackForm = () => {
                 type="email"
                 name="email"
                 onChange={handleChange}
-                value={user.email}
+                value={feedback.email}
                 className="mt-1 block w-full border border-gray-300 shadow-sm rounded p-2"
               />
             </div>
