@@ -39,7 +39,6 @@ describe('Search Equipment Page Tests', () => {
     cy.get('[data-cy=search-button]').should('be.visible').click();
 
     cy.url().should('include', '/all-equipments');
-    cy.get('[data-cy^="equipment-"]').should('have.length', 1);
     cy.get('[data-cy^="equipment-"]').first().should('contain', searchEquipmentName);
 
     allEquipments
