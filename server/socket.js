@@ -5,7 +5,7 @@ const registerSocketServer = (server) => {
     const io = new Server(server, {
         cors: {
             origin: "https://medical360-d65d823d7d75.herokuapp.com",  
-            //origin: "http://localhost:5173",
+           // origin: "http://localhost:5173",
             methods: ["GET", "POST"]
         }
     });

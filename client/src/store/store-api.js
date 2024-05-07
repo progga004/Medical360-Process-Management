@@ -75,6 +75,9 @@ export const updateDepartment = (id, newData) =>
 export const getEvents = (id) => {
     return api.get(`/events/user/${id}`);
   };
+  export const getEvent = (id) => {
+    return api.get(`/events/${id}`);
+  };
   export const createEvent = (eventData) => {
     return api.post('/events/', eventData);
   };
@@ -119,5 +122,6 @@ export default {
   updateEvent,
   deleteEvent,
   getDoctorByUser,
+  getEvent,
 
 };

@@ -27,7 +27,9 @@ const patientSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: "Doctor",
         default: null
-    }
+    },
+    assignedTime: { type: String },
+    eventId: { type: String },
 })
 
 const Patient = mongoose.model('Patient', patientSchema);

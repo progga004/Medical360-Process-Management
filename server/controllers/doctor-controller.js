@@ -13,7 +13,7 @@ async function updateDoctor(req, res) {
         updateObject,
         { new: true } // Return the updated document
       );
-  
+     console.log("Updated doctor",updateDoctor);
       if (!updatedDoctor) {
         return res.status(404).json({
           message: "User not found",

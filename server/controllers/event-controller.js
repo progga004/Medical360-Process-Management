@@ -15,6 +15,26 @@ async function getEvents(req, res) {
   }
 }
 
+    
+async function getEvent(req, res) {
+  try {
+    const event = await Event.findById(req.params.id);
+    console.log("Whats event",event);
+    if (!event) {
+        return res.status(404).json({
+            message: "event not found"
+        });
+    }
+    res.status(200).json({
+        event
+    });
+  } catch (error) {
+    res.status(500).json({
+        message: error.message
+    });
+  }
+}
+
 async function createEvent(req, res) {
     try {
         const { userId,status, ...eventData } = req.body; 
@@ -31,7 +51,7 @@ async function updateEvent(req, res) {
     try {
         const { eventId } = req.params;
         const { title, start, end, allDay, status } = req.body;
-
+        console.log("Title in updated",title,start,end,allDay,status);
         const startDate = new Date(start);
         const endDate = new Date(end);
 
@@ -79,6 +99,7 @@ const EventController = {
     createEvent,
     updateEvent,
     deleteEvent,
+    getEvent,
 };
 module.exports = EventController;
 

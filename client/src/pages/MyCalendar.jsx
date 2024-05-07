@@ -5,6 +5,7 @@ import "react-big-calendar/lib/css/react-big-calendar.css";
 import { useGlobalContext } from "../hooks/useGlobalContext";
 import EditEventModel from "./EditEventModel";
 import { useAuthContext } from "../hooks/useAuthContext";
+import Banner from "../components/Banner";
 import moment from "moment";
 
 const localizer = momentLocalizer(moment);
@@ -139,6 +140,7 @@ const MyCalendar = () => {
     console.log("handle edit one");
     if (user.isAdmin && userId!==user.id) {
       updatedEvent.status = "patient_assigned"; 
+      updatedEvent.title = patientName;
     }
     try {
       const response = await updateEvent(updatedEvent);
@@ -148,6 +150,7 @@ const MyCalendar = () => {
           start: new Date(response.event.start),
           end: new Date(response.event.end),
           status: response.event.status,
+          title: response.event.title, 
         };
         setEvents((prevEvents) =>
           prevEvents.map((e) =>
@@ -199,8 +202,9 @@ const MyCalendar = () => {
     setShowModal(false);
     fetchEvents();
   };
-  
   return (
+    <>
+    <Banner goBackPath={"/"} />
     <div className="flex items-center justify-center min-h-screen bg-white">
   <div className="bg-[#CAD6FF] p-8 rounded-lg shadow-lg w-full md:w-[80%] min-h-[600px]">
     <div style={{ height: "100vh" ,display: "flex", flexDirection: "column" }}>
@@ -273,6 +277,7 @@ const MyCalendar = () => {
       </div>
       </div>
     </div>
+    </>
   );
 };
 export default MyCalendar;

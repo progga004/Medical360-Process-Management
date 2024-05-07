@@ -18,7 +18,6 @@ const EditEventModel = ({ event, onSave, onDelete, onClose, userId, currentOwner
   const [end, setEnd] = useState("");
   const [isEditing, setIsEditing] = useState(false);
  const {updatePatient,updateDoctor, BASE_URL}=useGlobalContext();
- const navigate = useNavigate();
   useEffect(() => {
     if(patientName)
      {
@@ -42,40 +41,12 @@ const EditEventModel = ({ event, onSave, onDelete, onClose, userId, currentOwner
       end: userAdmin && userId !== currentOwner ? event.end : new Date(end),
     };
     onSave(updatedEvent);
-    if(patientId)
-    {
-      await assignDoctor(doctorId);
-    }
+    
   };
   
-  const assignDoctor = async (doctorId) => {
-    // Update patient with doctorId
-    await updatePatient(patientId, {
-      doctorAssigned: doctorId,
-    });
+  
 
-    // Update doctor by adding patient to list
-    try {
-      const response = await fetch(`${BASE_URL}/doctors/${doctorId}`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ doctorId }),
-      });
-      if (response.ok) {
-        const doctor = (await response.json()).doctor;
-        await updateDoctor(doctor._id, {
-          patientList: [...doctor.patientList, patientId],
-        });
-       
-      }
-    } catch (err) {
-      console.error(err.message);
-    }
-  };
 
- 
 
   const startEditing = () => {
     setIsEditing(true);
