@@ -1,34 +1,46 @@
-// describe('Search Equipment Page Tests', () => {
-//   beforeEach(() => {
-//     cy.visit("/login");
-//     cy.get("#Email").type("admin@example.com");
-//     cy.get("#Password").type("admin@123");
-//     cy.get("button").contains("Login").click();
+describe('Search Equipment Page Tests', () => {
+  let allEquipments = [];
 
-//     cy.url().should("include", "/apppage");
-//     cy.contains("Resource Management").click();
+  before(() => {
+    cy.request({
+      method: 'POST',
+      url: 'https://medical360-d65d823d7d75.herokuapp.com/equipments/all',
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: {
+        Why: "god"
+      },
+    }).then((response) => {
+      expect(response.status).to.equal(200);
+      allEquipments = response.body.equipmentList; 
+    });
+  });
 
-//     cy.url().should("include", "/resource-management");
-//     cy.contains("Equipment").click();
-//   });
+  beforeEach(() => {
+    cy.visit("/login");
+    cy.get("#Email").type("admin@example.com");
+    cy.get("#Password").type("admin@123");
+    cy.get("button").contains("Login").click();
 
-//   it('allows users to filter equipments', () => {
-//     cy.get('input[data-cy=search-bar]').should('be.visible');
-//     cy.get('[data-cy=search-button]').should('be.visible');
+    cy.url().should("include", "/apppage");
+    cy.contains("Resource Management").click();
+    cy.url().should("include", "/resource-management");
+    cy.contains("Equipment").click();
+  });
 
-//     cy.get('input[data-cy=search-bar]').type('ECG Machine 5');
+  it('allows users to filter equipment', () => {
+    expect(allEquipments).to.have.length.greaterThan(0);
 
-//     cy.get('[data-cy=search-button]').click();
+    const randomEquipment = allEquipments[Math.floor(Math.random() * allEquipments.length)];
+    const searchEquipmentName = randomEquipment.equipmentName; 
 
-//     cy.url().should('include', '/all-equipments');
+    cy.get('input[data-cy=search-bar]').should('be.visible').type(searchEquipmentName);
+    cy.get('[data-cy=search-button]').should('be.visible').click();
 
-   
-//     cy.get('[data-cy^="equipment-"]').should('have.length', 1);
-//     cy.get('[data-cy^="equipment-"]').first().should('contain', 'ECG Machine 5');
+    cy.url().should('include', '/all-equipments');
+    cy.get('[data-cy^="equipment-"]').first().should('contain', searchEquipmentName);
 
-   
     
-//   });
-
- 
-// });
+  });
+});
