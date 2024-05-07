@@ -187,7 +187,7 @@ function GlobalContextProvider({ children }) {
     currentEvent:null,
     
    BASE_URL: "https://medical360-d65d823d7d75.herokuapp.com",
-    // BASE_URL: "http://localhost:3000",
+    //BASE_URL: "http://localhost:3000",
   });
   const [lastUpdated, setLastUpdated] = useState(Date.now());
 
@@ -316,6 +316,27 @@ const createEvent = async function (event) {
     console.error('Error saving event:', error.message);
   }
 };
+const getEvent = async function (id) {
+  try {
+     const response = await fetch(`${store.BASE_URL}/events/${id}`, {
+      method: "POST", 
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    console.log("id in getEvent",id,response);
+    if (response.ok) {
+      const eventData = await response.json(); 
+      const { title, start, end, status, user } = eventData.event;
+      return eventData.event;
+      
+    } else {
+      throw new Error("Failed to fetch event"); }
+  } catch (err) {
+    console.log(err.message);
+    throw err; 
+  }
+};
 
 const updateEvent = async function (event) {
   try {
@@ -326,7 +347,6 @@ const updateEvent = async function (event) {
       },
       body: JSON.stringify(event),
     });
-
     if (response.ok) {
       const updatedEvent = await response.json();
       setLastUpdated(Date.now());
@@ -866,6 +886,7 @@ const deleteEvent = async function (eventId) {
 
   const updateDoctor = async function (id, data) {
     try {
+      console.log("Updated or not",id,data);
       await fetch(`${store.BASE_URL}/doctors/${id}`, {
         method: "PUT",
         headers: {
@@ -1078,7 +1099,7 @@ const deleteEvent = async function (eventId) {
         updateEvent,
         deleteEvent,
         getDoctorByUser,
-        
+        getEvent,
 
       }}
     >

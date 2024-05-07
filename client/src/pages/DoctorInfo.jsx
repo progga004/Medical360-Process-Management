@@ -137,11 +137,6 @@ const DoctorInfo = () => {
           <div className="flex justify-center mt-4">
           <Link
               to={`/doctor-schedule/${userId}`}
-              state={{
-                patientId,
-                patientName,
-                doctorId
-              }}
               className="bg-[#2260FF] text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-800"
             >
               Schedule

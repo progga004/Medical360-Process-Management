@@ -99,7 +99,7 @@ function App() {
           element={<EditPatientInfoPage />}
         />
         <Route path="/add-procedure" element={user ? <AddProcedurePage /> : <Navigate to="/" />} />
-        <Route path="/patient-info" element={user ? <PatientInfo /> : <Navigate to="/" />} />
+        {/* <Route path="/patient-info" element={user ? <PatientInfo /> : <Navigate to="/" />} /> */}
         <Route path="/doctorinfo/:doctorId" element={<DoctorInfo />} />
         {/* <Route path="/doctor-schedule/:userId" element={<MyCalendar />} /> */}
         <Route path="/patient-info/:id" element={<PatientInfo />} />

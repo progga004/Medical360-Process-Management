@@ -40,7 +40,7 @@ async function updatePatient(req, res) {
           updateObject,
           { new: true } // Return the updated document
         );
-
+       console.log("Updated patient",updatedPatient)
         if (!updatedPatient) {
             return res.status(404).json({
                 message: "Patient not found"

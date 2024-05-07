@@ -13,7 +13,7 @@ const AllPatientPage = () => {
     const [searchTerm, setSearchTerm] = useState('');
 
     useEffect(() => {
-        localStorage.setItem("lastRoute", "/all-patients");
+        // localStorage.setItem("lastRoute", "/all-patients");
         async function getPatients() {
             await getAllDepartments();
             await getAllPatients();
