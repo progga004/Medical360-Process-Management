@@ -395,12 +395,11 @@ const updateEvent = async function (event) {
 
     }
   }
-    catch (err) {
-      console.log(err.message);
-      throw err; 
-    }
-  
-  };
+  catch (error) {
+    console.error("Error deleting event:", error);
+  }
+};
+
   
   
 

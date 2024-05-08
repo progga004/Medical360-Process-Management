@@ -20,9 +20,7 @@ const PatientInfo = ({}) => {
     getPatient,
     updateEvent,
     getEvent,
-
     getDepartment,
-
   } = useGlobalContext();
   const { user } = useAuthContext();
   const [modal, setModal] = useState(false);
@@ -31,12 +29,11 @@ const PatientInfo = ({}) => {
   const [selectedDoctor, setSelectedDoctor] = useState(null);
   const navigate = useNavigate();
   const [currentPatient, setCurrentPatient] = useState(null);
-  const[events,setEvents]=useState(null);
+  const [events, setEvents] = useState(null);
   const [viewedDoctors, setViewedDoctors] = useState([]);
-  const [doctorToRemove, setDoctorToRemove] = useState(null); 
+  const [doctorToRemove, setDoctorToRemove] = useState(null);
   const [removeModalOpen, setRemoveModalOpen] = useState(false);
-
-  const[currentDepartment,setCurrentDepartment]=useState(false);
+  const [currentDepartment, setCurrentDepartment] = useState(false);
 
   const { id } = useParams();
 
@@ -62,16 +59,12 @@ const PatientInfo = ({}) => {
           const department = await getDepartment(patient.department);
           setCurrentDepartment(department);
         }
-
-
       } catch (error) {
         console.error("Error fetching doctor events:", error);
       }
     };
     fetchPatientEvents();
   }, [currentPatient]);
-
-  
 
   const handleDoctorClick = (doctor) => {
     setSelectedDoctor(doctor);
@@ -113,56 +106,56 @@ const PatientInfo = ({}) => {
         });
         if (response.ok) {
           const doctor = (await response.json()).doctor;
-          const updatedPatientList = currentDoctor.patientList.filter(p => p.patientId !== currentPatient._id);
+          const updatedPatientList = currentDoctor.patientList.filter(
+            (p) => p.patientId !== currentPatient._id
+          );
           await updateDoctor(doctor._id, { patientList: updatedPatientList });
         }
       } catch (err) {
         console.log(err.message);
       }
-      
     }
   };
- 
- 
+
   const handleRemoveDoctorConfirm = async (isDoctorSeen) => {
-    if (currentPatient) {
-      const eventId = currentPatient.eventId; 
-      const getEventById = await getEvent(eventId);
-      setEvents(getEventById);
-  
-      if (!isDoctorSeen && eventId) {
-        // Update the event
+    if (!currentPatient) return;
+
+    try {
+      const eventId = currentPatient.eventId;
+      if (!eventId) return;
+
+      const event = await getEvent(eventId);
+
+      if (!isDoctorSeen) {
         const updatedEvent = {
-          ...getEventById, 
-          title: 'Available',
-          status: 'available',
+          ...event,
+          title: "Available",
+          status: "available",
         };
-  
         await updateEvent(updatedEvent);
 
         if (currentDoctor) {
-          const updatedPatientList = currentDoctor.patientList.filter(p => p.patientId!== currentPatient._id);
-          await updateDoctor(currentDoctor._id, { patientList: updatedPatientList });
-          
-
-
-
-      }
-      await updatePatient(currentPatient._id, {
-        doctorAssigned: null,
-        eventId: null, 
-        assignedTime: null, 
-      });
-
-
+          const updatedPatientList = currentDoctor.patientList.filter(
+            (p) => p.patientId !== currentPatient._id
+          );
+          await updateDoctor(currentDoctor._id, {
+            patientList: updatedPatientList,
+          });
+        }
+      };
+        await updatePatient(currentPatient._id, {
+          doctorAssigned: null,
+          eventId: null,
+          assignedTime: null,
+        });
+      
       setRemoveModalOpen(false);
       setIsOpen(false);
-
+    } catch (error) {
+      console.error("Failed to remove doctor assignment:", error);
     }
   };
-  
-  
-  
+
   const filteredDoctors =
     doctors && currentPatient && currentPatient.department
       ? doctors.filter(
@@ -170,14 +163,10 @@ const PatientInfo = ({}) => {
         )
       : [];
 
-
-
   if (!currentPatient) {
     return <div>No patient data available.</div>;
-
-
   }
-  
+
   return (
     <>
       <Banner goBackPath={"/all-patients"} />
@@ -228,10 +217,8 @@ const PatientInfo = ({}) => {
                   <div className="flex-grow bg-blue-600 text-white p-4 rounded-lg">
                     <h3 className="font-semibold text-md">Department</h3>
                     <p>
-
                       {currentDepartment.departmentName
                         ? currentDepartment.departmentName
-
                         : "N/A"}
                     </p>
                   </div>
@@ -478,5 +465,5 @@ const PatientInfo = ({}) => {
     </>
   );
 };
-};
+
 export default PatientInfo;
