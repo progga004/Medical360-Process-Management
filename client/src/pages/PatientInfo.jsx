@@ -158,8 +158,6 @@ const PatientInfo = ({}) => {
       setRemoveModalOpen(false);
       setIsOpen(false);
 
-      setRemoveModalOpen(false);
-
     }
   };
   
@@ -178,8 +176,6 @@ const PatientInfo = ({}) => {
     return <div>No patient data available.</div>;
 
 
-  if (!currentPatient) {
-    return <div>No patient data available.</div>;
   }
   
   return (
@@ -482,5 +478,5 @@ const PatientInfo = ({}) => {
     </>
   );
 };
-
+};
 export default PatientInfo;

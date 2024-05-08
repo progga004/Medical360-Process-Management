@@ -393,10 +393,13 @@ const updateEvent = async function (event) {
     } else {
       console.error('Failed to update event');
 
-
-  
-
     }
+  }
+    catch (err) {
+      console.log(err.message);
+      throw err; 
+    }
+  
   };
   
   
