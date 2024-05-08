@@ -22,6 +22,16 @@ const bugSchema = new mongoose.Schema({
     required: true,
     trim: true,
   },
+  status: {
+    type: String,
+    required: true,
+    enum: ["Open", "In Progress", "Resolved"],
+    default: "Open",
+  },
+  resolvedDate: {
+    type: Date,
+    default: null,
+  },
 });
 
 const Bug = mongoose.model("Bug", bugSchema);
