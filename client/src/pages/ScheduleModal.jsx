@@ -31,6 +31,7 @@ const ScheduleModal = ({
     }
   }, [isScheduleOpen, doctor]);
 
+
   const formatDateAndTime = (startDate, endDate) => {
     const dateOptions = { year: 'numeric', month: '2-digit', day: '2-digit' };
     const timeOptions = { hour: '2-digit', minute: '2-digit', hour12: true };
@@ -46,6 +47,8 @@ const ScheduleModal = ({
     try {
       const assignedTime = formatDateAndTime(event.start, event.end);
 
+
+ 
       const updatedEvent = {
         ...event,
         title: patientName, 
@@ -56,7 +59,9 @@ const ScheduleModal = ({
   
       const patientUpdate = {
         doctorAssigned: doctor._id,
+
         assignedTime: assignedTime,
+
         eventId: event._id,
       };
   

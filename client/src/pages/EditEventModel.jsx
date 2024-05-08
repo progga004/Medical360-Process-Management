@@ -43,7 +43,7 @@ const EditEventModel = ({ event, onSave, onDelete, onClose, userId, currentOwner
     onSave(updatedEvent);
     
   };
-  
+
   const startEditing = () => {
     if(userAdmin && userId !== currentOwner)
       {setIsEditing(false);}

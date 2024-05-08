@@ -20,7 +20,9 @@ const PatientInfo = ({}) => {
     getPatient,
     updateEvent,
     getEvent,
+
     getDepartment,
+
   } = useGlobalContext();
   const { user } = useAuthContext();
   const [modal, setModal] = useState(false);
@@ -33,7 +35,9 @@ const PatientInfo = ({}) => {
   const [viewedDoctors, setViewedDoctors] = useState([]);
   const [doctorToRemove, setDoctorToRemove] = useState(null); 
   const [removeModalOpen, setRemoveModalOpen] = useState(false);
+
   const[currentDepartment,setCurrentDepartment]=useState(false);
+
   const { id } = useParams();
 
   useEffect(() => {
@@ -53,10 +57,12 @@ const PatientInfo = ({}) => {
       try {
         const patient = await getPatient(id);
         setCurrentPatient(patient);
+
         if (patient.department) {
           const department = await getDepartment(patient.department);
           setCurrentDepartment(department);
         }
+
 
       } catch (error) {
         console.error("Error fetching doctor events:", error);
@@ -64,6 +70,7 @@ const PatientInfo = ({}) => {
     };
     fetchPatientEvents();
   }, [currentPatient]);
+
   
 
   const handleDoctorClick = (doctor) => {
@@ -132,11 +139,13 @@ const PatientInfo = ({}) => {
         };
   
         await updateEvent(updatedEvent);
+
         if (currentDoctor) {
           const updatedPatientList = currentDoctor.patientList.filter(p => p.patientId!== currentPatient._id);
           await updateDoctor(currentDoctor._id, { patientList: updatedPatientList });
           
-        }
+
+
 
       }
       await updatePatient(currentPatient._id, {
@@ -145,8 +154,12 @@ const PatientInfo = ({}) => {
         assignedTime: null, 
       });
 
+
       setRemoveModalOpen(false);
       setIsOpen(false);
+
+      setRemoveModalOpen(false);
+
     }
   };
   
@@ -158,6 +171,12 @@ const PatientInfo = ({}) => {
           (doctor) => doctor.departmentName === currentPatient.department
         )
       : [];
+
+
+
+  if (!currentPatient) {
+    return <div>No patient data available.</div>;
+
 
   if (!currentPatient) {
     return <div>No patient data available.</div>;
@@ -213,8 +232,10 @@ const PatientInfo = ({}) => {
                   <div className="flex-grow bg-blue-600 text-white p-4 rounded-lg">
                     <h3 className="font-semibold text-md">Department</h3>
                     <p>
+
                       {currentDepartment.departmentName
                         ? currentDepartment.departmentName
+
                         : "N/A"}
                     </p>
                   </div>

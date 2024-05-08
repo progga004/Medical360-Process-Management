@@ -151,11 +151,13 @@ const MyCalendar = () => {
   };
   const handleEditEvent = async (updatedEvent) => {
     console.log("handle edit one");
+
     if (user.isAdmin && userId !== user.id) {
       updatedEvent.status = "patient_assigned";
       if (patientName) {
         updatedEvent.title = patientName;
       }
+
     }
     try {
       const response = await updateEvent(updatedEvent);
@@ -165,7 +167,9 @@ const MyCalendar = () => {
           start: new Date(response.event.start),
           end: new Date(response.event.end),
           status: response.event.status,
+
           title: response.event.title,
+
         };
         setEvents((prevEvents) =>
           prevEvents.map((e) =>
@@ -218,6 +222,7 @@ const MyCalendar = () => {
     setShowModal(false);
     fetchEvents();
   };
+
 
   return (
     <>
@@ -304,6 +309,10 @@ const MyCalendar = () => {
           </div>
         </div>
       </div>
+
+  
+        
+
     </>
   );
 };
