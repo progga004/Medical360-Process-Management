@@ -392,12 +392,14 @@ const updateEvent = async function (event) {
       return updatedEvent;
     } else {
       console.error('Failed to update event');
+
     }
   }
   catch (error) {
     console.error("Error deleting event:", error);
   }
 };
+
   
   
 
