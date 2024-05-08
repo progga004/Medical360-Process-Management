@@ -31,10 +31,24 @@ const ScheduleModal = ({
     }
   }, [isScheduleOpen, doctor]);
 
+
+  const formatDateAndTime = (startDate, endDate) => {
+    const dateOptions = { year: 'numeric', month: '2-digit', day: '2-digit' };
+    const timeOptions = { hour: '2-digit', minute: '2-digit', hour12: true };
+  
+    const formattedDate = new Date(startDate).toLocaleDateString('en-US', dateOptions);
+    const startTime = new Date(startDate).toLocaleTimeString('en-US', timeOptions);
+    const endTime = new Date(endDate).toLocaleTimeString('en-US', timeOptions);
+  
+    return `${formattedDate}, ${startTime}-${endTime}`;
+  };
+  
   const handleAssign = async (event) => {
     try {
-      const startTime = new Date(event.start).toLocaleTimeString();
-      const endTime = new Date(event.end).toLocaleTimeString();
+      const assignedTime = formatDateAndTime(event.start, event.end);
+
+
+ 
       const updatedEvent = {
         ...event,
         title: patientName, 
@@ -45,7 +59,9 @@ const ScheduleModal = ({
   
       const patientUpdate = {
         doctorAssigned: doctor._id,
-        assignedTime: `${startTime} - ${endTime}`,
+
+        assignedTime: assignedTime,
+
         eventId: event._id,
       };
   

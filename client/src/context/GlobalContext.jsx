@@ -89,6 +89,18 @@ export const storeReducer = (state, action) => {
         currentFeedback: null,
         feedbacks: action.payload,
       };
+
+      case 'ASSIGN_DOCTOR':
+            return {
+                ...state,
+                events: state.events.map(event =>
+                    event.id === action.payload.eventId ? { ...event, assignedTo: action.payload.doctorId } : event
+                ),
+                patients: state.patients.map(patient =>
+                    patient.id === action.payload.patientId ? { ...patient, doctorAssigned: action.payload.doctorId } : patient
+                )
+            };
+
     case "MARK_BUG_RESOLVED":
       return {
         ...state,
@@ -104,6 +116,7 @@ export const storeReducer = (state, action) => {
           bug._id === action.payload ? { ...bug, status: "In Progress" } : bug
         ),
       };
+
 
     case "DELETE":
       // delete based on value passes as context
@@ -136,12 +149,18 @@ export const storeReducer = (state, action) => {
             users: state.users.filter((user) => user._id !== action.payload),
           };
 
-        case "GET_USER_EVENTS":
-          return {
-            ...state,
-            currentEvent: null,
-            events: action.payload,
-          };
+          
+          case "GET_USER_EVENTS":
+  return {
+    ...state,
+    currentEvent:null,
+    events:action.payload,
+  };
+  
+
+
+        
+
 
         default:
           return state;
@@ -200,9 +219,13 @@ function GlobalContextProvider({ children }) {
     currentBug: null,
     currentChat: null,
     currentFeedback: null,
-    currentEvent: null,
+
+    currentEvent:null,
+    
+ 
 
     BASE_URL: "https://medical360-d65d823d7d75.herokuapp.com",
+
     //BASE_URL: "http://localhost:3000",
   });
   const [lastUpdated, setLastUpdated] = useState(Date.now());
@@ -307,70 +330,76 @@ function GlobalContextProvider({ children }) {
     }
   };
 
-  //create events
-  const createEvent = async function (event) {
-    try {
-      const id = event.userId;
-      const response = await fetch(`${store.BASE_URL}/events`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(event),
-      });
-      if (response.ok) {
-        const responseData = await response.json();
-        console.log("event created:", responseData);
-        getEvents(id);
-        return responseData;
-      }
-    } catch (error) {
-      console.error("Error saving event:", error.message);
+  
+//create events
+const createEvent = async function (event) {
+  try {
+    const id =event.userId;
+    const response = await fetch(`${store.BASE_URL}/events`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(event),
+    });
+    if (response.ok) {
+      const responseData = await response.json(); 
+      console.log("event created:", responseData); 
+      getEvents(id);
+      return responseData;
+      
     }
-  };
-  const getEvent = async function (id) {
-    try {
-      const response = await fetch(`${store.BASE_URL}/events/${id}`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      console.log("id in getEvent", id, response);
-      if (response.ok) {
-        const eventData = await response.json();
-        const { title, start, end, status, user } = eventData.event;
-        return eventData.event;
-      } else {
-        throw new Error("Failed to fetch event");
-      }
-    } catch (err) {
-      console.log(err.message);
-      throw err;
-    }
-  };
+    
+  } catch (error) {
+    console.error('Error saving event:', error.message);
+  }
+};
+const getEvent = async function (id) {
+  try {
+     const response = await fetch(`${store.BASE_URL}/events/${id}`, {
+      method: "POST", 
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    console.log("id in getEvent",id,response);
+    if (response.ok) {
+      const eventData = await response.json(); 
+      const { title, start, end, status, user } = eventData.event;
+      return eventData.event;
+      
+    } else {
+      throw new Error("Failed to fetch event"); }
+  } catch (err) {
+    console.log(err.message);
+    throw err; 
+  }
+};
 
-  const updateEvent = async function (event) {
-    try {
-      const response = await fetch(`${store.BASE_URL}/events/${event._id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(event),
-      });
-      if (response.ok) {
-        const updatedEvent = await response.json();
-        setLastUpdated(Date.now());
-        console.log("Event updated:", updatedEvent);
-        return updatedEvent;
-      } else {
-        console.error("Failed to update event");
-      }
-    } catch (error) {
-      console.error("Error updating event:", error);
+const updateEvent = async function (event) {
+  try {
+    const response = await fetch(`${store.BASE_URL}/events/${event._id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(event),
+    });
+    if (response.ok) {
+      const updatedEvent = await response.json();
+      setLastUpdated(Date.now());
+      console.log('Event updated:', updatedEvent);
+      return updatedEvent;
+    } else {
+      console.error('Failed to update event');
+
+
+  
+
     }
   };
+  
+  
 
   // Delete event by id
   const deleteEvent = async function (eventId) {
@@ -897,7 +926,10 @@ function GlobalContextProvider({ children }) {
 
   const updateDoctor = async function (id, data) {
     try {
+
+
       console.log("Updated or not", id, data);
+
       await fetch(`${store.BASE_URL}/doctors/${id}`, {
         method: "PUT",
         headers: {
@@ -1098,6 +1130,9 @@ function GlobalContextProvider({ children }) {
   const removeCurrentDoctor = () => {
     setStore({ type: "REMOVE_DOCTOR" });
   };
+  const assignDoctor = (eventId, doctorId, patientId) => {
+    dispatch({ type: 'ASSIGN_DOCTOR', payload: { eventId, doctorId, patientId } });
+};
 
   return (
     <GlobalContext.Provider
@@ -1147,8 +1182,13 @@ function GlobalContextProvider({ children }) {
         deleteEvent,
         getDoctorByUser,
         getEvent,
+
+        assignDoctor,
+
+
         markBugResolved,
         markBugInProgress
+
       }}
     >
       {children}

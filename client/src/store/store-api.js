@@ -73,20 +73,24 @@ export const updateDepartment = (id, newData) =>
   api.put(`/departments/${id}`, newData);
 
 export const getEvents = (id) => {
-  return api.get(`/events/user/${id}`);
-};
-export const getEvent = (id) => {
-  return api.get(`/events/${id}`);
-};
-export const createEvent = (eventData) => {
-  return api.post("/events/", eventData);
-};
-export const updateEvent = (eventId, eventData) => {
-  return api.put(`/events/${eventId}`, eventData);
-};
-export const deleteEvent = (eventId) => {
-  return api.delete(`/events/${eventId}`);
-};
+
+    return api.get(`/events/user/${id}`);
+  };
+  export const getEvent = (id) => {
+    return api.get(`/events/${id}`);
+  };
+  export const createEvent = (eventData) => {
+    return api.post('/events/', eventData);
+  };
+  export const updateEvent = (eventId, eventData) => {
+    return api.put(`/events/${eventId}`, eventData);
+  };
+  export const deleteEvent = (eventId) => {
+    return api.delete(`/events/${eventId}`);
+  };
+  
+  
+
 
 export const resolveBug = (id) => {
   return api.post(`/bugs/${id}/resolve`);
@@ -95,6 +99,7 @@ export const resolveBug = (id) => {
 export const markInProgress = (id) => {
   return api.post(`/bugs/${id}/progress`);
 };
+
 
 export default {
   getPatient,
@@ -130,6 +135,10 @@ export default {
   deleteEvent,
   getDoctorByUser,
   getEvent,
+
+
+
   resolveBug,
   markInProgress,
+
 };
