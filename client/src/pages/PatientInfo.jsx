@@ -20,6 +20,7 @@ const PatientInfo = ({}) => {
     getPatient,
     updateEvent,
     getEvent,
+    getDepartment,
   } = useGlobalContext();
   const { user } = useAuthContext();
   const [modal, setModal] = useState(false);
@@ -32,6 +33,7 @@ const PatientInfo = ({}) => {
   const [viewedDoctors, setViewedDoctors] = useState([]);
   const [doctorToRemove, setDoctorToRemove] = useState(null); 
   const [removeModalOpen, setRemoveModalOpen] = useState(false);
+  const[currentDepartment,setCurrentDepartment]=useState(false);
   const { id } = useParams();
 
   useEffect(() => {
@@ -51,12 +53,18 @@ const PatientInfo = ({}) => {
       try {
         const patient = await getPatient(id);
         setCurrentPatient(patient);
+        if (patient.department) {
+          const department = await getDepartment(patient.department);
+          setCurrentDepartment(department);
+        }
+
       } catch (error) {
         console.error("Error fetching doctor events:", error);
       }
     };
     fetchPatientEvents();
   }, [currentPatient]);
+  
 
   const handleDoctorClick = (doctor) => {
     setSelectedDoctor(doctor);
@@ -98,9 +106,8 @@ const PatientInfo = ({}) => {
         });
         if (response.ok) {
           const doctor = (await response.json()).doctor;
-          await updateDoctor(doctor._id, {
-            patientList: [...doctor.patientList, currentPatient._id],
-          });
+          const updatedPatientList = currentDoctor.patientList.filter(p => p.patientId !== currentPatient._id);
+          await updateDoctor(doctor._id, { patientList: updatedPatientList });
         }
       } catch (err) {
         console.log(err.message);
@@ -125,7 +132,11 @@ const PatientInfo = ({}) => {
         };
   
         await updateEvent(updatedEvent);
-        
+        if (currentDoctor) {
+          const updatedPatientList = currentDoctor.patientList.filter(p => p.patientId!== currentPatient._id);
+          await updateDoctor(currentDoctor._id, { patientList: updatedPatientList });
+          
+        }
 
       }
       await updatePatient(currentPatient._id, {
@@ -133,7 +144,9 @@ const PatientInfo = ({}) => {
         eventId: null, 
         assignedTime: null, 
       });
+
       setRemoveModalOpen(false);
+      setIsOpen(false);
     }
   };
   
@@ -149,7 +162,7 @@ const PatientInfo = ({}) => {
   if (!currentPatient) {
     return <div>No patient data available.</div>;
   }
-
+  
   return (
     <>
       <Banner goBackPath={"/all-patients"} />
@@ -200,8 +213,8 @@ const PatientInfo = ({}) => {
                   <div className="flex-grow bg-blue-600 text-white p-4 rounded-lg">
                     <h3 className="font-semibold text-md">Department</h3>
                     <p>
-                      {currentPatient.department
-                        ? id_to_department[currentPatient.department]
+                      {currentDepartment.departmentName
+                        ? currentDepartment.departmentName
                         : "N/A"}
                     </p>
                   </div>

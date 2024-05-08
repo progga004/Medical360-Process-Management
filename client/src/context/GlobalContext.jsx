@@ -89,6 +89,16 @@ export const storeReducer = (state, action) => {
         currentFeedback: null,
         feedbacks: action.payload,
       };
+      case 'ASSIGN_DOCTOR':
+            return {
+                ...state,
+                events: state.events.map(event =>
+                    event.id === action.payload.eventId ? { ...event, assignedTo: action.payload.doctorId } : event
+                ),
+                patients: state.patients.map(patient =>
+                    patient.id === action.payload.patientId ? { ...patient, doctorAssigned: action.payload.doctorId } : patient
+                )
+            };
     case "DELETE":
       // delete based on value passes as context
       switch (action.context) {
@@ -126,6 +136,7 @@ export const storeReducer = (state, action) => {
     currentEvent:null,
     events:action.payload,
   };
+  
 
         default:
           return state;
@@ -1051,6 +1062,9 @@ const deleteEvent = async function (eventId) {
   const removeCurrentDoctor = () => {
     setStore({ type: "REMOVE_DOCTOR" });
   };
+  const assignDoctor = (eventId, doctorId, patientId) => {
+    dispatch({ type: 'ASSIGN_DOCTOR', payload: { eventId, doctorId, patientId } });
+};
 
   return (
     <GlobalContext.Provider
@@ -1100,6 +1114,7 @@ const deleteEvent = async function (eventId) {
         deleteEvent,
         getDoctorByUser,
         getEvent,
+        assignDoctor,
 
       }}
     >

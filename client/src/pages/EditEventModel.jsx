@@ -44,12 +44,13 @@ const EditEventModel = ({ event, onSave, onDelete, onClose, userId, currentOwner
     
   };
   
-  
-
-
-
   const startEditing = () => {
-    setIsEditing(true);
+    if(userAdmin && userId !== currentOwner)
+      {setIsEditing(false);}
+    else
+    {
+      setIsEditing(true);
+    }
   };
 
   return (
@@ -112,6 +113,7 @@ const EditEventModel = ({ event, onSave, onDelete, onClose, userId, currentOwner
                 >
                   <option value="available">Available</option>
                   <option value="unavailable">Unavailable</option>
+                  <option value="completed">Completed</option>
                 </select>
               </label>
             )}
