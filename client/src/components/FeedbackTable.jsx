@@ -1,11 +1,16 @@
-import React from 'react';
+import React from "react";
+import { useNavigate } from "react-router-dom";
 
 const FeedbackTable = ({ cards }) => {
-  // Specify only the fields you want to display
-  const fields = ['Name', 'Email', 'Rating', 'Comments'];
+  const navigate = useNavigate();
+  const fields = ["Name", "Email", "Rating", "Comments"];
+
+  const viewFeedbackDetails = (feedbackId) => {
+    navigate(`/view-feedback/${feedbackId}`);
+  };
 
   return (
-    <div className="overflow-x-auto relative">
+    <div className="overflow-x-auto relative" style={{ maxHeight: '500px', overflowY: 'auto' }}>
       <table className="min-w-full">
         <thead>
           <tr>
@@ -24,13 +29,15 @@ const FeedbackTable = ({ cards }) => {
             <tr
               key={index}
               className={`${index % 2 === 0 ? 'bg-gray-100' : 'bg-blue-300'}`}
+              onClick={() => viewFeedbackDetails(card._id)} 
+              style={{ cursor: 'pointer' }} 
             >
               {fields.map((field, i) => (
                 <td
                   key={i}
                   className="px-6 py-4 whitespace-no-wrap text-sm leading-5 text-gray-500"
                 >
-                  {card[field.toLowerCase()]} 
+                  {card[field.toLowerCase()]}
                 </td>
               ))}
             </tr>
