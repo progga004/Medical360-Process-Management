@@ -27,7 +27,8 @@ const AllPatientPage = () => {
             const filtered = patients.filter(patient =>
                 patient.patientName.toLowerCase().includes(lowercasedTerm) ||
                 patient.email.toLowerCase().includes(lowercasedTerm) ||
-                patient.roomNo.toLowerCase().includes(lowercasedTerm)
+                patient.roomNo.toLowerCase().includes(lowercasedTerm) ||
+                patient.patientStatus.toLowerCase().include(lowercasedTerm)
             );
             setFilteredPatients(filtered);
         } else {
