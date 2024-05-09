@@ -65,16 +65,28 @@ const ChatArea = ({ chatId }) => {
 
   return (
     <div className="w-3/4 flex flex-col">
-      <div className="flex-1 p-5 overflow-y-auto">
+      <div className="flex-1 p-5 overflow-y-auto" style={{ maxHeight: 'calc(100vh - 170px)' }}>
         {messages.map((msg, index) => (
-          <div key={index} className={`rounded px-4 py-2 max-w-xs mb-2 ${msg.sender === user.id ? 'self-end bg-blue-300' : 'self-start bg-blue-100'}`}>
+          <div key={index} className={`rounded px-4 py-2 max-w-xs mb-2 ${msg.sender === user.id ? 'self-end bg-blue-500 text-white' : 'self-start bg-gray-100 text-gray-800'}`}>
             {msg.content}
           </div>
         ))}
       </div>
       <div className="p-4 border-t">
-        <input className="w-full p-2 rounded border" value={input} onChange={e => setInput(e.target.value)} placeholder="Type your message here..." />
-        <button onClick={sendMessage}>Send</button>
+        <div className="flex">
+          <input
+            className="flex-grow p-2 border rounded-l-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            value={input}
+            onChange={e => setInput(e.target.value)}
+            placeholder="Type your message here..."
+          />
+          <button
+            onClick={sendMessage}
+            className="bg-blue-500 hover:bg-blue-700 text-white px-4 rounded-r-lg"
+          >
+            Send
+          </button>
+        </div>
       </div>
     </div>
   );
