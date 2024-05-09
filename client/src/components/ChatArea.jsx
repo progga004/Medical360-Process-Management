@@ -78,7 +78,7 @@ const ChatArea = ({ chatId }) => {
         {messages.map((msg, index) => (
           <div
             key={index}
-            className={`rounded px-4 py-2 max-w-xs mb-2 ${msg.sender === user.id ? "ml-auto bg-blue-500 text-white" : "mr-auto bg-green-500 text-white"}`}
+            className={`rounded px-4 py-2 max-w-xs mb-2 ${msg.sender === user.id ? "mr-auto bg-blue-500 text-white" : "ml-auto bg-green-500 text-white"}`}
           >
             {msg.content}
           </div>
