@@ -36,7 +36,7 @@ const AllBugsPage = () => {
       <div className="p-8">
         {bugs && <BugTable
           cards={bugs.filter((bug) =>
-            `${bug.name} ${bug.email} ${bug.status}`.toLowerCase().includes(searchTerm)
+            `${bug.name} ${bug.email}`.toLowerCase().includes(searchTerm)
           )}
         />}
       </div>

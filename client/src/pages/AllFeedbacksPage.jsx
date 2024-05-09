@@ -10,8 +10,11 @@ const AllFeedbacksPage = () => {
 
   useEffect(() => {
     const fetchFeedbacks = async () => {
+      console.log("Checking feedbacks before fetch:", feedbacks);
       if (!feedbacks) {
+        console.log("Fetching feedbacks...");
         await getAllFeedback();
+        console.log("Feedbacks fetched:", feedbacks);
       }
     };
 
@@ -21,6 +24,11 @@ const AllFeedbacksPage = () => {
   const handleSearch = (term) => {
     setSearchTerm(term.toLowerCase());
   };
+
+  console.log("Current searchTerm:", searchTerm);
+  console.log("Filtered feedbacks:", feedbacks?.filter((feedback) =>
+    `${feedback.name} ${feedback.email} ${feedback.comments}`.toLowerCase().includes(searchTerm)
+  ));
 
   return (
     <>
@@ -34,15 +42,11 @@ const AllFeedbacksPage = () => {
         <SearchBar onSearch={handleSearch} />
       </div>
       <div className="p-8">
-        {feedbacks && (
-          <FeedbackTable
-            cards={feedbacks.filter((feedback) =>
-              `${feedback.name} ${feedback.email}`
-                .toLowerCase()
-                .includes(searchTerm)
-            )}
-          />
-        )}
+        {feedbacks && <FeedbackTable
+          cards={feedbacks.filter((feedback) =>
+            `${feedback.name} ${feedback.email} ${feedback.comments}`.toLowerCase().includes(searchTerm)
+          )}
+        />}
       </div>
     </>
   );
