@@ -17,8 +17,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use(
   cors({
 
-    origin: "http://localhost:5173", // Ensure the client's address is correctly listed
-    //origin: "https://medical360-d65d823d7d75.herokuapp.com" ,
+    //origin: "http://localhost:5173", // Ensure the client's address is correctly listed
+    origin: "https://medical360-d65d823d7d75.herokuapp.com" ,
     credentials: true, // For sending cookies over CORS
   })
 );
@@ -32,12 +32,12 @@ app.use(cookieParser());
 
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
-// app.use(express.static(path.join(__dirname, "../client/dist")));
+app.use(express.static(path.join(__dirname, "../client/dist")));
 
-// // // // // Catch-all handler for SPA (Make sure the path is correctly formatted)
-// app.get("*", (req, res) => {
-//   res.sendFile(path.resolve(__dirname, "../client/dist/index.html"));
-// });
+// // // // Catch-all handler for SPA (Make sure the path is correctly formatted)
+app.get("*", (req, res) => {
+  res.sendFile(path.resolve(__dirname, "../client/dist/index.html"));
+});
 
 // set up routers
 const authRouter = require("./routes/auth-router");
