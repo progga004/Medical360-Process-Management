@@ -13,7 +13,7 @@ const AllPatientPage = () => {
     const [searchTerm, setSearchTerm] = useState('');
 
     useEffect(() => {
-        localStorage.setItem("lastRoute", "/all-patients");
+        // localStorage.setItem("lastRoute", "/all-patients");
         async function getPatients() {
             await getAllDepartments();
             await getAllPatients();
@@ -27,7 +27,8 @@ const AllPatientPage = () => {
             const filtered = patients.filter(patient =>
                 patient.patientName.toLowerCase().includes(lowercasedTerm) ||
                 patient.email.toLowerCase().includes(lowercasedTerm) ||
-                patient.roomNo.toLowerCase().includes(lowercasedTerm)
+                patient.roomNo.toLowerCase().includes(lowercasedTerm) ||
+                patient.patientStatus.toLowerCase().includes(lowercasedTerm)
             );
             setFilteredPatients(filtered);
         } else {

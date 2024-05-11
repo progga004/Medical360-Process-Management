@@ -2,6 +2,20 @@ const mongoose = require('mongoose');
 
 const { Schema } = mongoose;
 
+const patientAssignedSchema = new Schema({
+  patientId: {
+    type: Schema.Types.ObjectId,
+    ref: 'Patient'
+  },
+  assignedTime: {
+    type: String,
+    required: true
+  },
+  eventId: {
+    type: Schema.Types.ObjectId
+  }
+}, { _id: false }); 
+
 const doctorSchema = new Schema({
   name: {
     type: String,
@@ -37,11 +51,13 @@ const doctorSchema = new Schema({
     start: Date,
     end: Date,
   }],
-  patientList: [{
-    type: Schema.Types.ObjectId,
-    ref: 'Patient',
-  }],
+  // patientList: [{
+  //   type: Schema.Types.ObjectId,
+  //   ref: 'Patient',
+  // }],
+  patientList: [patientAssignedSchema],
   userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+  
 });
 
 const Doctor = mongoose.model('Doctor', doctorSchema);

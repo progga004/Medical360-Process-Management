@@ -11,4 +11,10 @@ router.post('/all', BugController.getAllBugs);
 // POST route to get a single bug report by id
 router.post('/:id', BugController.getBug);
 
+// POST route to mark a bug as resolved
+router.post('/:id/resolve', BugController.resolveBug);
+
+// POST route to mark a bug as in progress
+router.post('/:id/progress', BugController.markInProgress);
+
 module.exports = router;

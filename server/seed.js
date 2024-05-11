@@ -12,7 +12,7 @@ require("dotenv").config();
 
 mongoose.connect(
   "mongodb+srv://medical360:admin123@medical360.wh0h2hw.mongodb.net/medical360",
-  // "mongodb://127.0.0.1/medical360",
+  // "mongodb://localhost/medical360",
   {
     useUnifiedTopology: true,
   }
@@ -49,7 +49,7 @@ db.once("open", async () => {
     const adminUser = new User({
       name: "Admin",
       email: "admin@example.com",
-      phoneNumber: chance.phone(),
+      phone_number: chance.phone(),
       passwordHash: await bcrypt.hash("admin@123", 10),
       isAdmin: true,
     });
@@ -66,8 +66,10 @@ db.once("open", async () => {
       const user = new User({
         name,
         email,
+        phone_number: chance.phone(),
         passwordHash,
-        isAdmin,
+        isAdmin
+        ,
       });
       await user.save();
       const doctor = new Doctor({
@@ -133,6 +135,7 @@ db.once("open", async () => {
       const user = new User({
         name,
         email,
+        phone_number: chance.phone(),
         passwordHash,
         isAdmin,
         department:departmentId, // Set department reference
@@ -182,7 +185,7 @@ db.once("open", async () => {
     for (let i = 0; i < 5; i++) {
       const name = chance.name();
       const email = chance.email();
-      const phoneNumber = chance.phone();
+      const phone_number = chance.phone();
 
       const passwordHash = await bcrypt.hash("password@123", 10);
       const isAdmin = false;
@@ -190,7 +193,7 @@ db.once("open", async () => {
       const nurse = new User({
         name,
         email,
-        phoneNumber,
+        phone_number,
         passwordHash,
         isAdmin,
       });

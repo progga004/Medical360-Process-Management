@@ -21,6 +21,7 @@
     "fetch": "^1.1.0",
     "react": "^18.2.0",
     "react-big-calendar": "^1.12.1",
+    "react-datepicker": "^6.9.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.23.0",
     "react-select": "^5.8.0",

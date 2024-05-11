@@ -5,6 +5,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { StarIcon } from "@heroicons/react/solid";
 import Banner from "../components/Banner";
 import { useGlobalContext } from "../hooks/useGlobalContext";
+import { useAuthContext } from "../hooks/useAuthContext";
 
 const FeedbackForm = () => {
   const [feedback, setFeedback] = useState({
@@ -14,6 +15,7 @@ const FeedbackForm = () => {
     rating: 0,
   });
   const { createFeedback } = useGlobalContext();
+
   const navigate = useNavigate();
 
   const handleRating = (ratingValue) => {

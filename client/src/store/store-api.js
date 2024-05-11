@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const BASE_URL = "https://medical360-d65d823d7d75.herokuapp.com";
- //const BASE_URL = "http://localhost:3000";
+//const BASE_URL = "http://localhost:3000";
 
 const api = axios.create({
   baseURL: BASE_URL,
@@ -73,7 +73,11 @@ export const updateDepartment = (id, newData) =>
   api.put(`/departments/${id}`, newData);
 
 export const getEvents = (id) => {
+
     return api.get(`/events/user/${id}`);
+  };
+  export const getEvent = (id) => {
+    return api.get(`/events/${id}`);
   };
   export const createEvent = (eventData) => {
     return api.post('/events/', eventData);
@@ -86,6 +90,17 @@ export const getEvents = (id) => {
   };
   
   
+
+
+export const resolveBug = (id) => {
+  return api.post(`/bugs/${id}/resolve`);
+};
+
+export const markInProgress = (id) => {
+  return api.post(`/bugs/${id}/progress`);
+};
+
+
 export default {
   getPatient,
   getAllPatients,
@@ -119,5 +134,11 @@ export default {
   updateEvent,
   deleteEvent,
   getDoctorByUser,
+  getEvent,
+
+
+
+  resolveBug,
+  markInProgress,
 
 };

@@ -30,7 +30,9 @@ function AddProcedurePage() {
         procedures: [...currentPatient.procedures, newProcedure]
       });
       await getPatient(currentPatient._id);
-      navigate("/patient-info");
+      // navigate("/patient-info/${currentPatient._id}");
+      navigate(`/patient-info/${currentPatient._id}`);
+
     }
   }
 

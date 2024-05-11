@@ -43,6 +43,8 @@ import ChangePasswordPage from "./pages/ChangePasswordPage";
 import AllFeedbacksPage from "./pages/AllFeedbacksPage";
 import AllBugsPage from "./pages/AllBugsPage";
 import MyCalendar from "./pages/MyCalendar";
+import BugInfoPage from "./pages/BugInfoPage";
+import FeedbackInfoPage from "./pages/FeedbackInfoPage";
 
 function App() {
 
@@ -83,6 +85,9 @@ function App() {
         <Route path="/doctor-schedule/:userId" element={<MyCalendar />} />
         <Route path="/user-schedule/:userId" element={<MyCalendar />} />
         <Route path="/bugs" element={<BugReport />} />
+        <Route path="/view-bug/:id" element={<BugInfoPage />} />
+        <Route path="/view-feedback/:id" element={<FeedbackInfoPage />} />
+
         <Route path="/feedback" element={<FeedbackForm />} />
         <Route
           path="/cancel-appointment"
@@ -99,7 +104,7 @@ function App() {
           element={<EditPatientInfoPage />}
         />
         <Route path="/add-procedure" element={user ? <AddProcedurePage /> : <Navigate to="/" />} />
-        <Route path="/patient-info" element={user ? <PatientInfo /> : <Navigate to="/" />} />
+        {/* <Route path="/patient-info" element={user ? <PatientInfo /> : <Navigate to="/" />} /> */}
         <Route path="/doctorinfo/:doctorId" element={<DoctorInfo />} />
         {/* <Route path="/doctor-schedule/:userId" element={<MyCalendar />} /> */}
         <Route path="/patient-info/:id" element={<PatientInfo />} />
