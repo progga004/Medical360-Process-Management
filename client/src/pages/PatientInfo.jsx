@@ -5,6 +5,7 @@ import { useGlobalContext } from "../hooks/useGlobalContext";
 import { useAuthContext } from "../hooks/useAuthContext";
 import ScheduleModal from "./ScheduleModal";
 import RemoveDoctorModal from "./RemoveDoctorModal";
+import { useProcessContext } from "../hooks/useProcessContext";
 
 const PatientInfo = ({}) => {
   const {
@@ -12,6 +13,7 @@ const PatientInfo = ({}) => {
     updatePatient,
     removeCurrentDoctor,
     doctors,
+    departments,
     getAllDoctors,
     updateDoctor,
     currentDoctor,
@@ -21,7 +23,9 @@ const PatientInfo = ({}) => {
     updateEvent,
     getEvent,
     getDepartment,
+    getAllDepartments
   } = useGlobalContext();
+  const { currentProcess, getProcess, updateProcess } = useProcessContext();
   const { user } = useAuthContext();
   const [modal, setModal] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
@@ -41,14 +45,22 @@ const PatientInfo = ({}) => {
     async function fetchDoctor(doctorId) {
       await getDoctor(doctorId);
     }
+    async function fetchDepartments() {
+      await getAllDepartments();
+    }
+    async function fetchProcess() {
+      await getProcess(currentPatient.process);
+    }
     async function fetchDoctors() {
       await getAllDoctors();
     }
+    if (!departments) fetchDepartments();
     if (!doctors) fetchDoctors();
+    if (currentPatient && !currentProcess && currentPatient.process) fetchProcess();
     if (currentPatient && currentPatient.doctorAssigned)
       fetchDoctor(currentPatient.doctorAssigned);
     else removeCurrentDoctor();
-  }, [doctors, currentPatient]);
+  }, [doctors, currentPatient, departments]);
   useEffect(() => {
     const fetchPatientEvents = async () => {
       try {
@@ -155,6 +167,42 @@ const PatientInfo = ({}) => {
       console.error("Failed to remove doctor assignment:", error);
     }
   };
+
+  const handleProcessComplete = async (processId) => {
+    await updateProcess(processId, {
+      "completed": true,
+      "endDate": Date.now()
+    });
+    await getProcess(processId);
+  } 
+
+  const handleProcessNotComplete = async (processId) => {
+    await updateProcess(processId, {
+      "completed": false,
+      "endDate": null,
+    });
+    await getProcess(processId);
+  } 
+
+  const handleProcedureComplete = async (procedureId) => {
+    currentProcess.procedures.forEach(procedure => {
+      if (procedure._id === procedureId)
+        procedure.completed = true;
+    });
+    await updateProcess(currentProcess._id, {
+      "procedures": currentProcess.procedures
+    });
+  }
+
+  const handleProcedureNotComplete = async (procedureId) => {
+    currentProcess.procedures.forEach(procedure => {
+      if (procedure._id === procedureId)
+        procedure.completed = false;
+    });
+    await updateProcess(currentProcess._id, {
+      "procedures": currentProcess.procedures
+    });
+  }
 
   const filteredDoctors =
     doctors && currentPatient && currentPatient.department
@@ -331,36 +379,76 @@ const PatientInfo = ({}) => {
                 Process
               </h3>
               <div className="space-y-4">
-                {currentPatient.procedures.map((process) => (
+                {currentProcess && currentProcess.procedures.map((procedure, index) => (
                   <div
-                    key={process._id}
-                    className="border-b border-gray-200 pb-4"
+                    key={procedure._id}
+                    className="border-b border-gray-200 pb-4 relative"
                   >
                     <p className="text-gray-600 font-medium mb-2">
-                      Date: {new Date(process.date).toDateString()}
+                      Date: {new Date(procedure.date).toDateString()}
                     </p>
                     <ul className="list-disc pl-5">
-                      {Object.keys(process).map((field, index) => {
-                        if (field !== "_id" && field !== "date") {
+                      {Object.keys(procedure).map((field, index) => {
+                        if (field === "department") {
                           return (
                             <li
                               key={index}
                               className={
-                                process[field] === "Patient Discharged"
+                                procedure[field] === "Patient Discharged"
                                   ? "text-red-500"
                                   : "text-gray-600"
                               }
                             >
                               <span className="font-medium">{field}:</span>{" "}
-                              {process[field]}
+                              {id_to_department[procedure[field]]}
+                            </li>
+                          );
+                        } else if (field !== "_id" && field !== "date" && field !== "doctor" && field !== "completed") {
+                          return (
+                            <li
+                              key={index}
+                              className={
+                                procedure[field] === "Patient Discharged"
+                                  ? "text-red-500"
+                                  : "text-gray-600"
+                              }
+                            >
+                              <span className="font-medium">{field}:</span>{" "}
+                              {procedure[field] ? procedure[field] : "N/A"}
                             </li>
                           );
                         }
                         return null;
                       })}
                     </ul>
+                    {!procedure.completed ? <button
+                      className="absolute top-2 right-2 bg-blue-500 text-white px-2 py-1 rounded-md hover:bg-blue-600"
+                      onClick={() => handleProcedureComplete(procedure._id)} >
+                      Complete
+                    </button> : <><div
+                    className="absolute top-2 right-2 bg-green-500 text-white px-2 py-1 rounded-md mr-20"
+                    >Procedure Completed</div> <button
+                    className="absolute top-2 right-2 bg-red-500 text-white px-2 py-1 rounded-md hover:bg-red-600"
+                    onClick={() => handleProcedureNotComplete(procedure._id)}
+                    >Undo</button> </> }
                   </div>
                 ))}
+                {currentProcess && !currentProcess.completed ? <button
+                  className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
+                  onClick={() => handleProcessComplete(currentProcess._id)}
+                >
+                  Complete Process
+                </button> : <> <button
+                  disabled={true}
+                  className="bg-green-500 text-white px-4 py-2 rounded-md"
+                >
+                  Process Completed
+                </button> <button
+                  className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600"
+                  onClick={() => handleProcessNotComplete(currentProcess._id)}
+                >
+                  Undo
+                </button> </>}
               </div>
             </div>
 

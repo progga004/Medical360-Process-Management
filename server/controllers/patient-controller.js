@@ -4,9 +4,11 @@ const auth = require("../auth-manager");
 const Department = require("../models/Department");
 const Doctor = require("../models/Doctor");
 const Patient = require("../models/Patient");
+const Process = require("../models/Process");
 require("dotenv").config()
 
 async function createPatient(req, res) {
+  try {
     const newPatient = new Patient({
         patientName: req.body.patientName,
         email: req.body.email,
@@ -15,17 +17,23 @@ async function createPatient(req, res) {
         
         sex: req.body.sex,
         age: req.body.age,
-       
+      
         department: req.body.department, 
         patientStatus: req.body.patientStatus,
         roomNo: req.body.roomNo,
     });
-    try {
-      const savedPatient = await newPatient.save();
-      res.status(201).json({ newPatient: savedPatient });
-    } catch (error) {
-      res.status(400).json({ error: 'Error saving patient: ' + error });
-    }
+    const savedPatient = await newPatient.save();
+    const process = new Process({
+      patient: savedPatient._id,
+      startDate: Date.now()
+    });
+    const savedProcess = await process.save();
+    savedPatient.process = savedProcess._id;
+    await savedPatient.save();
+    res.status(201).json({ newPatient: savedPatient });
+  } catch (error) {
+    res.status(400).json({ error: 'Error saving patient: ' + error });
+  }
 }
 
 async function updatePatient(req, res) {
