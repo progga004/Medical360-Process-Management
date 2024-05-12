@@ -374,7 +374,7 @@ const PatientInfo = ({}) => {
             </div>
 
             {/* Row 4: Profile */}
-            <div className="bg-blue-100 rounded-lg p-6 shadow-lg">
+            <div className="bg-blue-100 rounded-lg p-6 shadow-lg overflow-scroll">
               <h3 className="text-blue-600 font-semibold text-xl mb-4">
                 Process
               </h3>
