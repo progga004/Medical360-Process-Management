@@ -45,6 +45,7 @@ import AllBugsPage from "./pages/AllBugsPage";
 import MyCalendar from "./pages/MyCalendar";
 import BugInfoPage from "./pages/BugInfoPage";
 import FeedbackInfoPage from "./pages/FeedbackInfoPage";
+import AllProcessesPage from "./pages/AllProcessesPage";
 
 function App() {
 
@@ -60,6 +61,7 @@ function App() {
         <Route path="/apppage" element={user ? <AppPage /> : <Navigate to="/" />} />
         <Route path="/register" element={<RegistrationForm />} />
         <Route path="/login" element={!user ? <LoginForm /> : <Navigate to={lastRoute}/>} />
+        <Route path="/all-processes" element={user ? <AllProcessesPage /> : <Navigate to="/" />} />
         <Route path="/chat" element={<ChatPage />} />
         <Route path="/chat/:id" element={<ChatPage />} />
         <Route path="/all-staff" element={<AllStaffPage />} />

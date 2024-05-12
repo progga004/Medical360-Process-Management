@@ -18,6 +18,13 @@ const Sidebar = () => {
         </li>
         {user && (
           <li>
+            <Link to="/all-processes" className="hover:underline">
+              Processes
+            </Link>
+          </li>
+        )}
+        {user && (
+          <li>
             <Link to="/departmentpage" className="hover:underline">
               Departments
             </Link>
