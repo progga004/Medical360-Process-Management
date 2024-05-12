@@ -25,6 +25,7 @@ async function createPatient(req, res) {
     const savedPatient = await newPatient.save();
     const process = new Process({
       patient: savedPatient._id,
+      patientName: savedPatient.patientName,
       startDate: Date.now()
     });
     const savedProcess = await process.save();

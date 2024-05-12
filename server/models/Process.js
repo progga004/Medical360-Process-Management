@@ -8,7 +8,7 @@ const processSchema = new Schema({
         ref: "Patient",
         required: true
     },
-    patientName: String,
+    patientName: {type: String, required: true},
     startDate: {type: Date, required: true, default: Date.now()},
     endDate: Date,
     procedures: {
