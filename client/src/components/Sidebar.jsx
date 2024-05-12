@@ -37,13 +37,6 @@ const Sidebar = () => {
             </Link>
           </li>
         )}
-        {(user.name == "Admin") && (
-          <li>
-            <Link to="/departmentratio" className="hover:underline">
-              Department Ratio
-            </Link>
-          </li>
-        )}
         {(user.name == "Admin" ) && (
           <li>
             <Link to="/resource-management" className="hover:underline">
