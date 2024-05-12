@@ -63,7 +63,7 @@ const NewPatientPage = () => {
   const validateForm = () => {
     const errors = {};
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    const phoneRegex = /^[0-9]{10}$/;
+    const phoneRegex = /^\(\d{3}\) \d{3}-\d{4}$/;
     const ageRegex = /^\d+$/;
     const roomNumberRegex = /^\d{1,3}$/;
 
@@ -71,7 +71,7 @@ const NewPatientPage = () => {
     if (!formData.email || !emailRegex.test(formData.email))
       errors.email = "Enter a valid email address.";
     if (!formData.phoneNumber || !phoneRegex.test(formData.phoneNumber))
-      errors.phoneNumber = "Enter a valid phone number (10 digits).";
+      errors.phoneNumber = "Phone number must be in the format (xxx) xxx-xxxx.";
 
     if (!formData.healthInsurance)
       errors.healthInsurance = "Health insurance is required.";

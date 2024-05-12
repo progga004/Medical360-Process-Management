@@ -16,3 +16,5 @@ describe("report bug", () => {
     cy.get("button").contains("Submit").click();
   });
 });
+
+
