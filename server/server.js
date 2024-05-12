@@ -18,7 +18,7 @@ app.use(
   cors({
 
     //origin: "http://localhost:5173", // Ensure the client's address is correctly listed
-    origin: "https://medical360-d65d823d7d75.herokuapp.com" ,
+     origin: "https://medical360-d65d823d7d75.herokuapp.com" ,
     credentials: true, // For sending cookies over CORS
   })
 );
@@ -34,7 +34,7 @@ app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 app.use(express.static(path.join(__dirname, "../client/dist")));
 
-// // // // Catch-all handler for SPA (Make sure the path is correctly formatted)
+// // // Catch-all handler for SPA (Make sure the path is correctly formatted)
 app.get("*", (req, res) => {
   res.sendFile(path.resolve(__dirname, "../client/dist/index.html"));
 });
@@ -52,6 +52,7 @@ const bugRouter = require("./routes/bug-router");
 const chatRouter = require("./routes/chat-router");
 const messageRouter = require("./routes/message-router");
 const eventRouter=require("./routes/event-router");
+const processRouter = require("./routes/process-router");
 
 
 
@@ -68,6 +69,7 @@ app.use("/bugs", bugRouter);
 app.use("/chat", chatRouter);
 app.use("/message", messageRouter);
 app.use("/events", eventRouter);
+app.use("/process", processRouter);
 
 
 
@@ -76,7 +78,7 @@ app.use("/events", eventRouter);
 mongoose
   .connect(
     "mongodb+srv://medical360:admin123@medical360.wh0h2hw.mongodb.net/medical360",
-    // "mongodb://127.0.0.1/medical360",
+    //"mongodb://127.0.0.1/medical360",
     {
       useNewUrlParser: true,
       useUnifiedTopology: true,
@@ -88,9 +90,6 @@ mongoose
 const db = mongoose.connection;
 db.on("error", console.error.bind(console, "MongoDB connection error:"));
 
-// const io = registerSocketServer(server);
-// Run the server
-// app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 const server = http.createServer(app);
 const io = registerSocketServer(server);
 server.listen(PORT, () => console.log(`Server with sockets running on port ${PORT}`));

@@ -12,7 +12,7 @@ require("dotenv").config();
 
 mongoose.connect(
   "mongodb+srv://medical360:admin123@medical360.wh0h2hw.mongodb.net/medical360",
-  // "mongodb://localhost/medical360",
+  //"mongodb://localhost/medical360",
   {
     useUnifiedTopology: true,
   }
@@ -73,7 +73,7 @@ db.once("open", async () => {
       });
       await user.save();
       const doctor = new Doctor({
-        name:name,
+        name: name,
         surgeryCount: chance.integer({min: 0, max: 1000}),
         appointmentNo: chance.integer({min: 1000, max: 9999}),
         hours: chance.integer({min: 20, max: 60}),

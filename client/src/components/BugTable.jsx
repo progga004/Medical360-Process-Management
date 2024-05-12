@@ -11,7 +11,7 @@ const BugTable = ({ cards }) => {
   const [currentBugId, setCurrentBugId] = useState(null);
   const [actionType, setActionType] = useState("");
 
-  const fields = ["Name", "Phone", "Email", "Bug", "Status"];
+  const fields = ["Name", "Phone", "Email", "Status"];
 
   const handleAction = (action, bugId) => {
     setCurrentBugId(bugId);
@@ -43,7 +43,10 @@ const BugTable = ({ cards }) => {
   return (
     <>
       <ToastContainer />
-      <div className="overflow-x-auto relative" style={{ maxHeight: "500px", overflowY: "auto" }} >
+      <div
+        className="overflow-x-auto relative"
+        style={{ maxHeight: "500px", overflowY: "auto" }}
+      >
         <table className="min-w-full">
           <thead>
             <tr>
@@ -65,28 +68,31 @@ const BugTable = ({ cards }) => {
               <tr
                 key={index}
                 className={`${index % 2 === 0 ? "bg-gray-100" : "bg-blue-300"}`}
-                onClick={() => viewBugDetails(card._id)}
               >
                 {fields.map((field, i) => (
                   <td
                     key={i}
                     className="px-6 py-4 whitespace-no-wrap text-sm leading-5 text-gray-500"
-                    style={{ cursor: 'pointer' }}
                   >
                     {card[field.toLowerCase()]}
-                    
                   </td>
                 ))}
-                <td className="px-6 py-4 whitespace-no-wrap text-right text-sm leading-5">
+                <td className="px-6 py-4 whitespace-no-wrap text-right text-sm leading-5 flex justify-end items-center space-x-2">
+                  <button
+                    className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-400"
+                    onClick={() => viewBugDetails(card._id)}
+                  >
+                    View Details
+                  </button>
                   <button
                     className="inline-flex items-center px-4 py-2 mr-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
-                    onClick={() => handleAction("resolve", card._id)}
+                    onClick={(e) => handleAction("resolve", card._id, e)}
                   >
                     Resolve
                   </button>
                   <button
                     className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-yellow-500 hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-400"
-                    onClick={() => handleAction("progress", card._id)}
+                    onClick={(e) => handleAction("progress", card._id, e)}
                   >
                     In Progress
                   </button>
