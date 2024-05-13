@@ -114,6 +114,20 @@ const ProcessDetailsPage = () => {
         navigate("/add-procedure", { state: {...options, id: procedure._id} });
     }
 
+    const handleAddProcedure = async () => {
+        let options = {
+            initOperation: "",
+            initNotes: "",
+            initDoctor: "",
+            initRoom: "",
+            initDepartment: null,
+            initStartDate: null,
+            initEndDate: null,
+            editable: true
+        }
+        navigate('/add-procedure', { state: options})
+    }
+
     const handleDeleteProcedure = async procedureId => {
         await deleteProcedure(currentProcess._id, procedureId);
         await getProcess(currentProcess._id);
@@ -222,7 +236,7 @@ const ProcessDetailsPage = () => {
                     <Button
                         variant="contained"
                         color="primary"
-                        onClick={() => navigate('/add-procedure')}
+                        onClick={() => handleAddProcedure()}
                         sx={{ position: 'relative', bottom: '16px', margin: "16px"}}
                         disabled={currentProcess.completed}
                     >
