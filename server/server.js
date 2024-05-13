@@ -26,9 +26,9 @@ app.use(express.json());
 app.use(cookieParser());
 
 
-//app.use("/uploads", express.static("uploads"));
+// app.use("/uploads", express.static("uploads"));
 
-
+// app.use("/user_images", express.static("user_images"));
 
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
