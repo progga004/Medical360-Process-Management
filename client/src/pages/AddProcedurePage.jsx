@@ -4,6 +4,11 @@ import { useNavigate } from 'react-router-dom';
 import Banner from '../components/Banner';
 import { useGlobalContext } from '../hooks/useGlobalContext';
 import { useProcessContext } from '../hooks/useProcessContext';
+import { TextField, Grid, Button } from '@mui/material';
+import { TimePicker, DatePicker, LocalizationProvider } from "@mui/x-date-pickers"
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import dayjs from 'dayjs';
+
 
 function AddProcedurePage() {
 
@@ -14,6 +19,10 @@ function AddProcedurePage() {
   const [currentDoctor, setDoctor] = useState("");
   const [room, setRoom] = useState("");
   const [department, setDepartment] = useState("");
+  const [startDate, setStartDate] = useState(dayjs(Date.now()));
+  const [endDate, setEndDate] = useState(startDate);
+  const [startTime, setStartTime] = useState(null);
+  const [endTime, setEndTime] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -31,18 +40,36 @@ function AddProcedurePage() {
       fetchDepartments();
   }, [doctors, departments]);
 
-  const addProcess = async () => {
+  const combineDateAndTime = (dateObj, timeObj) => {
+    // Extract date components from the first Day.js object
+    const year = dateObj.year();
+    const month = dateObj.month();
+    const day = dateObj.date();
 
+    // Extract time components from the second Day.js object
+    const hour = timeObj.hour();
+    const minute = timeObj.minute();
+    const second = timeObj.second();
+    const millisecond = timeObj.millisecond();
+
+    // Combine date and time components to create a new Day.js object
+    return new Date(dayjs().year(year).month(month).date(day)
+        .hour(hour).minute(minute).second(second).millisecond(millisecond));
+    }
+
+  const addProcess = async () => {
+    let newStartTime = combineDateAndTime(startDate, startTime);
+    let newEndTime = combineDateAndTime(endDate, endTime);
     if (currentPatient) {
-      if (!notes || !currentDoctor || !department || !room) {
-        console.log("No");
-        alert("You must provide notes for the process");
-        return 
+      if (!notes || !currentDoctor || !department || !room || !startDate || !startTime || !endDate || !endTime) {
+        alert("Please fill in all fields");
+        return;
       }
 
       // update patient, get them, and return to patient info page
       let newProcedure = {
-        "date": Date.now(),
+        "start": newStartTime,
+        "end": newEndTime,
         "operation": operation,
         "notes": notes,
         "roomNo": room,
@@ -53,14 +80,12 @@ function AddProcedurePage() {
       await addProcedure(currentPatient.process, newProcedure);
       await getProcess(currentPatient.process);
       await getPatient(currentPatient._id);
-      // navigate("/patient-info/${currentPatient._id}");
       navigate(`/patient-info/${currentPatient._id}`);
-
     }
   }
 
   return (
-    <>
+    <LocalizationProvider dateAdapter={AdapterDayjs}>
       <Banner goBackPath={`/patient-info/${currentPatient._id}`} />
       <div className="flex justify-center items-center h-screen bg-blue-100">
         <div className="bg-white p-8 rounded-lg shadow-lg w-full md:w-3/4 lg:w-1/2">
@@ -77,7 +102,7 @@ function AddProcedurePage() {
                 onChange={(event) => setOperation(event.target.value)}
               />
             </div>
-           {doctors && <div>
+            {doctors && <div>
               <label className="block text-sm font-medium text-blue-900">
                 Overseeing Doctor
               </label>
@@ -127,18 +152,69 @@ function AddProcedurePage() {
                 onChange={(event) => setNotes(event.target.value)}
               ></textarea>
             </div>
+            <div className="col-span-3">
+              <div className="flex flex-col md:flex-row md:items-center md:space-x-4">
+                <div>
+                  <label className="block text-sm font-medium text-blue-900">
+                    Start Date
+                  </label>
+                  <DatePicker
+                    value={startDate}
+                    onChange={(newValue) => {setStartDate(newValue); if (newValue > endDate) setEndDate(newValue)}}
+                    renderInput={(params) => <TextField {...params} />}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-blue-900">
+                    Start Time
+                  </label>
+                  <TimePicker
+                    value={startTime}
+                    onChange={(newValue) => {setStartTime(newValue); if (newValue > endTime) setEndTime(newValue)}}
+                    renderInput={(params) => <TextField {...params} />}
+                  />
+                </div>
+              </div>
+            </div>
+            <div className="col-span-3">
+              <div className="flex flex-col md:flex-row md:items-center md:space-x-4">
+                <div>
+                  <label className="block text-sm font-medium text-blue-900">
+                    End Date
+                  </label>
+                  <DatePicker
+                    value={endDate}
+                    onChange={(newValue) => {setEndDate(newValue); if (newValue < startDate) setStartDate(newValue)}}
+                    renderInput={(params) => <TextField {...params} />}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-blue-900">
+                    End Time
+                  </label>
+                  <TimePicker
+                    value={endTime}
+                    onChange={(newValue) => {setEndTime(newValue); if (newValue < startTime) setStartTime(newValue)}}
+                    renderInput={(params) => <TextField {...params} />}
+                  />
+                </div>
+              </div>
+            </div>
           </form>
           <div className="flex justify-center mt-4">
-            <button className="bg-blue-500 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-800"
+            <Button
+              variant="contained"
+              color="primary"
+              className="px-8 py-3 rounded-lg font-semibold"
               onClick={addProcess}
             >
               Add Process
-            </button>
+            </Button>
           </div>
         </div>
       </div>
-    </>
-    );
+    </LocalizationProvider>
+  );
 }
 
 export default AddProcedurePage;

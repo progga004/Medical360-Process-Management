@@ -6,6 +6,7 @@ import { useAuthContext } from "../hooks/useAuthContext";
 import ScheduleModal from "./ScheduleModal";
 import RemoveDoctorModal from "./RemoveDoctorModal";
 import { useProcessContext } from "../hooks/useProcessContext";
+import dayjs from "dayjs";
 
 const PatientInfo = ({}) => {
   const {
@@ -385,7 +386,10 @@ const PatientInfo = ({}) => {
                     className="border-b border-gray-200 pb-4 relative"
                   >
                     <p className="text-gray-600 font-medium mb-2">
-                      Date: {new Date(procedure.date).toDateString()}
+                      Start: {dayjs(procedure.start).format('YYYY-MM-DD HH:mm:ss')}
+                    </p>
+                    <p className="text-gray-600 font-medium mb-2">
+                      End: {dayjs(procedure.end).format('YYYY-MM-DD HH:mm:ss')}
                     </p>
                     <ul className="list-disc pl-5">
                       {Object.keys(procedure).map((field, index) => {
@@ -403,7 +407,7 @@ const PatientInfo = ({}) => {
                               {id_to_department[procedure[field]]}
                             </li>
                           );
-                        } else if (field !== "_id" && field !== "date" && field !== "doctor" && field !== "completed") {
+                        } else if (field !== "_id" && field !== "date" && field !== "doctor" && field !== "completed" && field !== "start" && field !== "end") {
                           return (
                             <li
                               key={index}
