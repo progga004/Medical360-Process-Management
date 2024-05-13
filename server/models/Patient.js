@@ -25,6 +25,7 @@ const patientSchema = new Schema({
     },
     assignedTime: { type: String },
     eventId: { type: String },
+    fileData: [{ type: String }]
 })
 
 const Patient = mongoose.model('Patient', patientSchema);

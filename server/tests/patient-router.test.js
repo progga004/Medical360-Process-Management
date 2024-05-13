@@ -11,7 +11,7 @@ app.use(bodyParser.json());
 const patientRouter = require("../routes/patient-router");
 app.use("/patients", patientRouter);
 
-const cardiologyDepartmentId = "507f1f77bcf86cd799439011";  // Example ObjectId for Cardiology
+const cardiologyDepartmentId = "664126bfb3d01d8d875e2f11";  // Example ObjectId for Cardiology
 
 describe("POST /patients", () => {
   it("should create a new patient and return 201 status", async () => {

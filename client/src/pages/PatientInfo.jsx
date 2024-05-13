@@ -7,6 +7,7 @@ import ScheduleModal from "./ScheduleModal";
 import RemoveDoctorModal from "./RemoveDoctorModal";
 import { useProcessContext } from "../hooks/useProcessContext";
 import { Button } from '@mui/material';
+import FileUpload from "../components/UploadFile";
 
 const PatientInfo = ({}) => {
   const {
@@ -254,7 +255,7 @@ const PatientInfo = ({}) => {
                     <p>{currentPatient.phoneNumber}</p>
                   </div>
                 </div>
-
+              
                 <div className="flex">
                   <div className="flex-grow bg-blue-600 text-white p-4 rounded-lg mr-4">
                     <h3 className="font-semibold text-md">Room</h3>
@@ -273,9 +274,10 @@ const PatientInfo = ({}) => {
                     </p>
                   </div>
                 </div>
+                
               </div>
             </div>
-
+            <FileUpload patientId={currentPatient._id}></FileUpload>
             {/* Row 3: Schedule */}
             <div className="flex flex-col justify-center items-center bg-white p-4 rounded-lg mt-4">
               <div className="flex items-center space-x-5">
