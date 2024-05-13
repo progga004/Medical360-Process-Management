@@ -4,8 +4,8 @@ const axios = require('axios');
 const registerSocketServer = (server) => {
     const io = new Server(server, {
         cors: {
-            origin: "https://medical360-d65d823d7d75.herokuapp.com",  
-            //origin: "http://localhost:5173",
+            //origin: "https://medical360-d65d823d7d75.herokuapp.com",  
+            origin: "http://localhost:5173",
             methods: ["GET", "POST"]
         }
     });
@@ -25,7 +25,7 @@ const registerSocketServer = (server) => {
             // Then save the message to the database
             try {
                 
-                const response = await axios.post('https://medical360-d65d823d7d75.herokuapp.com/message', message);
+                const response = await axios.post('http://localhost:5173/message', message);
                 console.log('Message saved:', response.data);
             } catch (error) {
                 console.error('Failed to save message:', error);
