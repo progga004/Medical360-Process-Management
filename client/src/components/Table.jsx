@@ -113,7 +113,9 @@ const Table = ({ cards, isAdmin, context }) => {
     switch (context) {
       case "patient":
         getPatient(itemId);
-        navigate("/patient-info");
+        // navigate("/patient-info");
+        navigate(`/patient-info/${itemId}`);
+
         break;
       case "doctor":
         getDoctor(itemId);

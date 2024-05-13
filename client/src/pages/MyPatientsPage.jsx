@@ -98,6 +98,7 @@ const MyPatientsPage = () => {
                     <div
                         key={patient._id}
                         className="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 hover:bg-red-200"
+                        onClick={() => handleClick(patient._id)}
                     >
                         <h2 className="text-lg font-semibold text-blue-900">{patient.patientName}</h2>
                         <p className="text-sm text-gray-600 mt-1">Age: {patient.age}</p>

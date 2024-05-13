@@ -34,7 +34,7 @@ app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 app.use(express.static(path.join(__dirname, "../client/dist")));
 
-// // // // Catch-all handler for SPA (Make sure the path is correctly formatted)
+// // // Catch-all handler for SPA (Make sure the path is correctly formatted)
 app.get("*", (req, res) => {
   res.sendFile(path.resolve(__dirname, "../client/dist/index.html"));
 });
@@ -52,6 +52,7 @@ const bugRouter = require("./routes/bug-router");
 const chatRouter = require("./routes/chat-router");
 const messageRouter = require("./routes/message-router");
 const eventRouter=require("./routes/event-router");
+const processRouter = require("./routes/process-router");
 
 
 
@@ -68,6 +69,7 @@ app.use("/bugs", bugRouter);
 app.use("/chat", chatRouter);
 app.use("/message", messageRouter);
 app.use("/events", eventRouter);
+app.use("/process", processRouter);
 
 
 
@@ -88,9 +90,6 @@ mongoose
 const db = mongoose.connection;
 db.on("error", console.error.bind(console, "MongoDB connection error:"));
 
-// const io = registerSocketServer(server);
-// Run the server
-// app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 const server = http.createServer(app);
 const io = registerSocketServer(server);
 server.listen(PORT, () => console.log(`Server with sockets running on port ${PORT}`));

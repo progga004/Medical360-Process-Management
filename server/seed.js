@@ -8,11 +8,12 @@ const Department = require("./models/Department");
 const Patient = require("./models/Patient");
 const Room = require("./models/Room");
 const Equipment = require("./models/Equipment");
+const Process = require("./models/Process");
 require("dotenv").config();
 
 mongoose.connect(
-  "mongodb+srv://medical360:admin123@medical360.wh0h2hw.mongodb.net/medical360",
-  // "mongodb://127.0.0.1/medical360",
+  //"mongodb+srv://medical360:admin123@medical360.wh0h2hw.mongodb.net/medical360",
+  "mongodb://127.0.0.1/medical360",
   {
     useUnifiedTopology: true,
   }
@@ -49,7 +50,7 @@ db.once("open", async () => {
     const adminUser = new User({
       name: "Admin",
       email: "admin@example.com",
-      phoneNumber: chance.phone(),
+      phone_number: chance.phone(),
       passwordHash: await bcrypt.hash("admin@123", 10),
       isAdmin: true,
     });
@@ -66,12 +67,14 @@ db.once("open", async () => {
       const user = new User({
         name,
         email,
+        phone_number: chance.phone(),
         passwordHash,
-        isAdmin,
+        isAdmin
+        ,
       });
       await user.save();
       const doctor = new Doctor({
-        name:name,
+        name: name,
         surgeryCount: chance.integer({min: 0, max: 1000}),
         appointmentNo: chance.integer({min: 1000, max: 9999}),
         hours: chance.integer({min: 20, max: 60}),
@@ -133,6 +136,7 @@ db.once("open", async () => {
       const user = new User({
         name,
         email,
+        phone_number: chance.phone(),
         passwordHash,
         isAdmin,
         department:departmentId, // Set department reference
@@ -182,7 +186,7 @@ db.once("open", async () => {
     for (let i = 0; i < 5; i++) {
       const name = chance.name();
       const email = chance.email();
-      const phoneNumber = chance.phone();
+      const phone_number = chance.phone();
 
       const passwordHash = await bcrypt.hash("password@123", 10);
       const isAdmin = false;
@@ -190,7 +194,7 @@ db.once("open", async () => {
       const nurse = new User({
         name,
         email,
-        phoneNumber,
+        phone_number,
         passwordHash,
         isAdmin,
       });
@@ -215,62 +219,10 @@ db.once("open", async () => {
         department: chance.pickone(department_ids),
         patientStatus: chance.pickone([
           "admitted",
-          "discharged",
           "under observation",
         ]),
-        roomNo: chance.integer({ min: 100, max: 200 }),
-        procedures: chance.pickone([
-          [{
-            date: new Date("2022-03-10"),
-            Notes: "Admitted for scheduled Appendectomy"
-          }, {
-            date: new Date("2022-03-15"),
-            Operation: "Appendectomy",
-            Notes: "Appendix removed due to acute appendicitis."
-          }],
-          [{
-            date: new Date("2022-05-10"),
-            Notes: "Admitted for scheduled Colonoscopy"
-          }, {
-            date: new Date("2022-05-10"),
-            Operation: "Colonoscopy",
-            Notes: "Routine screening for colorectal cancer."
-          }],
-          [{
-            date: new Date("2022-08-23"),
-            Notes: "Admitted for scheduled Knee Replacement"
-          }, {
-            date: new Date("2022-08-25"),
-            Operation: "Knee Replacement",
-            Notes: "Total knee replacement surgery due to severe osteoarthritis."
-          }],
-          [{
-            date: new Date("2023-02-02"),
-            Notes: "Admitted for scheduled cataract removal"
-          }, {
-            date: new Date("2023-02-02"),
-            Operation: "Cataract Surgery",
-            Notes: "Removal of cataracts from both eyes to improve vision."
-          }],
-          [{
-            date: new Date("2022-03-10"),
-            Notes: "Admitted for scheduled Appendectomy"
-          }, {
-            date: new Date("2022-03-18"),
-            Operation: "Gallbladder Removal",
-            Notes: "Surgical removal of the gallbladder due to gallstones."
-          }],  
-        ])
+        roomNo: chance.integer({ min: 100, max: 200 }),  
       });
-      if (patient.patientStatus === "discharged") {
-        lastDate = patient.procedures[patient.procedures.length - 1].date.getDate();
-        patient.procedures.push({
-          date: lastDate + 1,
-          Notes: "Patient Discharged"
-        });
-        patient.department = null;
-        patient.roomNo = "N/A";
-      }
   
       // add doctor to patients assigned doctor
       let departmentDoctors = allDoctors.filter(doc => {
@@ -283,6 +235,14 @@ db.once("open", async () => {
         doctor.patientList.push(patient._id);
         await doctor.save();
       }
+
+      // add process to patient
+      const process = new Process({
+        patient: patient._id,
+        patientName: patient.patientName,
+      });
+      const savedProcess = await process.save();
+      patient.process = savedProcess._id;
 
       patients.push(patient);
 

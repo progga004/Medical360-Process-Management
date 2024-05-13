@@ -10,12 +10,7 @@ const patientSchema = new Schema({
     visitNo: { type: Number },
     sex: { type: String, required: true, enum: ['male', 'female', 'other'] },
     age: { type: String, required: true },
-    procedures: [{
-                date: Date,
-                "Reason For Visit": String,
-                "Operation": String,
-                "Notes": String,
-        }],
+    process: { type: Schema.Types.ObjectId, ref: "Process", default: null},
     department: {
                 type: Schema.Types.ObjectId,
                 ref: 'Department',
@@ -27,7 +22,10 @@ const patientSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: "Doctor",
         default: null
-    }
+    },
+    assignedTime: { type: String },
+    eventId: { type: String },
+    fileData: [{ type: String }]
 })
 
 const Patient = mongoose.model('Patient', patientSchema);

@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { StarIcon } from "@heroicons/react/solid";
 import Banner from "../components/Banner";
 import { useGlobalContext } from "../hooks/useGlobalContext";
+import { useAuthContext } from "../hooks/useAuthContext";
 
 const FeedbackForm = () => {
   const [feedback, setFeedback] = useState({
@@ -14,6 +15,8 @@ const FeedbackForm = () => {
     rating: 0,
   });
   const { createFeedback } = useGlobalContext();
+  const [formErrors, setFormErrors] = useState({});
+
   const navigate = useNavigate();
 
   const handleRating = (ratingValue) => {
@@ -23,21 +26,40 @@ const FeedbackForm = () => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFeedback({ ...feedback, [name]: value });
+    setFormErrors({ ...formErrors, [name]: "" });
+  };
+
+  const validateForm = () => {
+    const errors = {};
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!feedback.name) errors.name = "Name is required.";
+    if (!feedback.email || !emailRegex.test(feedback.email))
+      errors.email = "Enter a valid email address.";
+    if (!feedback.comments) errors.comments = "Please add your comments.";
+    if (feedback.rating === 0) errors.rating = "Please provide a rating.";
+
+    return errors;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const errors = validateForm();
+    if (Object.keys(errors).length > 0) {
+      setFormErrors(errors);
+      return;
+    }
     try {
       await createFeedback(feedback);
-      toast.success('Feedback has been submitted successfully!', {
+      toast.success("Feedback has been submitted successfully!", {
         position: "top-center",
         autoClose: 1000,
-        onClose: () => navigate("/apppage") 
+        onClose: () => navigate("/apppage"),
       });
     } catch (error) {
-      toast.error('Failed to submit feedback. Please try again later.', {
+      toast.error("Failed to submit feedback. Please try again later.", {
         position: "top-center",
-        autoClose: 1000
+        autoClose: 1000,
       });
     }
   };
@@ -62,6 +84,10 @@ const FeedbackForm = () => {
                 value={feedback.name}
                 className="mt-1 block w-full border border-gray-300 shadow-sm rounded p-2"
               />
+
+              {formErrors.name && (
+                <p className="text-red-500 text-s mt-1">{formErrors.name}</p>
+              )}
             </div>
 
             <div className="mb-4">
@@ -73,6 +99,9 @@ const FeedbackForm = () => {
                 value={feedback.email}
                 className="mt-1 block w-full border border-gray-300 shadow-sm rounded p-2"
               />
+              {formErrors.email && (
+                <p className="text-red-500 text-s mt-1">{formErrors.email}</p>
+              )}
             </div>
 
             <div className="mb-4">
@@ -91,6 +120,9 @@ const FeedbackForm = () => {
                   );
                 })}
               </div>
+              {formErrors.rating && (
+                <p className="text-red-500 text-s mt-1">{formErrors.rating}</p>
+              )}
             </div>
 
             <div className="mb-4">
@@ -101,6 +133,9 @@ const FeedbackForm = () => {
                 className="mt-1 block w-full border border-gray-300 shadow-sm rounded p-2 h-28"
                 placeholder="Add your comments..."
               ></textarea>
+              {formErrors.comments && (
+                <p className="text-red-500 text-s mt-1">{formErrors.comments}</p>
+              )}
             </div>
 
             <div className="flex justify-between mt-8">
