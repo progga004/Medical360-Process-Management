@@ -9,7 +9,6 @@ const patientAssignedSchema = new Schema({
   },
   assignedTime: {
     type: String,
-    required: true
   },
   eventId: {
     type: Schema.Types.ObjectId

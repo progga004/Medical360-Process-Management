@@ -14,14 +14,36 @@ const BugReport = () => {
   });
   const { createBug } = useGlobalContext();
   const navigate = useNavigate();
+  const [formErrors, setFormErrors] = useState({});
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setBug({ ...bug, [name]: value });
+    setFormErrors({ ...formErrors, [name]: "" });
+  };
+
+  const validateForm = () => {
+    const errors = {};
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const phoneRegex = /^\(\d{3}\) \d{3}-\d{4}$/;
+
+    if (!bug.name) errors.name = "Name is required.";
+    if (!bug.phone || !phoneRegex.test(bug.phone))
+      errors.phone = "Phone number must be in the format (xxx) xxx-xxxx.";
+    if (!bug.email || !emailRegex.test(bug.email))
+      errors.email = "Enter a valid email address.";
+    if (!bug.bug) errors.bug = "Please describe the bug encountered.";
+
+    return errors;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const errors = validateForm();
+    if (Object.keys(errors).length > 0) {
+      setFormErrors(errors);
+      return;
+    }
     try {
       await createBug(bug);
       toast.success("Bug report submitted successfully!", {
@@ -55,6 +77,9 @@ const BugReport = () => {
                 value={bug.name}
                 className="mt-1 block w-full border border-gray-300 shadow-sm rounded p-2"
               />
+              {formErrors.name && (
+                <p className="text-red-500 text-s italic mt-1">{formErrors.name}</p>
+              )}
             </div>
 
             <div className="mb-4">
@@ -66,6 +91,9 @@ const BugReport = () => {
                 value={bug.phone}
                 className="mt-1 block w-full border border-gray-300 shadow-sm rounded p-2"
               />
+              {formErrors.phone && (
+                <p className="text-red-500 text-s italic mt-1">{formErrors.phone}</p>
+              )}
             </div>
 
             <div className="mb-4">
@@ -77,6 +105,9 @@ const BugReport = () => {
                 value={bug.email}
                 className="mt-1 block w-full border border-gray-300 shadow-sm rounded p-2"
               />
+              {formErrors.email && (
+                <p className="text-red-500 text-s italic mt-1">{formErrors.email}</p>
+              )}
             </div>
 
             <div className="mb-4">
@@ -88,6 +119,9 @@ const BugReport = () => {
                 className="mt-1 block w-full border border-gray-300 shadow-sm rounded p-2 h-28"
                 placeholder="Describe the bug..."
               ></textarea>
+              {formErrors.bug && (
+                <p className="text-red-500 text-s italic mt-1">{formErrors.bug}</p>
+              )}
             </div>
 
             <div className="flex justify-between mt-8">

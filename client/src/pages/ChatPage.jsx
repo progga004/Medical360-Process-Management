@@ -28,7 +28,7 @@ const Sidebar = ({ onSelectChat }) => {
   const [chats, setChats] = useState([]); // Default to an empty array
   const [curUser, setCurUser] = useState(null);
   const { user } = useAuthContext();
-  const { users, getUser, getAllUsers, getUserChats } = useGlobalContext();
+  const { users, getUser, getAllUsers, getUserChats, BASE_URL } = useGlobalContext();
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -66,7 +66,7 @@ const Sidebar = ({ onSelectChat }) => {
     if (userId && selectedUser) {
       try {
         const response = await axios.post(
-          "https://medical360-d65d823d7d75.herokuapp.com/chat",
+          `${BASE_URL}/chat`,
           {
             members: [curUser, selectedUser],
           }
