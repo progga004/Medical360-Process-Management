@@ -11,7 +11,6 @@ import FileUpload from "../components/UploadFile";
 
 const PatientInfo = ({}) => {
   const {
-    id_to_department,
     updatePatient,
     removeCurrentDoctor,
     doctors,
@@ -21,28 +20,25 @@ const PatientInfo = ({}) => {
     currentDoctor,
     getDoctor,
     BASE_URL,
-    getPatient,
     updateEvent,
     getEvent,
     getDepartment,
-    getAllDepartments
+    getAllDepartments,
+    currentPatient
   } = useGlobalContext();
-  const { currentProcess, getProcess, updateProcess } = useProcessContext();
+  const { currentProcess, getProcess } = useProcessContext();
   const { user } = useAuthContext();
   const [modal, setModal] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [isScheduleOpen, setIsScheduleOpen] = useState(false);
   const [selectedDoctor, setSelectedDoctor] = useState(null);
   const navigate = useNavigate();
-  const [currentPatient, setCurrentPatient] = useState(null);
-  const [events, setEvents] = useState(null);
   const [viewedDoctors, setViewedDoctors] = useState([]);
   const [doctorToRemove, setDoctorToRemove] = useState(null);
   const [removeModalOpen, setRemoveModalOpen] = useState(false);
   const [currentDepartment, setCurrentDepartment] = useState(false);
 
   const { id } = useParams();
-  console.log(currentProcess);
 
   useEffect(() => {
     async function fetchDoctor(doctorId) {
@@ -57,29 +53,24 @@ const PatientInfo = ({}) => {
     async function fetchDoctors() {
       await getAllDoctors();
     }
-    if (!departments) fetchDepartments();
-    if (!doctors) fetchDoctors();
-    if (currentPatient && !currentProcess && currentPatient.process) fetchProcess();
-    if (currentPatient && currentPatient.doctorAssigned)
-      fetchDoctor(currentPatient.doctorAssigned);
-    else removeCurrentDoctor();
-  }, [doctors, currentPatient, departments]);
-  useEffect(() => {
     const fetchPatientEvents = async () => {
       try {
-        const patient = await getPatient(id);
-        setCurrentPatient(patient);
-
-        if (patient.department) {
-          const department = await getDepartment(patient.department);
+        if (currentPatient.department) {
+          const department = await getDepartment(currentPatient.department);
           setCurrentDepartment(department);
         }
       } catch (error) {
         console.error("Error fetching doctor events:", error);
       }
     };
-    fetchPatientEvents();
-  }, [currentPatient]);
+    if (currentPatient) fetchPatientEvents();
+    if (!departments) fetchDepartments();
+    if (!doctors) fetchDoctors();
+    if (currentPatient && !currentProcess && currentPatient.process) fetchProcess();
+    if (currentPatient && currentPatient.doctorAssigned)
+      fetchDoctor(currentPatient.doctorAssigned);
+    else removeCurrentDoctor();
+  }, [currentPatient, departments, doctors]);
 
   const handleDoctorClick = (doctor) => {
     setSelectedDoctor(doctor);
@@ -93,14 +84,15 @@ const PatientInfo = ({}) => {
     setRemoveModalOpen(true);
   };
   const discharge = async () => {
-    let newProcedure = {
-      date: Date.now(),
-      Notes: "Patient Discharged",
-    };
+    if (!currentProcess || !currentProcess.completed) {
+      alert("You must complete this patients process first");
+      setModal(false);
+      setIsOpen(false);
+      return;
+    }
 
     if (currentPatient)
       await updatePatient(currentPatient._id, {
-        procedures: [...currentPatient.procedures, newProcedure],
         patientStatus: "discharged",
         roomNo: "N/A",
         department: null,
@@ -171,52 +163,12 @@ const PatientInfo = ({}) => {
     }
   };
 
-  const handleProcessComplete = async (processId) => {
-    await updateProcess(processId, {
-      "completed": true,
-      "endDate": Date.now()
-    });
-    await getProcess(processId);
-  } 
-
-  const handleProcessNotComplete = async (processId) => {
-    await updateProcess(processId, {
-      "completed": false,
-      "endDate": null,
-    });
-    await getProcess(processId);
-  } 
-
-  const handleProcedureComplete = async (procedureId) => {
-    currentProcess.procedures.forEach(procedure => {
-      if (procedure._id === procedureId)
-        procedure.completed = true;
-    });
-    await updateProcess(currentProcess._id, {
-      "procedures": currentProcess.procedures
-    });
-  }
-
-  const handleProcedureNotComplete = async (procedureId) => {
-    currentProcess.procedures.forEach(procedure => {
-      if (procedure._id === procedureId)
-        procedure.completed = false;
-    });
-    await updateProcess(currentProcess._id, {
-      "procedures": currentProcess.procedures
-    });
-  }
-
   const filteredDoctors =
     doctors && currentPatient && currentPatient.department
       ? doctors.filter(
           (doctor) => doctor.departmentName === currentPatient.department
         )
       : [];
-
-  if (!currentPatient) {
-    return <div>No patient data available.</div>;
-  }
 
   return (
     <>
