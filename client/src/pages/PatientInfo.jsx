@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import Banner from "../components/Banner";
 import { useGlobalContext } from "../hooks/useGlobalContext";
 import { useAuthContext } from "../hooks/useAuthContext";
 import ScheduleModal from "./ScheduleModal";
 import RemoveDoctorModal from "./RemoveDoctorModal";
 import { useProcessContext } from "../hooks/useProcessContext";
-import dayjs from "dayjs";
+import { Button } from '@mui/material';
 
 const PatientInfo = ({}) => {
   const {
@@ -41,6 +41,7 @@ const PatientInfo = ({}) => {
   const [currentDepartment, setCurrentDepartment] = useState(false);
 
   const { id } = useParams();
+  console.log(currentProcess);
 
   useEffect(() => {
     async function fetchDoctor(doctorId) {
@@ -375,11 +376,19 @@ const PatientInfo = ({}) => {
             </div>
 
             {/* Row 4: Profile */}
-            <div className="bg-blue-100 rounded-lg p-6 shadow-lg overflow-scroll">
-              <h3 className="text-blue-600 font-semibold text-xl mb-4">
-                Process
-              </h3>
-              <div className="space-y-4">
+            <div className="bg-blue-100 rounded-lg p-6 shadow-lg flex flex-col items-center">
+              <Button
+                component={Link}
+                to="/process-details"
+                variant="contained"
+                color="primary"
+                className="text-white font-semibold text-xl mt-4"
+                sx={{ '&:hover': { backgroundColor: '#0E5A8A' } }}
+              >
+                View Process
+              </Button>
+            </div>
+              {/* <div className="space-y-4">
                 {currentProcess && currentProcess.procedures.map((procedure, index) => (
                   <div
                     key={procedure._id}
@@ -453,8 +462,7 @@ const PatientInfo = ({}) => {
                 >
                   Undo
                 </button> </>}
-              </div>
-            </div>
+                </div> */}
 
             {/* Row 5: Schedule Button */}
             <div className="flex justify-center mt-4">
