@@ -57,7 +57,7 @@ const AllUsersPage = () => {
                 )}
             </div>
             <div className="p-8">
-                {filteredUsers && <Table cards={filteredUsers} isAdmin={user && user.isAdmin} context={"user"} showEditButton={false}/>}
+                {filteredUsers && <Table cards={filteredUsers} isAdmin={user && user.isAdmin} context={"user"} showEditButton={false} showDeleteButton={true}/>}
                 
             </div>
         </>
