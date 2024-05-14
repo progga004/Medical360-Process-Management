@@ -8,9 +8,9 @@ const ProcessCard = ({ process }) => {
         <Typography variant="h5" component="div" className="process-name" >
           {process.patientName}
         </Typography>
-        <Typography sx={{ mb: 1.5 }} color="text.secondary">
+        {/* <Typography sx={{ mb: 1.5 }} color="text.secondary">
           Start Date: {new Date(process.startDate).toDateString()}
-        </Typography>
+        </Typography> */}
         {/* Additional information can be displayed here */}
       </CardContent>
     </Card>

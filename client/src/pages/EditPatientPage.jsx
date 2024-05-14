@@ -10,7 +10,7 @@ const EditPatientPage = () => {
     const navigate = useNavigate();
 
 
-    const fieldsToAvoid = ["_id", "medicalHistory", "__v", "procedures", "doctorAssigned"];
+    const fieldsToAvoid = ["_id", "medicalHistory", "__v", "procedures", "doctorAssigned","process","eventId","visitNo","fileData"];
 
     useEffect(() => {
         async function fetchDepartments() {

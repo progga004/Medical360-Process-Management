@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useGlobalContext } from "../hooks/useGlobalContext";
 
 
-const Table = ({ cards, isAdmin, context }) => {
+const Table = ({ cards, isAdmin, context, showEditButton = true, showDeleteButton=true}) => {
   let newCards = cards
 
   const { id_to_department, id_to_equipment, deleteEquipment, deletePatient, deleteRoom, deleteUser, getPatient, getEquipment, getRoom, getDoctor} = useGlobalContext();
@@ -175,7 +175,7 @@ const Table = ({ cards, isAdmin, context }) => {
                   >
                     Info
                   </button> */}
-                    {isAdmin && (
+                    {isAdmin && showEditButton && (
                       <>
                         <button
                           className="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-3"
@@ -186,6 +186,20 @@ const Table = ({ cards, isAdmin, context }) => {
                         >
                           Edit
                         </button>
+                        {/* <button
+                          className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-3 rounded-r"
+                          onClick={(event) => {
+                            event.stopPropagation();
+                            openDeleteModal(card);
+                          }}
+                        >
+                          Delete
+                        </button> */}
+                      </>
+                    )}
+                    {isAdmin && showDeleteButton && (
+                      <>
+                        
                         <button
                           className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-3 rounded-r"
                           onClick={(event) => {

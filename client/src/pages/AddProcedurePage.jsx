@@ -46,6 +46,7 @@ function AddProcedurePage() {
   const [department, setDepartment] = useState(initDepartment);
   //change this part
   const [isScheduleModalOpen, setScheduleModalOpen] = useState(false);
+  const [selectedEvent, setSelectedEvent] = useState(null);
   // const[doctorfind,setDoctorFind]=useState(null);
   // const[patientfind,setPatientFind]=useState(null);
   //
@@ -116,6 +117,7 @@ function AddProcedurePage() {
     setStartTime(dayjs(event.start));
     setEndTime(dayjs(event.end));
     setScheduleModalOpen(false);
+    setSelectedEvent(event); 
   };
 
   const addProcess = async () => {
