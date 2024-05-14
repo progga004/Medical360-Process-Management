@@ -7,7 +7,7 @@ export default defineConfig({
   plugins: [react()],
   build: {
     rollupOptions: {
-      external: []
+      external: ['@mui/material/styles']
     }
   },
   css: {
