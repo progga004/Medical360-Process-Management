@@ -26,7 +26,7 @@ describe('Search Room Page Tests', () => {
     cy.url().should("include", "/apppage");
     cy.contains("Resource Management").click();
     cy.url().should("include", "/resource-management");
-    cy.contains("Patients").click();
+    cy.contains("Rooms").click();
   });
 
   it('allows users to filter patients', () => {
