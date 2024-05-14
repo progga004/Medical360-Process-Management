@@ -187,6 +187,7 @@ function AddProcedurePage() {
                 type="text"
                 value={operation}
                 className="mt-1 p-2 border border-blue-300 rounded-md w-full focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                placeholder="Operation (if needed)"
                 onChange={(event) => setOperation(event.target.value)}
               />
             </div>
@@ -201,6 +202,7 @@ function AddProcedurePage() {
                     value={currentDoctor}
                     onChange={(event) => setDoctor(event.target.value)}
                     className="block w-full pl-3 pr-10 py-2 border border-blue-300 rounded-md bg-white text-blue-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                    aria-label="Overseeing Doctor"
                   >
                     <option value="">Select Doctor</option>
                     {doctors.map((doc) => (
@@ -223,6 +225,7 @@ function AddProcedurePage() {
                     value={department}
                     onChange={(event) => setDepartment(event.target.value)}
                     className="block w-full pl-3 pr-10 py-2 border border-blue-300 rounded-md bg-white text-blue-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                    aria-label="Department"
                   >
                     <option value="">Select Department</option>
 
@@ -244,6 +247,7 @@ function AddProcedurePage() {
                 type="text"
                 value={room}
                 className="mt-1 p-2 border border-blue-300 rounded-md w-full focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                placeholder="Room"
                 onChange={(event) => setRoom(event.target.value)}
               />
             </div>
@@ -256,6 +260,7 @@ function AddProcedurePage() {
                 rows="3"
                 value={notes}
                 className="mt-1 p-2 border border-blue-300 rounded-md w-full focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                placeholder="Notes"
                 onChange={(event) => setNotes(event.target.value)}
               ></textarea>
             </div>
