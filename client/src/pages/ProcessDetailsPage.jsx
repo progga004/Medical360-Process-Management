@@ -157,7 +157,6 @@ const ProcessDetailsPage = () => {
                     color="primary"
                     onClick={() => navigate(`/patient-info/${currentPatient._id}`)}
                     sx={{ position: 'relative', bottom: '16px', margin: "16px"}}
-                    disabled={currentProcess.completed}
                 >
                     View Patient Info
                 </Button>
