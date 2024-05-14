@@ -11,10 +11,11 @@ const ScheduleModal = ({
   onSelectEvent,
 }) => {
   const [availableEvents, setAvailableEvents] = useState([]);
-  const { getEvents, getDoctorByUser, updateEvent, updatePatient,updateDoctor,BASE_URL, currentPatient} =
+  const { getEvents, getDoctorByUser, updateEvent, updatePatient, updateDoctor, BASE_URL, currentPatient } =
     useGlobalContext();
 
-    console.log("Doctor comming",doctor,patientName)
+  console.log("Doctor coming", doctor, patientName);
+
   useEffect(() => {
     if (isScheduleOpen && doctor) {
       const fetchDoctorEvents = async () => {
@@ -33,42 +34,37 @@ const ScheduleModal = ({
     }
   }, [isScheduleOpen, doctor]);
 
-
   const formatDateAndTime = (startDate, endDate) => {
     const dateOptions = { year: 'numeric', month: '2-digit', day: '2-digit' };
     const timeOptions = { hour: '2-digit', minute: '2-digit', hour12: true };
-  
+
     const formattedDate = new Date(startDate).toLocaleDateString('en-US', dateOptions);
     const startTime = new Date(startDate).toLocaleTimeString('en-US', timeOptions);
     const endTime = new Date(endDate).toLocaleTimeString('en-US', timeOptions);
-  
+
     return `${formattedDate}, ${startTime}-${endTime}`;
   };
-  
+
   const handleAssign = async (event) => {
     try {
       const assignedTime = formatDateAndTime(event.start, event.end);
 
-
- 
       const updatedEvent = {
         ...event,
-        title: patientName, 
+        title: patientName,
         status: "patient_assigned",
       };
-  
+
       await updateEvent(updatedEvent);
-  
+
       const patientUpdate = {
         doctorAssigned: doctor._id,
-
         assignedTime: assignedTime,
-
         eventId: event._id,
       };
-  
+
       await updatePatient(patientId, patientUpdate);
-  
+
       try {
         const response = await fetch(`${BASE_URL}/doctors/${doctor._id}`, {
           method: "POST",
@@ -77,35 +73,33 @@ const ScheduleModal = ({
           },
           body: JSON.stringify({ doctorId: doctor._id }),
         });
-  
+
         if (response.ok) {
           const doctorData = await response.json();
           const doctor = doctorData.doctor;
-          // await updateDoctor(doctor._id, {
-          //   patientList: [...doctor.patientList, patientId],
-          //   assignedTime: `${startTime} - ${endTime}`, 
-          //   eventId: event._id,
-          // });
+
           const newPatientEntry = {
             patientId: patientId,
-            assignedTime: `${startTime} - ${endTime}`,
+            assignedTime: assignedTime,
             eventId: event._id,
           };
+
           await updateDoctor(doctor._id, {
             patientList: [...doctor.patientList, newPatientEntry]
           });
+
+          console.log("Doctor id", doctor._id, newPatientEntry);
         }
       } catch (err) {
         console.log(err.message);
       }
-  
+
       onClose();
       onSelectEvent(event);
     } catch (error) {
       console.error("Error assigning event:", error);
     }
   };
-  
 
   const handleCancel = () => {
     onClose();

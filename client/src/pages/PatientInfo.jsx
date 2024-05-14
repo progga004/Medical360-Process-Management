@@ -439,12 +439,12 @@ const PatientInfo = ({}) => {
             <div className="flex justify-center mt-4">
               {currentPatient.patientStatus !== "discharged" ? (
                 <>
-                  <button
+                  {/* <button
                     className="bg-[#2260FF] text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-800 mr-4"
                     onClick={() => navigate("/add-procedure")}
                   >
                     Add Procedure
-                  </button>
+                  </button> */}
                   <button
                     className="bg-red-500 text-white px-8 py-3 rounded-lg font-semibold hover:bg-red-800"
                     onClick={() => setModal(true)}
