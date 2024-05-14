@@ -1,35 +1,38 @@
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import Banner from "../components/Banner";
 import { useGlobalContext } from "../hooks/useGlobalContext";
 import { useAuthContext } from "../hooks/useAuthContext";
 import ScheduleModal from "./ScheduleModal";
 import RemoveDoctorModal from "./RemoveDoctorModal";
+import { useProcessContext } from "../hooks/useProcessContext";
+import { Button } from '@mui/material';
+import FileUpload from "../components/UploadFile";
 
 const PatientInfo = ({}) => {
   const {
-    id_to_department,
     updatePatient,
     removeCurrentDoctor,
     doctors,
+    departments,
     getAllDoctors,
     updateDoctor,
     currentDoctor,
     getDoctor,
     BASE_URL,
-    getPatient,
     updateEvent,
     getEvent,
     getDepartment,
+    getAllDepartments,
+    currentPatient
   } = useGlobalContext();
+  const { currentProcess, getProcess } = useProcessContext();
   const { user } = useAuthContext();
   const [modal, setModal] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [isScheduleOpen, setIsScheduleOpen] = useState(false);
   const [selectedDoctor, setSelectedDoctor] = useState(null);
   const navigate = useNavigate();
-  const [currentPatient, setCurrentPatient] = useState(null);
-  const [events, setEvents] = useState(null);
   const [viewedDoctors, setViewedDoctors] = useState([]);
   const [doctorToRemove, setDoctorToRemove] = useState(null);
   const [removeModalOpen, setRemoveModalOpen] = useState(false);
@@ -42,30 +45,33 @@ const PatientInfo = ({}) => {
     async function fetchDoctor(doctorId) {
       await getDoctor(doctorId);
     }
+    async function fetchDepartments() {
+      await getAllDepartments();
+    }
+    async function fetchProcess() {
+      await getProcess(currentPatient.process);
+    }
     async function fetchDoctors() {
       await getAllDoctors();
     }
-    if (!doctors) fetchDoctors();
-    if (currentPatient && currentPatient.doctorAssigned)
-      fetchDoctor(currentPatient.doctorAssigned);
-    else removeCurrentDoctor();
-  }, [doctors, currentPatient]);
-  useEffect(() => {
     const fetchPatientEvents = async () => {
       try {
-        const patient = await getPatient(id);
-        setCurrentPatient(patient);
-
-        if (patient.department) {
-          const department = await getDepartment(patient.department);
+        if (currentPatient.department) {
+          const department = await getDepartment(currentPatient.department);
           setCurrentDepartment(department);
         }
       } catch (error) {
         console.error("Error fetching doctor events:", error);
       }
     };
-    fetchPatientEvents();
-  }, [currentPatient]);
+    if (currentPatient) fetchPatientEvents();
+    if (!departments) fetchDepartments();
+    if (!doctors) fetchDoctors();
+    if (currentPatient && !currentProcess && currentPatient.process) fetchProcess();
+    if (currentPatient && currentPatient.doctorAssigned)
+      fetchDoctor(currentPatient.doctorAssigned);
+    else removeCurrentDoctor();
+  }, [currentPatient, departments, doctors]);
 
   const handleDoctorClick = (doctor) => {
     setSelectedDoctor(doctor);
@@ -79,14 +85,15 @@ const PatientInfo = ({}) => {
     setRemoveModalOpen(true);
   };
   const discharge = async () => {
-    let newProcedure = {
-      date: Date.now(),
-      Notes: "Patient Discharged",
-    };
+    if (!currentProcess || !currentProcess.completed) {
+      alert("You must complete this patients process first");
+      setModal(false);
+      setIsOpen(false);
+      return;
+    }
 
     if (currentPatient)
       await updatePatient(currentPatient._id, {
-        procedures: [...currentPatient.procedures, newProcedure],
         patientStatus: "discharged",
         roomNo: "N/A",
         department: null,
@@ -164,10 +171,6 @@ const PatientInfo = ({}) => {
         )
       : [];
 
-  if (!currentPatient) {
-    return <div>No patient data available.</div>;
-  }
-
   return (
     <>
       <Banner goBackPath={"/all-patients"} />
@@ -205,7 +208,7 @@ const PatientInfo = ({}) => {
                     <p>{currentPatient.phoneNumber}</p>
                   </div>
                 </div>
-
+              
                 <div className="flex">
                   <div className="flex-grow bg-blue-600 text-white p-4 rounded-lg mr-4">
                     <h3 className="font-semibold text-md">Room</h3>
@@ -224,9 +227,10 @@ const PatientInfo = ({}) => {
                     </p>
                   </div>
                 </div>
+                
               </div>
             </div>
-
+            <FileUpload patientId={currentPatient._id}></FileUpload>
             {/* Row 3: Schedule */}
             <div className="flex flex-col justify-center items-center bg-white p-4 rounded-lg mt-4">
               <div className="flex items-center space-x-5">
@@ -327,61 +331,103 @@ const PatientInfo = ({}) => {
             </div>
 
             {/* Row 4: Profile */}
-            <div className="bg-blue-100 rounded-lg p-6 shadow-lg">
-              <h3 className="text-blue-600 font-semibold text-xl mb-4">
-                Process
-              </h3>
-              <div className="space-y-4">
-                {currentPatient.procedures.map((process) => (
+            <div className="bg-blue-100 rounded-lg p-6 shadow-lg flex flex-col items-center">
+              <Button
+                component={Link}
+                to="/process-details"
+                variant="contained"
+                color="primary"
+                className="text-white font-semibold text-xl mt-4"
+                sx={{ '&:hover': { backgroundColor: '#0E5A8A' } }}
+              >
+                View Process
+              </Button>
+            </div>
+              {/* <div className="space-y-4">
+                {currentProcess && currentProcess.procedures.map((procedure, index) => (
                   <div
-                    key={process._id}
-                    className="border-b border-gray-200 pb-4"
+                    key={procedure._id}
+                    className="border-b border-gray-200 pb-4 relative"
                   >
                     <p className="text-gray-600 font-medium mb-2">
-                      Date: {new Date(process.date).toDateString()}
+                      Start: {dayjs(procedure.start).format('YYYY-MM-DD HH:mm:ss')}
+                    </p>
+                    <p className="text-gray-600 font-medium mb-2">
+                      End: {dayjs(procedure.end).format('YYYY-MM-DD HH:mm:ss')}
                     </p>
                     <ul className="list-disc pl-5">
-                      {Object.keys(process).map((field, index) => {
-                        if (field !== "_id" && field !== "date") {
+                      {Object.keys(procedure).map((field, index) => {
+                        if (field === "department") {
                           return (
                             <li
                               key={index}
                               className={
-                                process[field] === "Patient Discharged"
+                                procedure[field] === "Patient Discharged"
                                   ? "text-red-500"
                                   : "text-gray-600"
                               }
                             >
                               <span className="font-medium">{field}:</span>{" "}
-                              {process[field]}
+                              {id_to_department[procedure[field]]}
+                            </li>
+                          );
+                        } else if (field !== "_id" && field !== "date" && field !== "doctor" && field !== "completed" && field !== "start" && field !== "end") {
+                          return (
+                            <li
+                              key={index}
+                              className={
+                                procedure[field] === "Patient Discharged"
+                                  ? "text-red-500"
+                                  : "text-gray-600"
+                              }
+                            >
+                              <span className="font-medium">{field}:</span>{" "}
+                              {procedure[field] ? procedure[field] : "N/A"}
                             </li>
                           );
                         }
                         return null;
                       })}
                     </ul>
+                    {!procedure.completed ? <button
+                      className="absolute top-2 right-2 bg-blue-500 text-white px-2 py-1 rounded-md hover:bg-blue-600"
+                      onClick={() => handleProcedureComplete(procedure._id)} >
+                      Complete
+                    </button> : <><div
+                    className="absolute top-2 right-2 bg-green-500 text-white px-2 py-1 rounded-md mr-20"
+                    >Procedure Completed</div> <button
+                    className="absolute top-2 right-2 bg-red-500 text-white px-2 py-1 rounded-md hover:bg-red-600"
+                    onClick={() => handleProcedureNotComplete(procedure._id)}
+                    >Undo</button> </> }
                   </div>
                 ))}
-              </div>
-            </div>
+                {currentProcess && !currentProcess.completed ? <button
+                  className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
+                  onClick={() => handleProcessComplete(currentProcess._id)}
+                >
+                  Complete Process
+                </button> : <> <button
+                  disabled={true}
+                  className="bg-green-500 text-white px-4 py-2 rounded-md"
+                >
+                  Process Completed
+                </button> <button
+                  className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600"
+                  onClick={() => handleProcessNotComplete(currentProcess._id)}
+                >
+                  Undo
+                </button> </>}
+                </div> */}
 
             {/* Row 5: Schedule Button */}
             <div className="flex justify-center mt-4">
               {currentPatient.patientStatus !== "discharged" ? (
-                <>
-                  <button
-                    className="bg-[#2260FF] text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-800 mr-4"
-                    onClick={() => navigate("/add-procedure")}
-                  >
-                    Add Procedure
-                  </button>
-                  <button
-                    className="bg-red-500 text-white px-8 py-3 rounded-lg font-semibold hover:bg-red-800"
-                    onClick={() => setModal(true)}
-                  >
-                    Discharge Patient
-                  </button>
-                </>
+                <button
+                  className="bg-red-500 text-white px-8 py-3 rounded-lg font-semibold hover:bg-red-800"
+                  onClick={() => setModal(true)}
+                >
+                  Discharge Patient
+                </button>
               ) : (
                 <div className="bg-red-500 text-white px-8 py-3 rounded-lg font-semibold">
                   This Patient has Been Discharged

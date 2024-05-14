@@ -29,6 +29,7 @@ const FormField = ({ fields, submit, buttonName }) => {
                             value={formData[field.name] || []}
                             options={field.options}
                             onChange={handleInputChange}
+                            error={field.error}
                         />
                     );
                 } else {
@@ -43,6 +44,7 @@ const FormField = ({ fields, submit, buttonName }) => {
                             type={field.type}
                             onChange={handleInputChange}
                             options={field.options}
+                            error={field.error}
                         />
                     );
                 }

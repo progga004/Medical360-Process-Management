@@ -1,4 +1,4 @@
-import React, { useState,useContext } from "react";
+import React, { useState, useContext } from "react";
 import axios from "axios";
 import Banner from "../components/Banner";
 import { useNavigate } from "react-router-dom";
@@ -14,7 +14,7 @@ const NewEquipmentPage = () => {
     location: "",
     maintenanceStatus: "",
   });
-  const [formError, setFormError] = useState(false);
+  const [formErrors, setFormErrors] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -22,24 +22,17 @@ const NewEquipmentPage = () => {
       ...prev,
       [name]: value,
     }));
+    setFormErrors((prev) => ({
+      ...prev,
+      [name]: "",
+    }));
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    if (
-      !formData.equipmentName ||
-      !formData.equipmentType ||
-      !formData.quantity ||
-      !formData.location ||
-      !formData.maintenanceStatus
-    ) {
-      alert("Please fill in all required fields.");
-      return;
-    }
-
-    if (isNaN(formData.quantity) || formData.quantity <= 0) {
-      alert("Quantity must be a number greater than 0.");
+    const errors = validateForm();
+    if (Object.keys(errors).length > 0) {
+      setFormErrors(errors);
       return;
     }
 
@@ -51,8 +44,26 @@ const NewEquipmentPage = () => {
       })
       .catch((error) => {
         console.error("There was an error creating the equipment:", error);
-        setFormError(true);
+        setFormErrors({ submit: "Error submitting form. Please try again." });
       });
+  };
+
+  const validateForm = () => {
+    const errors = {};
+    if (!formData.equipmentName)
+      errors.equipmentName = "Equipment name is required.";
+    if (!formData.equipmentType)
+      errors.equipmentType = "Equipment type is required.";
+    if (
+      !formData.quantity ||
+      isNaN(formData.quantity) ||
+      formData.quantity <= 0
+    )
+      errors.quantity = "Quantity must be a positive number greater than 0.";
+    if (!formData.location) errors.location = "Location is required.";
+    if (!formData.maintenanceStatus)
+      errors.maintenanceStatus = "Maintenance status is required.";
+    return errors;
   };
 
   return (
@@ -78,8 +89,12 @@ const NewEquipmentPage = () => {
               value={formData.equipmentName}
               onChange={handleChange}
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              required
             />
+            {formErrors.equipmentName && (
+              <p className="text-red-500 text-s italic mt-1">
+                {formErrors.equipmentName}
+              </p>
+            )}
           </div>
 
           {/* Equipment Type Field */}
@@ -96,8 +111,12 @@ const NewEquipmentPage = () => {
               value={formData.equipmentType}
               onChange={handleChange}
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              required
             />
+            {formErrors.equipmentType && (
+              <p className="text-red-500 text-s italic mt-1">
+                {formErrors.equipmentType}
+              </p>
+            )}
           </div>
 
           {/* Quantity Field */}
@@ -115,8 +134,12 @@ const NewEquipmentPage = () => {
               onChange={handleChange}
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               min="1"
-              required
             />
+            {formErrors.quantity && (
+              <p className="text-red-500 text-s italic mt-1">
+                {formErrors.quantity}
+              </p>
+            )}
           </div>
 
           {/* Location Field */}
@@ -133,8 +156,12 @@ const NewEquipmentPage = () => {
               value={formData.location}
               onChange={handleChange}
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              required
             />
+            {formErrors.location && (
+              <p className="text-red-500 text-s italic mt-1">
+                {formErrors.location}
+              </p>
+            )}
           </div>
 
           {/* Maintenance Status Field */}
@@ -150,12 +177,16 @@ const NewEquipmentPage = () => {
               value={formData.maintenanceStatus}
               onChange={handleChange}
               className="block appearance-none w-full bg-white border border-gray-400 hover:border-gray-500 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:shadow-outline"
-              required
             >
               <option value="">Select Status</option>
               <option value="Operational">Operational</option>
               <option value="Maintenance Required">Maintenance Required</option>
             </select>
+            {formErrors.maintenanceStatus && (
+              <p className="text-red-500 text-s italic mt-1">
+                {formErrors.maintenanceStatus}
+              </p>
+            )}
           </div>
 
           <div className="flex items-center justify-between">
@@ -166,8 +197,8 @@ const NewEquipmentPage = () => {
               Create Equipment
             </button>
           </div>
-          {formError && (
-            <p className="text-red-500 text-xs italic">
+          {formErrors && (
+            <p className="text-red-500 text-s italic mt-3">
               Error submitting form. Please try again.
             </p>
           )}

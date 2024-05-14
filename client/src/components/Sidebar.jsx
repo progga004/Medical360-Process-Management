@@ -18,6 +18,13 @@ const Sidebar = () => {
         </li>
         {user && (
           <li>
+            <Link to="/all-processes" className="hover:underline">
+              Processes
+            </Link>
+          </li>
+        )}
+        {user && (
+          <li>
             <Link to="/departmentpage" className="hover:underline">
               Departments
             </Link>
@@ -37,14 +44,7 @@ const Sidebar = () => {
             </Link>
           </li>
         )}
-        {(user.name == "Admin") && (
-          <li>
-            <Link to="/departmentratio" className="hover:underline">
-              Department Ratio
-            </Link>
-          </li>
-        )}
-        {(user.name == "Admin" ) && (
+        {user.isAdmin && (
           <li>
             <Link to="/resource-management" className="hover:underline">
               Resource Management
