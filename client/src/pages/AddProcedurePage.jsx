@@ -36,7 +36,7 @@ function AddProcedurePage() {
     getAllDoctors,
     departments,
     getAllDepartments,
-    getDoctor,
+    sendNotifications,
   } = useGlobalContext();
   const { addProcedure, getProcess, updateProcedure } = useProcessContext();
   const [operation, setOperation] = useState(initOperation);
@@ -63,6 +63,7 @@ function AddProcedurePage() {
   );
   const navigate = useNavigate();
 
+
   useEffect(() => {
     const fetchDepartments = async () => {
       await getAllDepartments();
@@ -76,7 +77,6 @@ function AddProcedurePage() {
     if (!departments) fetchDepartments();
   }, [doctors, departments]);
 
-  //change this part
 
   const combineDateAndTime = (dateObj, timeObj) => {
     // Extract date components from the first Day.js object
@@ -157,12 +157,32 @@ function AddProcedurePage() {
         department: department,
       };
 
+      let message;
+      let title;
       if (procedureId) {
         // procedure currently exists (it is being edits)
-
+        title = `Change to Procedure in ${currentPatient.patientName}'s Care Plan`
+        message = `${currentPatient.patientName}'s procedure that you're assigned to has been changed. Click to view their process.`
         // just update the old procedure
         updateProcedure(currentPatient.process, procedureId, newProcedure);
-      } else await addProcedure(currentPatient.process, newProcedure);
+      } else {
+        title = `New Procedure in ${currentPatient.patientName}'s Care Plan`
+        message = `You have been assigned to a procedure in ${currentPatient.patientName}'s care plan. Click to view their process.`
+        await addProcedure(currentPatient.process, newProcedure);
+      }
+
+      // send notification to all doctor overseeing
+      let userIds = doctors.filter(doc => {
+        return doc._id === currentDoctor;
+      }).map(doc => doc.userId);
+
+      sendNotifications(userIds, {
+        title,
+        message,
+        date: Date.now(),
+        read: false,
+        patient: currentPatient._id,
+      })
 
       await getProcess(currentPatient.process);
       await getPatient(currentPatient._id);
