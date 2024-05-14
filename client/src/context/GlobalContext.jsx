@@ -216,10 +216,8 @@ function GlobalContextProvider({ children }) {
     currentBug: null,
     currentChat: null,
     currentFeedback: null,
-    currentEvent:null,
-    
-   BASE_URL: "https://medical360-d65d823d7d75.herokuapp.com",
-    //  BASE_URL: "http://localhost:3000",
+    currentEvent: null,
+    BASE_URL: "https://medical360-d65d823d7d75.herokuapp.com",
   });
   const [lastUpdated, setLastUpdated] = useState(Date.now());
 

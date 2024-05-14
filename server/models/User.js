@@ -47,7 +47,11 @@ const userSchema = new Schema({
         patient: {type: Schema.Types.ObjectId, ref: "Patient", default: null}
     }],
     default: []
-},
+  },
+  image: { 
+    type: String,
+    default: '' 
+  },
 });
 
 const User = mongoose.model("User", userSchema);
