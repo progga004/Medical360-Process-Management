@@ -36,6 +36,7 @@ const PatientInfo = ({}) => {
   const [currentDepartment, setCurrentDepartment] = useState(false);
 
   const { id } = useParams();
+  
 
   useEffect(() => {
     async function fetchDoctor(doctorId) {
