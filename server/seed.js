@@ -14,7 +14,7 @@ require("dotenv").config();
 
 mongoose.connect(
    "mongodb+srv://medical360:admin123@medical360.wh0h2hw.mongodb.net/medical360",
-  //"mongodb://127.0.0.1/medical360",
+  // "mongodb://127.0.0.1/medical360",
   {
     useUnifiedTopology: true,
   }
