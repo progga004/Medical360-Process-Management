@@ -11,7 +11,7 @@ const ScheduleModal = ({
   onSelectEvent,
 }) => {
   const [availableEvents, setAvailableEvents] = useState([]);
-  const { getEvents, getDoctorByUser, updateEvent, updatePatient,updateDoctor,BASE_URL } =
+  const { getEvents, getDoctorByUser, updateEvent, updatePatient,updateDoctor,BASE_URL, currentPatient} =
     useGlobalContext();
 
     console.log("Doctor comming",doctor,patientName)

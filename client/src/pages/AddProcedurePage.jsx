@@ -198,9 +198,9 @@ function AddProcedurePage() {
      <Banner goBackPath={`/process-details`} />
       <div className="flex justify-center items-center h-screen bg-blue-100">
         <div className="bg-white p-8 rounded-lg shadow-lg w-full md:w-3/4 lg:w-1/2">
-          <h1 className="text-2xl font-bold mb-4 text-center text-blue-900">
+          {currentPatient && <h1 className="text-2xl font-bold mb-4 text-center text-blue-900">
             Procedure for {currentPatient.patientName}
-          </h1>
+          </h1>}
           <form className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             <div>
               <label className="block text-sm font-medium text-blue-900">
@@ -379,7 +379,7 @@ function AddProcedurePage() {
         </div>
       </div>
 
-      {currentDoctor && currentPatient && (
+      {currentDoctor && currentPatient && isScheduleModalOpen && (
         <ScheduleModal
           isScheduleOpen={isScheduleModalOpen}
           onClose={() => setScheduleModalOpen(false)}
