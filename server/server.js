@@ -17,7 +17,9 @@ app.use(express.urlencoded({ extended: true }));
 app.use(
   cors({
 
-   // origin: "http://localhost:5173", // Ensure the client's address is correctly listed
+
+    //origin: "http://localhost:5173", // Ensure the client's address is correctly listed
+
     origin: "https://medical360-d65d823d7d75.herokuapp.com" ,
     credentials: true, // For sending cookies over CORS
   })
@@ -78,8 +80,8 @@ app.use("/process", processRouter);
 // Connect to the database
 mongoose
   .connect(
-    // "mongodb+srv://medical360:admin123@medical360.wh0h2hw.mongodb.net/medical360",
-    "mongodb://127.0.0.1/medical360",
+    "mongodb+srv://medical360:admin123@medical360.wh0h2hw.mongodb.net/medical360",
+     //"mongodb://127.0.0.1/medical360",
     {
       useNewUrlParser: true,
       useUnifiedTopology: true,
@@ -91,9 +93,6 @@ mongoose
 const db = mongoose.connection;
 db.on("error", console.error.bind(console, "MongoDB connection error:"));
 
-// const io = registerSocketServer(server);
-// Run the server
-// app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 const server = http.createServer(app);
 const io = registerSocketServer(server);
 server.listen(PORT, () => console.log(`Server with sockets running on port ${PORT}`));

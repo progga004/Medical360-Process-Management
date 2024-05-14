@@ -186,7 +186,7 @@ export const storeReducer = (state, action) => {
         currentBug: null,
         currentChat: null,
         currentFeedback: null,
-        currentEvent: null,
+        currentEvent:null,
         BASE_URL: "https://medical360-d65d823d7d75.herokuapp.com",
         //BASE_URL: "http://localhost:3000",
       };
@@ -217,8 +217,10 @@ function GlobalContextProvider({ children }) {
     currentChat: null,
     currentFeedback: null,
 
+
     currentEvent: null,
     BASE_URL: "https://medical360-d65d823d7d75.herokuapp.com",
+
      //BASE_URL: "http://localhost:3000",
   });
   const [lastUpdated, setLastUpdated] = useState(Date.now());

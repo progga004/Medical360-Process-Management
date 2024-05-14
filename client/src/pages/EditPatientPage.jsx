@@ -3,7 +3,7 @@ import Banner from '../components/Banner';
 import { useNavigate } from 'react-router-dom';
 import { useGlobalContext } from '../hooks/useGlobalContext';
 import { useEffect, useState } from 'react';
-
+import FileUpload from '../components/UploadFile';
 const EditPatientPage = () => {
 
     const { department_to_id, currentPatient, updatePatient, id_to_department, getAllDepartments, departments, currentDoctor, getDoctor } = useGlobalContext();
@@ -61,6 +61,7 @@ const EditPatientPage = () => {
                 submit={handleSubmit}
                 buttonName="Save"
             />}
+            
         </>
     );
 };
