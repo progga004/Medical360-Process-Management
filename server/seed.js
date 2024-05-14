@@ -46,6 +46,11 @@ db.once("open", async () => {
     "Cancer Treatment",
     "Elderly Health Management"
 ];
+const departmentImages = [
+  'uploads/1713501063308.jpeg',
+  'uploads/0f15da26e3350ed5a80c14aad307ee0b1714706553010.png',
+  'uploads/c2214eed351287c24fed511db04b25ca1714705389299.jpeg'
+];
     // Create admin user
     const adminUser = new User({
       name: "Admin",
@@ -108,6 +113,7 @@ db.once("open", async () => {
         head: doctor._id, // Head can be added later
         headModel: departments[i],
         doctorList:[],
+        iconPath:chance.pickone(departmentImages),
       });
 
       await dep.save();
@@ -225,16 +231,16 @@ db.once("open", async () => {
       });
   
       // add doctor to patients assigned doctor
-      let departmentDoctors = allDoctors.filter(doc => {
-        return doc.departmentName.equals(patient.department);
+      // let departmentDoctors = allDoctors.filter(doc => {
+      //   return doc.departmentName.equals(patient.department);
 
-      });
-      if (departmentDoctors.length !== 0) {
-        let doctor = chance.pickone(departmentDoctors);
-        patient.doctorAssigned = doctor._id;
-        doctor.patientList.push(patient._id);
-        await doctor.save();
-      }
+      // });
+      // if (departmentDoctors.length !== 0) {
+      //   let doctor = chance.pickone(departmentDoctors);
+      //   patient.doctorAssigned = doctor._id;
+      //   doctor.patientList.push(patient._id);
+      //   await doctor.save();
+      // }
 
       // add process to patient
       const process = new Process({
