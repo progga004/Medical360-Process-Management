@@ -9,6 +9,13 @@ const router = express.Router()
 // update user route
 router.put('/:id', UserController.updateUser)
 
+router.put(`/notification/:id`, UserController.updateNotification)
+
+router.post(`/get-notifications/:id`, UserController.getNotifications)
+
+// send notification
+router.post(`/notification/:id`, UserController.postNotification)
+
 // get user route
 router.post('/:id', UserController.getUser)
 
@@ -17,6 +24,9 @@ router.post('/', UserController.getAllUsers)
 
 //  delete user route
 router.delete('/:id', UserController.deleteUser)
+
+//  delete notification route
+router.delete('/notification/:id', UserController.deleteNotification)
 
 // other routes if needed ANTEN ??
 
