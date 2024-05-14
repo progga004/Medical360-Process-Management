@@ -421,20 +421,12 @@ const PatientInfo = ({}) => {
             {/* Row 5: Schedule Button */}
             <div className="flex justify-center mt-4">
               {currentPatient.patientStatus !== "discharged" ? (
-                <>
-                  <button
-                    className="bg-[#2260FF] text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-800 mr-4"
-                    onClick={() => navigate("/add-procedure")}
-                  >
-                    Add Procedure
-                  </button>
-                  <button
-                    className="bg-red-500 text-white px-8 py-3 rounded-lg font-semibold hover:bg-red-800"
-                    onClick={() => setModal(true)}
-                  >
-                    Discharge Patient
-                  </button>
-                </>
+                <button
+                  className="bg-red-500 text-white px-8 py-3 rounded-lg font-semibold hover:bg-red-800"
+                  onClick={() => setModal(true)}
+                >
+                  Discharge Patient
+                </button>
               ) : (
                 <div className="bg-red-500 text-white px-8 py-3 rounded-lg font-semibold">
                   This Patient has Been Discharged

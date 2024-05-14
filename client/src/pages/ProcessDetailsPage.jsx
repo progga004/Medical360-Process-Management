@@ -152,6 +152,15 @@ const ProcessDetailsPage = () => {
                 <Typography variant="h5" align="center" mb={4}>
                     Process for {currentPatient.patientName}
                 </Typography>
+                <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={() => navigate(`/patient-info/${currentPatient._id}`)}
+                    sx={{ position: 'relative', bottom: '16px', margin: "16px"}}
+                    disabled={currentProcess.completed}
+                >
+                    View Patient Info
+                </Button>
                 <List>
                     {currentProcess && currentProcess.procedures.map((procedure) => (
                         <Card key={procedure._id} sx={{ marginBottom: '16px', backgroundColor: "primary"}}>
@@ -232,7 +241,7 @@ const ProcessDetailsPage = () => {
                         </Card>
                     ))}
                 </List>
-                {currentProcess && <>
+                {currentProcess && <div style={{ textAlign: 'center', marginBottom: '16px' }}>
                     <Button
                         variant="contained"
                         color="primary"
@@ -247,6 +256,7 @@ const ProcessDetailsPage = () => {
                         color="success"
                         onClick={() => handleProcessComplete(currentProcess._id)}
                         sx={{ position: 'relative', bottom: '16px'}}
+                        disabled={currentProcess.procedures.length === 0}
                     >
                         Complete Process
                     </Button> : 
@@ -258,7 +268,7 @@ const ProcessDetailsPage = () => {
                     >
                         Mark Process as Not Completed
                     </Button>}
-                </>}
+                </div>}
             </Box>
         </>
     );
