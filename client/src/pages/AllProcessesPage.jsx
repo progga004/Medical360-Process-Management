@@ -50,6 +50,7 @@ const AllProcessesPage = () => {
                     onChange={(e) => setSearchTerm(e.target.value)}
                     fullWidth
                     className="mb-4"
+                    inputProps={{ 'aria-label': 'Search' }}
                 />
                 <Grid container spacing={3}>
                     {currentProcesses && currentProcesses.map(process => (

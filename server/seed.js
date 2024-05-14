@@ -9,6 +9,7 @@ const Patient = require("./models/Patient");
 const Room = require("./models/Room");
 const Equipment = require("./models/Equipment");
 const Process = require("./models/Process");
+const Event=require("./models/Event")
 require("dotenv").config();
 
 mongoose.connect(
@@ -133,6 +134,7 @@ const departmentImages = [
     // Populate users that are doctors and not heads
     const users = [];
     const doctors = [];
+    const events = [];
     for (let i = 0; i < 30; i++) {
       const name = chance.name();
       const departmentId = chance.pickone(department_ids); 
@@ -181,11 +183,38 @@ const departmentImages = [
     departmentDoc.doctorList.push(doctor._id);
     await departmentDoc.save();
   }
+  for (let j = 0; j < 25; j++) {
+    const startDate = new Date();
+    startDate.setDate(startDate.getDate() + chance.integer({ min: 1, max: 30 }));
+    const endDate = new Date(startDate);
+    endDate.setHours(startDate.getHours() + chance.integer({ min: 1, max: 4 }));
+
+   
+    const isAvailable = chance.bool(); 
+    const title = isAvailable ? "Available" : "Unavailable";
+    const status = isAvailable ? "available" : "unavailable";
+
+    const event = new Event({
+      title: title,
+      start: startDate,
+      end: endDate,
+      status: status,
+      user: user._id,
+    });
+
+    events.push(event);
+}
+
+  
 
     }
     
     await User.insertMany(users);
     await Doctor.insertMany(doctors);
+    await Event.insertMany(events);
+
+    const allEvents = await Event.find({ status: "available" });
+
 
     // populate users that are nurses
     const nurses = [];
@@ -249,6 +278,14 @@ const departmentImages = [
       });
       const savedProcess = await process.save();
       patient.process = savedProcess._id;
+
+      const departmentEvents = allEvents.filter((event) => {
+        const doctor = allDoctors.find((doc) => doc.userId.equals(event.user));
+        return doctor && doctor.departmentName.equals(patient.department);
+      });
+      
+      
+      
 
       patients.push(patient);
 
