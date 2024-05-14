@@ -12,6 +12,7 @@ import {
 } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
+import ScheduleModal from "./ScheduleModal";
 
 function AddProcedurePage() {
   const { state } = useLocation();
@@ -43,6 +44,12 @@ function AddProcedurePage() {
   const [currentDoctor, setDoctor] = useState(initDoctor);
   const [room, setRoom] = useState(initRoom);
   const [department, setDepartment] = useState(initDepartment);
+  //change this part
+  const [isScheduleModalOpen, setScheduleModalOpen] = useState(false);
+  const [selectedEvent, setSelectedEvent] = useState(null);
+  // const[doctorfind,setDoctorFind]=useState(null);
+  // const[patientfind,setPatientFind]=useState(null);
+  //
   const [startDate, setStartDate] = useState(
     initStartDate ? dayjs(initStartDate) : dayjs(Date.now())
   );
@@ -95,6 +102,22 @@ function AddProcedurePage() {
         .second(second)
         .millisecond(millisecond)
     );
+  };
+
+  const handleAvailabilityClick = () => {
+    if (currentDoctor) {
+      setScheduleModalOpen(true);
+    } else {
+      alert("Please select a doctor first");
+    }
+  };
+  const handleSelectEvent = (event) => {
+    setStartDate(dayjs(event.start));
+    setEndDate(dayjs(event.end));
+    setStartTime(dayjs(event.start));
+    setEndTime(dayjs(event.end));
+    setScheduleModalOpen(false);
+    setSelectedEvent(event); 
   };
 
   const addProcess = async () => {
@@ -169,14 +192,17 @@ function AddProcedurePage() {
     }
   };
 
+  console.log("Current patient",currentPatient);
+  console.log("Current Doctor",currentDoctor);
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
-      <Banner goBackPath={`/process-details`} />
+
+     <Banner goBackPath={`/process-details`} />
       <div className="flex justify-center items-center h-screen bg-blue-100">
         <div className="bg-white p-8 rounded-lg shadow-lg w-full md:w-3/4 lg:w-1/2">
-          <h1 className="text-2xl font-bold mb-4 text-center text-blue-900">
+          {currentPatient && <h1 className="text-2xl font-bold mb-4 text-center text-blue-900">
             Procedure for {currentPatient.patientName}
-          </h1>
+          </h1>}
           <form className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             <div>
               <label className="block text-sm font-medium text-blue-900">
@@ -341,8 +367,30 @@ function AddProcedurePage() {
               </Button>
             </div>
           )}
+          
+          <div className="flex justify-center mt-4">
+           { currentPatient && <Button
+              variant="outlined"
+              color="primary"
+              className="px-8 py-3 rounded-lg font-semibold"
+              onClick={handleAvailabilityClick}
+            >
+              Check Availability
+            </Button>}
+          </div>
         </div>
       </div>
+
+      {currentDoctor && currentPatient && isScheduleModalOpen && (
+        <ScheduleModal
+          isScheduleOpen={isScheduleModalOpen}
+          onClose={() => setScheduleModalOpen(false)}
+          doctor={doctors.find((doc) => doc._id === currentDoctor)}
+          patientId={currentPatient._id}
+          patientName={currentPatient.patientName}
+          onSelectEvent={handleSelectEvent}
+        />
+      )}
     </LocalizationProvider>
   );
 }

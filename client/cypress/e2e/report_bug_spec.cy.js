@@ -1,7 +1,9 @@
 describe("report bug", () => {
   beforeEach(() => {
     cy.visit("/login");
+
     cy.get("#Email").type("atgawsoh@giz.tw");
+
     cy.get("#Password").type("password@123");
     cy.get("button").contains("Login").click();
 

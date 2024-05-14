@@ -8,11 +8,13 @@ const ScheduleModal = ({
   doctor,
   patientId,
   patientName,
+  onSelectEvent,
 }) => {
   const [availableEvents, setAvailableEvents] = useState([]);
-  const { getEvents, getDoctorByUser, updateEvent, updatePatient,updateDoctor,BASE_URL } =
+  const { getEvents, getDoctorByUser, updateEvent, updatePatient,updateDoctor,BASE_URL, currentPatient} =
     useGlobalContext();
 
+    console.log("Doctor comming",doctor,patientName)
   useEffect(() => {
     if (isScheduleOpen && doctor) {
       const fetchDoctorEvents = async () => {
@@ -98,6 +100,7 @@ const ScheduleModal = ({
       }
   
       onClose();
+      onSelectEvent(event);
     } catch (error) {
       console.error("Error assigning event:", error);
     }

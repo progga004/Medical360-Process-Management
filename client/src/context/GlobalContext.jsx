@@ -152,16 +152,16 @@ export const storeReducer = (state, action) => {
             users: state.users.filter((user) => user._id !== action.payload),
           };
 
-        case "GET_USER_EVENTS":
-          return {
-            ...state,
-            currentEvent: null,
-            events: action.payload,
-          };
-
         default:
           return state;
       }
+
+    case "GET_USER_EVENTS":
+      return {
+        ...state,
+        currentEvent: null,
+        events: action.payload,
+        };
 
     default:
       return {
@@ -188,7 +188,7 @@ export const storeReducer = (state, action) => {
         currentFeedback: null,
         currentEvent:null,
         BASE_URL: "https://medical360-d65d823d7d75.herokuapp.com",
-        // BASE_URL: "http://localhost:3000",
+         //BASE_URL: "http://localhost:3000",
       };
   }
 };
@@ -218,6 +218,9 @@ function GlobalContextProvider({ children }) {
     currentFeedback: null,
     currentEvent: null,
     BASE_URL: "https://medical360-d65d823d7d75.herokuapp.com",
+
+     // BASE_URL: "http://localhost:3000",
+    // BASE_URL: "https://medical360-d65d823d7d75.herokuapp.com",
   });
   const [lastUpdated, setLastUpdated] = useState(Date.now());
 

@@ -156,7 +156,7 @@ const ProcessDetailsPage = () => {
             initEndDate: null,
             editable: true
         }
-        navigate('/add-procedure', { state: options})
+        navigate("/add-procedure", { state: options });
     }
 
     const handleDeleteProcedure = async procedureId => {

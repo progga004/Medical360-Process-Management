@@ -1,7 +1,9 @@
 describe("give feedback", () => {
     beforeEach(() => {
       cy.visit("/login");
+
       cy.get("#Email").type("mujmove@ufa.ws");
+
       cy.get("#Password").type("password@123");
       cy.get("button").contains("Login").click();
   

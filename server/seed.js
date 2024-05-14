@@ -52,6 +52,12 @@ const departmentImages = [
   'uploads/0f15da26e3350ed5a80c14aad307ee0b1714706553010.png',
   'uploads/c2214eed351287c24fed511db04b25ca1714705389299.jpeg'
 ];
+
+const userImages = [
+  'user_images/6e9a2ccf771b1453b865754dbe8934241715645972218.jpeg',
+  'user_images/a9ecfdf770031305021ac7c442d320121715645773645.jpeg',
+  'user_images/PatientImage.png'
+];
     // Create admin user
     const adminUser = new User({
       name: "Admin",
@@ -59,6 +65,7 @@ const departmentImages = [
       phone_number: chance.phone(),
       passwordHash: await bcrypt.hash("admin@123", 10),
       isAdmin: true,
+      image: chance.pickone(userImages)
     });
     await adminUser.save();
 
@@ -75,7 +82,8 @@ const departmentImages = [
         email,
         phone_number: chance.phone(),
         passwordHash,
-        isAdmin
+        isAdmin,
+        image: chance.pickone(userImages)
         ,
       });
       await user.save();
@@ -148,6 +156,7 @@ const departmentImages = [
         passwordHash,
         isAdmin,
         department:departmentId, // Set department reference
+        image: chance.pickone(userImages)
       });
       const doctor = new Doctor({
         name: name,
