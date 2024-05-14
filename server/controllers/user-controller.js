@@ -177,6 +177,8 @@ async function updateNotification(req, res) {
     res.status(500).json({
       message: error.message,
     });
+  }
+}
 async function uploadUserImage(req, res) {
   if (!req.file) {
       return res.status(400).json({ message: 'No file uploaded' });
