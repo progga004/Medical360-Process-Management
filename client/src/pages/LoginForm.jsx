@@ -1,8 +1,8 @@
-import React, { useContext, useState, useEffect } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import React, {useEffect, useState} from "react";
+import {Link, useNavigate} from "react-router-dom";
 import Banner from "../components/Banner";
 import FormField from "../components/FormField";
-import { useAuthContext } from "../hooks/useAuthContext";
+import {useAuthContext} from "../hooks/useAuthContext";
 
 const LoginForm = () => {
   const { user, login } = useAuthContext();
@@ -17,9 +17,10 @@ const LoginForm = () => {
   }, [user]);
 
   const fields = [
-    { name: 'Email', label:'Email',initialValue: '', editable: true },
-    { name: 'Password', label:'Password', initialValue: '', editable: true }
+    { name: 'Email', label: 'Email', initialValue: '', editable: true, type: 'text' },
+    { name: 'Password', label: 'Password', initialValue: '', editable: true, type: 'password' }
   ];
+  
 
   const handleLogin = (formData) => {
     let email = formData.Email;
