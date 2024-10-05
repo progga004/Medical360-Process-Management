@@ -26,15 +26,16 @@ These credentials can be used to log in as the administrator and access admin-le
 
 ## Heroku Deployment
 Medical360 is deployed on Heroku. Use the Admin credentials mentioned above and to log in and explore the system. You can access the live version of the project via the following links:
-Demo: Medical360 on Heroku
+<br>
+Demo: https://medical360-d65d823d7d75.herokuapp.com/
 
 ### Features of the System
-User Authentication: Secure login and registration for admins, doctors, and staff.
-Department Management: Create and manage hospital departments.
-Patient Management: Track patient details, assign doctors, and monitor health conditions.
-Staff-Patient Assignment: Automatically assign doctors to patients based on availability.
-Messaging and Notifications: Real-time updates for staff and patient assignments.
-Appointment Scheduling: Manage patient appointments through an integrated scheduling system.
-Schedule Builder: Create a schedule by hospital staff for themselves.
-Resource Management: Efficient tracking of hospital resources and equipment.
+- User Authentication: Secure login and registration for admins, doctors, and staff.
+- Department Management: Create and manage hospital departments.
+- Patient Management: Track patient details, assign doctors, and monitor health conditions.
+- Staff-Patient Assignment: Automatically assign doctors to patients based on availability.
+- Messaging and Notifications: Real-time updates for staff and patient assignments.
+- Appointment Scheduling: Manage patient appointments through an integrated scheduling system.
+- Schedule Builder: Create a schedule by hospital staff for themselves.
+- Resource Management: Efficient tracking of hospital resources and equipment.
 
