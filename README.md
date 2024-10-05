@@ -22,40 +22,19 @@ These credentials can be used to log in as the administrator and access admin-le
 - **MongoDB** (Database)
 - **Heroku** (Deployment)
 
-## Installation Requirements
-
-1. **Database**: MongoDB (NoSQL Database)
-   - You need to install MongoDB on your local machine.
-   - Refer to the official MongoDB installation guide [here](https://docs.mongodb.com/manual/installation/).
-
-2. **Web Server**: Node.js and Express
-   - Install Node.js on your machine. You can download it [here](https://nodejs.org/).
-
 ---
 
-## How to Run the Program
+## Heroku Deployment
+Medical360 is deployed on Heroku. Use the Admin credentials mentioned above and to log in and explore the system. You can access the live version of the project via the following links:
+Demo: Medical360 on Heroku
 
-### Step 1: Clone the Repository
-Open your terminal and run the following command to clone the repository:
-```bash
-git clone https://github.com/progga004/Medical360.git
-```
-Step 2: Install Dependencies
-Backend (Server)
-Navigate to the server directory:
+### Features of the System
+User Authentication: Secure login and registration for admins, doctors, and staff.
+Department Management: Create and manage hospital departments.
+Patient Management: Track patient details, assign doctors, and monitor health conditions.
+Staff-Patient Assignment: Automatically assign doctors to patients based on availability.
+Messaging and Notifications: Real-time updates for staff and patient assignments.
+Appointment Scheduling: Manage patient appointments through an integrated scheduling system.
+Schedule Builder: Create a schedule by hospital staff for themselves.
+Resource Management: Efficient tracking of hospital resources and equipment.
 
-bash
-Copy code
-cd Medical360/server
-Install the server dependencies:
-
-bash
-Copy code
-npm install
-Frontend (Client)
-Navigate to the client directory:
-
-bash
-Copy code
-cd ../client
-Install the client dependencies:
